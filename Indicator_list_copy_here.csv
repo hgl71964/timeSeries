@@ -1,0 +1,32 @@
+﻿Indicator,Type,TF,Format,Source of Indicator,Historical Data Source,Historical Data Scraped?,Link to Explanation / Visualisation,Link to Historical Data,Formula
+Bitcoin Adjusted Difficulty,Mining,Medium Term,Oscillator,Onchain,Quandl,Yes,,https://www.quandl.com/data/BCHAIN/DIFF-Bitcoin-Difficulty,
+Hashrate/Price Multiple,Mining,Medium Term,Ratio,Onchain,Quandl,Yes,,https://www.quandl.com/data/BCHAIN/HRATE-Bitcoin-Hash-Rate,
+Mining Revenue Multiple (Puell),Mining,Long Term,Ratio,Onchain,Quandl,Yes,https://www.lookintobitcoin.com/charts/puell-multiple/,,Daily Mining Revenue / 365-MA Daily Mining Revenue. Mining Revenue is found by Daily Issuance * Market Price at the day
+BitMEX Annualised Funding Rate,Positioning Ratio,Medium Term,Oscillator,Derivative Exchanges,Bitmex API,Yes,https://blog.bitmex.com/xbtusd-funding-mean-reversion-strategy/,https://www.bitmex.com/api/explorer/#!/Instrument/Instrument_get,We have the Funding Rate historical data
+BitMEX Open Interest,Positioning Ratio,Medium Term,,Derivative Exchanges,Google Analytics,Yes,,https://datastudio.google.com/u/0/reporting/1AK5xVcuGNTjY6bq62zAfM36D6ncNPBb7/page/aM1o?s=lauLS2gZhM4,Download as .csv here
+OKEx 3-Month Futures Delta,Positioning Ratio,Medium Term,,Derivative Exchanges,OKEx API,No,https://www.okex.com/markets/derivatives/data/swap/BTC-USD-SWAP,https://www.okex.com/api/v1/future_mark_price.do?symbol=btc_usd&contract_type=this_quarter,
+Exchange Inflows vs Outflow Ratio,Positioning Ratio,Medium Term,Ratio,Exchange,Glassnode,No,,https://docs.glassnode.com/api/exchanges,
+Options Put/Call Ratio,Positioning Ratio,Medium Term,Ratio,Derivative Exchanges,Deribit API,No,https://skew.com/dashboard/bitcoin-options,,
+SOPR,Positioning Ratio,Medium Term,Ratio,Onchain,Glassnode,No,https://insights.glassnode.com/sopr-announcment/,,
+Stablecoin Supply Ratio,Positioning Ratio,Medium Term,,Onchain,Glassnode,No,https://studio.glassnode.com/metrics?a=BTC&m=indicators.Ssr&mScl=lin&pScl=lin,https://docs.glassnode.com/api/indicators#net-unrealized-profit-loss,
+Unrealised Profit & Loss,Positioning Ratio,Medium Term,,Onchain,Glassnode,No,https://studio.glassnode.com/metrics?a=BTC&m=indicators.NetUnrealizedProfitLoss,https://docs.glassnode.com/api/indicators#net-unrealized-profit-loss,
+Bollinger Bands,Price,Medium Term,Moving Average,Exchange,Binance,Yes,,TA-Lib (Python Library),
+Bollinger Bands Width,Price,Medium Term,Moving Average,Exchange,Binance,Yes,,TA-Lib (Python Library),
+EMA / Price Multiple,Price,Medium Term,Ratio,Exchange,Binance,Yes,,TA-Lib (Python Library),
+MA / Price Multiple,Price,Medium Term,Ratio,Exchange,Binance,Yes,,TA-Lib (Python Library),
+Mayer Multiple (Price / 200DMA),Price,Long Term,Ratio,Exchange,Binance,Yes,,Price / 200DMA,
+Moving Average Deviation Rate,Price,Medium Term,Ratio,Exchange,Binance,Yes,,https://gist.github.com/cindyleowtt/a6b00958b631bfdfb15577abd9d681c0,"Formula linked is in Pinescript (Can test on Tradingview), logic will need to be converted to Python"
+Moving Average Slope,Price,Medium Term,Moving Average,Exchange,Binance,Yes,,https://gist.github.com/cindyleowtt/9b6c168a6a2793342ad3908a992bd7b9,"Formula linked is in Pinescript (Can test on Tradingview), logic will need to be converted to Python"
+Price delta between 80/140EMA,Price,Medium Term,Moving Average,Exchange,Binance,Yes,,,
+Weekly Supertrend ATR+RSI,Price,Long Term,Moving Average,Exchange,Binance,Yes,,https://gist.github.com/cindyleowtt/9b8e1080509db6a279074ec54b606b14,"Formula linked is in Pinescript (Can test on Tradingview), logic will need to be converted to Python"
+Daily Supertrend ATR+RSI,Price,Medium Term,Moving Average,Exchange,Binance,Yes,,https://gist.github.com/cindyleowtt/9b8e1080509db6a279074ec54b606b14,"Formula linked is in Pinescript (Can test on Tradingview), logic will need to be converted to Python"
+VWAP / VWAP(365DMA),Price/Volume,Medium Term,Moving Average,Exchange,Binance,Yes,,,
+Market-Value to Realised-Value (MVRV),Valuation,Long Term,Ratio,Onchain,Coinmetrics,Yes,,,
+Stock to Flow Ratio,Valuation,Long Term,Ratio,Onchain,Coinmetrics,No,https://www.lookintobitcoin.com/charts/stock-to-flow-model/,,
+USDT Market Cap to BTC Price,Valuation,Medium Term,Ratio,Exchange,CoinMarketCap,Yes,,,
+5-Day Volume Moving Average,Volume,Medium Term,Moving Average,Exchange,Binance,Yes,,,
+Cumulative Volume Delta (CVD),Volume,Medium Term,Oscillator,Exchange,Binance,Yes,,,
+On-balance Volume (OBV),Volume,Medium Term,Oscillator,Exchange,Binance,Yes,,,
+Volume Multiple (Vol / 30DMA),Volume,Medium Term,Moving Average,Exchange,Binance,Yes,,,
+Vortex Indicator,Volume,Medium Term,Oscillator,Exchange,Binance,Yes,,,
+Volume on Spot vs. Volume on Derivative Exchanges,Volume,Medium Term,Ratio,Exchange,Bitmex API vs Binance API,,,,
