@@ -30,7 +30,7 @@ class timeseries_Dataset():
                                                                                                   test_size=test_size, shuffle=shuffle)
 
     def scale_X_train(self):
-        col = X_train.columns
+        col = self.X_train.columns
         scaler = sklearn.preprocessing.StandardScaler()
         self.X_train = scaler.fit_transform(self.X_train)
         self.X_train = pd.DataFrame(data=self.X_train, columns=col)
