@@ -154,11 +154,11 @@ class seq2seq_utility():
         best_valid_loss = float('inf')
 
         # data loader
-        training_Loader = __seq2seq_format_input(X_train, y_train)
+        training_Loader = seq2seq_format_input(X_train, y_train)
         training_Loader.bag_of_timeSeries_chunk_for_prediction(
             grid['encode_len'], grid['pred_len'])
 
-        test_Loader = __seq2seq_format_input(X_test, y_test)
+        test_Loader = seq2seq_format_input(X_test, y_test)
         test_Loader.bag_of_timeSeries_chunk_for_prediction(
             grid['encode_len'], grid['pred_len'])
 
@@ -179,7 +179,7 @@ class seq2seq_utility():
         return best_valid_loss, m
 
 
-class __seq2seq_format_input():
+class seq2seq_format_input():
     def __init__(self, X, y):
         """
         Args:
