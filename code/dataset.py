@@ -55,7 +55,6 @@ class timeseries_Dataset():
 
         To estimate the autocorrelation function of x,
             in order to determine the encode sequence length
-
         Args: 
             x, type pandas.Series, 1-d series
         """
