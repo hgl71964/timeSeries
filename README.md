@@ -1,17 +1,18 @@
-# datagrasp
+# DataGrasp
 -----
 ### Collaborators:
 - Guoliang HE (guoliang.he.19@.ucl.ac.uk)
 - Chris Chia 
 -----
 
-### Project description
+### Project Description
 In this project, we aims to predict the price of cryptocurrency through time series forecasting.
 
-### data source
+### Data Source
+- Binance
 
 
-### model architecture 
+### Model Architecture 
 In the first layer, we stack the following models to produce meta features:
 
 - Seq2seq
