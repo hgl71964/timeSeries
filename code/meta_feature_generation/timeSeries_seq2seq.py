@@ -240,7 +240,7 @@ class seq2seq_format_input():
         '''
 
         # [N_samples,N-features + return]
-        self.full_data = torch.cat([self._X, self._y.unsqueeze(0)], dim=1)
+        self.full_data = torch.cat([self._X, self._y.unsqueeze(1)], dim=1)
 
         N_samples = self._X.shape[0]
         for i in range(0, N_samples, pred_len):
