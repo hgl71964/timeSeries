@@ -11,6 +11,10 @@ In this project, we aims to predict the price of cryptocurrency through time ser
 ### Data Source
 - Binance
 
+### Data Sementation
+
+![We prepare time series data as per:](https://raw.githubusercontent.com/Arturus/kaggle-web-traffic/master/images/split.png)
+
 
 ### Model Architecture 
 
