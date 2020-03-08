@@ -23,6 +23,8 @@ In the first layer, we stack the following models to produce meta features:
 
 ARMA(0,1) is applied to the return such that prediction is made on every time step. The order (0,1) is choosen since it gives the lowest BIC and thus is considered to be the optimal model hyper-parameters.
 
+- ARIMA:
+
 - Catboost
 
 - 1-d convolutional neural network
