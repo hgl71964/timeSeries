@@ -249,6 +249,8 @@ class seq2seq_format_input():
 
             pred = self._y[i+encode_len:min(
                 i+encode_len+pred_len, N_samples)]
+            if pred.shape[0] != pred_len:
+                break
 
             if i == 0:
                 self.X = encode.unsqueeze(0)
@@ -257,6 +259,8 @@ class seq2seq_format_input():
                 try:
                     self.X = torch.cat([self.X, encode.unsqueeze(0)], dim=0)
                     self.y = torch.cat([self.y, pred.unsqueeze(0)], dim=0)
+                    # print(encode.unsqueeze(0).size())
+                    # print(pred.unsqueeze(0).size())
                 except:  # residual
                     pass
         print('maximum batch_size:', self.X.shape[0])
@@ -517,3 +521,29 @@ class _Seq2Seq(nn.Module):
             dec_input = dec_input.unsqueeze(0).float()
             # print(dec_input.size())
         return dec_output
+
+
+if __name__ == "__main__":
+    x = torch.rand(100, 22)
+    y = torch.rand(100)
+    # show_parameter() callable
+    all_grid = {'max_epochs': 2,
+                'learning_rate': 0.9,
+                'clip': 1,
+                'teacher_forcing_ratio': 0.5,  # during training
+                'OUTPUT_DIM': 1,
+                'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
+                'ENC_HID_DIM': 24,
+                'DEC_HID_DIM': 24,
+                'ENC_DROPOUT': 0,
+                'DEC_DROPOUT': 0,
+                'encode_len': 5,           # how many days we want the ecoder encode?
+                'pred_len': 2,              # how many days we hope to predict
+                'batch_size': 10,         # your batch size is constrained by the chunk of seq length
+                'device': device}
+
+    grid, model, optimiser, lossfunction = seq2seq_utility.instan_things(
+        **all_grid)
+
+    best, m = seq2seq_utility.seq2seq_running(grid, model, optimiser, lossfunction, x, y, x, y,
+                                              grid['teacher_forcing_ratio'])
