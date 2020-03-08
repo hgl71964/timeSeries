@@ -16,9 +16,14 @@ In this project, we aims to predict the price of cryptocurrency through time ser
 In the first layer, we stack the following models to produce meta features:
 
 - Seq2seq
+
 - XGBoost
+
 - ARMA
+ARMA(0,1) is applied to the return such that prediction is made on every time step. The order (0,1) is choosen since it gives the lowest BIC and thus is considered to be the optimal model hyper-parameters.
+
 - Catboost
+
 - 1-d convolutional neural network
 
 In the second layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
