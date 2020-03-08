@@ -13,7 +13,8 @@ In this project, we aims to predict the price of cryptocurrency through time ser
 
 
 ### Model Architecture 
-In the first layer, we stack the following models to produce meta features:
+
+##### In the first layer, we stack the following models to produce meta features:
 
 - Seq2seq
 
@@ -29,7 +30,7 @@ ARMA(0,1) is applied to the return such that prediction is made on every time st
 
 - 1-d convolutional neural network
 
-In the second layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
+##### In the second layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
 
 - DNN: 
 
