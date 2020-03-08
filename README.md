@@ -6,7 +6,7 @@
 -----
 
 ### Project Description
-In this project, we aims to predict the price of cryptocurrency through time series forecasting.
+In this project, we aims to predict the price of cryptocurrency through time series forecasting. We would like to model the return of cryptocurrency price, which might have less fluctuation than directly predict price itself.
 
 ### Data Source
 - Binance
