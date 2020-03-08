@@ -155,11 +155,11 @@ class seq2seq_utility():
 
         # data loader
         training_Loader = seq2seq_format_input(X_train, y_train)
-        training_Loader.bag_of_timeSeries_chunk_for_prediction(
+        training_Loader.walk_forward_split(
             grid['encode_len'], grid['pred_len'])
 
         test_Loader = seq2seq_format_input(X_test, y_test)
-        test_Loader.bag_of_timeSeries_chunk_for_prediction(
+        test_Loader.walk_forward_split(
             grid['encode_len'], grid['pred_len'])
 
         for epoch in range(grid['max_epochs']):
