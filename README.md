@@ -12,9 +12,11 @@ In this project, we aims to predict the price of cryptocurrency through time ser
 ### model architecture 
 In the first layer, we stack the following models to produce meta features:
 
-1. Seq2seq
-2. XGBoost
-3. ARMA
+- Seq2seq
+- XGBoost
+- ARMA
+- Catboost
+- 1-d convolutional neural network
 
 In the second layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
 
