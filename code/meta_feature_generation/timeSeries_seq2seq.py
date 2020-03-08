@@ -21,7 +21,7 @@ def show_parameter():
 
     default loss function is MSELoss()
 
-    Instantiate
+    Instantiate:
     seq2seq_utility.instan_things(**kwargs),
             in which you should define the following dictionary parameters
     e.g.
@@ -41,18 +41,18 @@ def show_parameter():
             'device':device}
 
     Training:
-    seq2seq_running(grid, model, optimiser, lossfunction, X_train,
+    seq2seq_utility.seq2seq_running(grid, model, optimiser, lossfunction, X_train,
                     y_train, X_test, y_test, teacher_forcing_ratio)
 
     Evaluation:
-    seq2seq_evaluate(model, test_seg, lossfunction)
+    seq2seq_utility.seq2seq_evaluate(model, test_seg, lossfunction)
 
     Prediction:
     model(self, seq2seq_input, target, teacher_forcing_ratio = 0)
 
-    in which:
-    seq2seq_input = [seq_len, batch size,Enc_emb_dim]
-    target = [trg_len, batch size,output_dim], trg_len is prediction len
+    Where:
+        seq2seq_input = [seq_len, batch size,Enc_emb_dim]
+        target = [trg_len, batch size,output_dim], trg_len is prediction len
 
     '''
     )
@@ -194,14 +194,12 @@ class seq2seq_format_input():
                            chunk_seq_len: int,
                            shuffle=True):
         '''
-        present mode: given [t,t+1] indicator data, predict [t,t+1] price 
-
+        present mode: given [t,t+1] indicator data, predict [t,t+1] price
         -> output class attributes:
             self.X  [N_sample, chunk_seq_len, N_feature] N_feature excludes price
             self.y  [N_sample, chunk_seq_len]
             self.X_res  [the residual N_sample, chunk_seq_len, N_feature] N_feature excludes price
             self.y_res  [the residual N_sample, chunk_seq_len]
-
         '''
         N_samples = self._X.shape[0]
         for i in range(0, N_samples, chunk_seq_len):
@@ -225,17 +223,55 @@ class seq2seq_format_input():
         # self.X_res = self._residual[:, :, :-1]
         # self.y_res = self._residual[:, :, -1]
 
+    def walk_forward_split(self,
+                           encode_len: int,
+                           pred_len: int):
+        '''
+        Args:
+            see desirable split: https://github.com/guol1nag/datagrasp/blob/master/README.md
+
+          input:
+              X: [N_samples,N-features] Tensor N_samples have sequential properties
+              y: [N_samples,]  labels Tensor    N_samples have sequential properties
+
+          output -> class attributes:
+              self.X  [N_sample, encode_len, N_feature] N_feature excludes price
+              self.y  [N_sample, pred_len]
+        '''
+
+        # [N_samples,N-features + return]
+        self.full_data = torch.cat(self._X, self._y.unsqueeze(0))
+
+        N_samples = self._X.shape[0]
+        for i in range(0, N_samples, pred_len):
+            encode = self.full_data[i:min(
+                i+encode_len, N_samples)]
+
+            pred = self._y[i+encode_len:min(
+                i+encode_len+pred_len, N_samples)]
+
+            if i == 0:
+                self.X = encode.unsqueeze(0)
+                self.y = pred.unsqueeze(0)
+            else:
+                try:
+                    self.X = torch.cat([self.X, encode.unsqueeze(0)], dim=0)
+                    self.y = torch.cat([self.y, pred.unsqueeze(0)], dim=0)
+                except:  # residual
+                    pass
+        print('maximum batch_size:', self.X.shape[0])
+
     def bag_of_timeSeries_chunk_for_prediction(self,
                                                encode_len: int,
                                                pred_len: int,
                                                shuffle=False):  # for sequential data we should not shuffle!
         '''
-        Seq2seq prediction mode: given [t,t + encode_len] indicator data + price, 
-                                            predict [t ,t + encode_len + pred_len] price 
+        Seq2seq prediction mode: given [t,t + encode_len] indicator data + price,
+                                            predict [t ,t + encode_len + pred_len] price
         Args:
-          input: 
-              X: [N_samples,N-features] Tensor N_samples have sequential properties 
-              y: [N_samples]  labels Tensor    N_samples have sequential properties
+          input:
+              X: [N_samples,N-features] Tensor N_samples have sequential properties
+              y: [N_samples,]  labels Tensor    N_samples have sequential properties
 
           output -> class attributes:
               self.X  [N_sample, encode_len, N_feature] N_feature excludes price
@@ -432,12 +468,14 @@ class _Seq2Seq(nn.Module):
         """
         Args:
             input:
-            seq2seq_input: '[seq_len, batch size,Enc_emb_dim]' #torch.Tensor
-            target: ' [trg_len, batch size,output_dim]'        #torch.Tensor
-            teacher_forcing_ratio:                             #teacher_forcing_ratio during training
+                # torch.Tensor
+                seq2seq_input: '[seq_len, batch size,Enc_emb_dim]'
+                # torch.Tensor
+                target: ' [trg_len, batch size,output_dim]'
+                teacher_forcing_ratio:                             #teacher_forcing_ratio during training
 
-            output:
-            -> '[trg_len, batch_size, dec_output_size]'
+            ->
+              [trg_len, batch_size, dec_output_size]
         """
         # if teacher_forcing_ratio is 0.75 we use teacher forcing 75% of the time
 
@@ -479,11 +517,3 @@ class _Seq2Seq(nn.Module):
             dec_input = dec_input.unsqueeze(0).float()
             # print(dec_input.size())
         return dec_output
-
-    def save(self, name_path):
-        print('the saved model cannot be trained again!')
-        torch.save(self.state_dict(), name_path)  # e.g. 'encoder_model.pt'
-
-    def load(self, name_path):
-        self.load_state_dict(torch.load(name_path))
-        self.eval()
