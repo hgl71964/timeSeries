@@ -13,7 +13,9 @@ In this project, we aims to predict the price of cryptocurrency through time ser
 
 ### Data Sementation
 
-![We prepare time series data as per:](https://raw.githubusercontent.com/Arturus/kaggle-web-traffic/master/images/split.png)
+We prepare time series data as walk-split:
+
+![](https://raw.githubusercontent.com/Arturus/kaggle-web-traffic/master/images/split.png)
 
 
 ### Model Architecture 
