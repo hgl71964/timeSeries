@@ -8,6 +8,8 @@
 ### Project description
 In this project, we aims to predict the price of cryptocurrency through time series forecasting.
 
+### data source
+
 
 ### model architecture 
 In the first layer, we stack the following models to produce meta features:
