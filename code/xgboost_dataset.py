@@ -14,8 +14,9 @@ class xgboost_dataset():
         '''
         This class format data for xgboost
         Args:
-            np.darray
-            x: features, excluding return, [N_sample,N_feature]
+            input type = np.darray or pandas
+
+            x: features, including return, [N_sample,N_feature]
             y: return, [N_sample,]
         '''
         if type(x) is pd.DataFrame:
@@ -38,7 +39,7 @@ class xgboost_dataset():
             see desirable split: https://github.com/guol1nag/datagrasp/blob/master/README.md
 
             However, remember in XGBoost, data can only be formatted as x: [N_samples,N_features]
-                                                                y: [N_sampples,]
+                                                                        y: [N_sampples,]
             It is therefore, we cannot make a batch, we can only use data in time t to predict time t+1
         '''
         N_samples = self._x.shape[0]
@@ -49,6 +50,8 @@ class xgboost_dataset():
 
             pred = self._y[i+encode_len:min(
                 i+encode_len+pred_len, N_samples)]
+            if pred.shape[0] != pred_len:   # to protect the prediction_length
+                break
 
             if i == 0:
                 self.x = encode.reshape(1, -1)
@@ -59,10 +62,9 @@ class xgboost_dataset():
                         [self.x, encode.reshape(1, -1)], axis=0)
                     self.y = np.concatenate(
                         [self.y, pred.reshape(1, -1)], axis=0)
-
                 except:  # residual
                     pass
-        print('maximum batch_size:', self.x.shape[0])
+        print('number of samples:', self.x.shape[0])
 
     def batcher(self, batch_size):
         '''
