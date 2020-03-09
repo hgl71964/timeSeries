@@ -19,8 +19,12 @@ class xgboost_dataset():
             y: return, [N_sample,]
         '''
         self._x = x
-        self._y = y
-        self.full_data = np.hstack([x, y.values.reshape(-1, 1)])
+        if type(y) is pd.Series:
+            self._y = y.values
+        else:
+            self._y = y
+
+        self.full_data = np.hstack([x, y.reshape(-1, 1)])
 
     def walk_forward_split(self,
                            encode_len: int,
