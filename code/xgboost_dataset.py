@@ -19,6 +19,7 @@ class xgboost_dataset():
             y: return, [N_sample,]
         '''
         self._x = x
+        print(type(y))
         if type(y) is pd.Series:
             self._y = y.values
         else:
