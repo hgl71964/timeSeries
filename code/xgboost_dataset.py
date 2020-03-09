@@ -16,11 +16,13 @@ class xgboost_dataset():
         Args:
             input type = np.darray or pandas
 
-            x: features, including return, [N_sample,N_feature]
+            x: features, excluding return, [N_sample,N_feature]
             y: return, [N_sample,]
         '''
         if type(x) is pd.DataFrame:
             self._x = x.values
+            self.fea2num = {f'f{key}': x.columns[key]
+                            for key in range(len(x.columns))}
         else:
             self._x = x
 
@@ -41,6 +43,10 @@ class xgboost_dataset():
             However, remember in XGBoost, data can only be formatted as x: [N_samples,N_features]
                                                                         y: [N_sampples,]
             It is therefore, we cannot make a batch, we can only use data in time t to predict time t+1
+
+            output ->: np.array
+                self.x [N_samples,N_features + return]
+                self.y [N_samples,]
         '''
         N_samples = self._x.shape[0]
 
@@ -68,7 +74,7 @@ class xgboost_dataset():
 
     def batcher(self, batch_size):
         '''
-        this method is deprecated!
+        this method is deprecated
 
         Args:
             -> output results attributes:
