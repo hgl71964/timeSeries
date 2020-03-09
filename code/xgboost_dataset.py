@@ -30,12 +30,16 @@ class xgboost_dataset():
 
         self.full_data = np.hstack([self._x, self._y.reshape(-1, 1)])
 
-    def walk_forward_split(self,
-                           encode_len: int,
-                           pred_len: int):
+    def xgb_walk_forward_split(self,
+                               encode_len: int,
+                               pred_len: int):
         '''
         Args:
             see desirable split: https://github.com/guol1nag/datagrasp/blob/master/README.md
+
+            However, remember in XGBoost, data can only be formatted as x: [N_samples,N_features]
+                                                                y: [N_sampples,]
+            It is therefore, we cannot make a batch, we can only use data in time t to predict time t+1
         '''
         N_samples = self._x.shape[0]
 
@@ -45,28 +49,25 @@ class xgboost_dataset():
 
             pred = self._y[i+encode_len:min(
                 i+encode_len+pred_len, N_samples)]
-            if pred.shape[0] != pred_len:
-                break
 
             if i == 0:
-                self.x = np.expand_dims(encode, axis=0)
-                self.y = np.expand_dims(pred, axis=0)
+                self.x = encode.reshape(1, -1)
+                self.y = pred.reshape(1, -1)
             else:
                 try:
                     self.x = np.concatenate(
-                        [self.x, np.expand_dims(encode, axis=0)], axis=0)
+                        [self.x, encode.reshape(1, -1)], axis=0)
                     self.y = np.concatenate(
-                        [self.y, np.expand_dims(pred, axis=0)], axis=0)
+                        [self.y, pred.reshape(1, -1)], axis=0)
 
                 except:  # residual
                     pass
         print('maximum batch_size:', self.x.shape[0])
 
-    def flatten_data(self):
-        pass
-
     def batcher(self, batch_size):
         '''
+        this method is deprecated!
+
         Args:
             -> output results attributes:
                 x  [batch_size, encode_len, N_feature]
@@ -81,6 +82,5 @@ if __name__ == "__main__":
     x = np.random.rand(20, 4)
     y = np.random.rand(20)
     xgb_data = xgboost_dataset(x, y)
-    xgb_data.walk_forward_split(5, 2)
-    for i, j in xgb_data.batcher(2):
-        print(i.shape, j.shape)
+    xgb_data.xgb_walk_forward_split(1, 1)
+    print(xgb_data.x.shape)
