@@ -18,9 +18,8 @@ class xgboost_dataset():
             x: features, excluding return, [N_sample,N_feature]
             y: return, [N_sample,]
         '''
-        self._x = x
-        print(type(y))
         if type(y) is pd.Series:
+            print('hi')
             self._y = y.values
         else:
             self._y = y
