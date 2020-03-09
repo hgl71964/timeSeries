@@ -28,7 +28,7 @@ class xgboost_dataset():
         else:
             self._y = y
 
-        self.full_data = np.hstack([x, self._y.reshape(-1, 1)])
+        self.full_data = np.hstack([self._x, self._y.reshape(-1, 1)])
 
     def walk_forward_split(self,
                            encode_len: int,
