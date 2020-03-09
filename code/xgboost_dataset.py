@@ -18,13 +18,17 @@ class xgboost_dataset():
             x: features, excluding return, [N_sample,N_feature]
             y: return, [N_sample,]
         '''
+        if type(x) is pd.DataFrame:
+            self._x = x.values
+        else:
+            self._x = x
+
         if type(y) is pd.Series:
-            print('hi')
             self._y = y.values
         else:
             self._y = y
 
-        self.full_data = np.hstack([x, y.reshape(-1, 1)])
+        self.full_data = np.hstack([x, self._y.reshape(-1, 1)])
 
     def walk_forward_split(self,
                            encode_len: int,
