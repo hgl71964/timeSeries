@@ -45,6 +45,8 @@ class xgboost_dataset():
 
             pred = self._y[i+encode_len:min(
                 i+encode_len+pred_len, N_samples)]
+            if pred.shape[0] != pred_len:
+                break
 
             if i == 0:
                 self.x = np.expand_dims(encode, axis=0)
@@ -60,16 +62,19 @@ class xgboost_dataset():
                     pass
         print('maximum batch_size:', self.x.shape[0])
 
-    def batcher(self, batch_size):
-        '''
-        Args:
-            -> output results attributes:
-                x  [batch_size, encode_len, N_feature]
-                y  [batch_size, encode_len+pred_len]
-        '''
-        l = len(self.x)
-        for batch in range(0, l, batch_size):
-            yield (self.x[batch:min(batch + batch_size, l)], self.y[batch:min(batch + batch_size, l)])
+    def flatten_data(self):
+        pass
+
+    # def batcher(self, batch_size):
+    #     '''
+    #     Args:
+    #         -> output results attributes:
+    #             x  [batch_size, encode_len, N_feature]
+    #             y  [batch_size, encode_len+pred_len]
+    #     '''
+    #     l = len(self.x)
+    #     for batch in range(0, l, batch_size):
+    #         yield (self.x[batch:min(batch + batch_size, l)], self.y[batch:min(batch + batch_size, l)])
 
 
 if __name__ == "__main__":
