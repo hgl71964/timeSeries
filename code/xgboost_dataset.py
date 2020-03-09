@@ -65,16 +65,16 @@ class xgboost_dataset():
     def flatten_data(self):
         pass
 
-    # def batcher(self, batch_size):
-    #     '''
-    #     Args:
-    #         -> output results attributes:
-    #             x  [batch_size, encode_len, N_feature]
-    #             y  [batch_size, encode_len+pred_len]
-    #     '''
-    #     l = len(self.x)
-    #     for batch in range(0, l, batch_size):
-    #         yield (self.x[batch:min(batch + batch_size, l)], self.y[batch:min(batch + batch_size, l)])
+    def batcher(self, batch_size):
+        '''
+        Args:
+            -> output results attributes:
+                x  [batch_size, encode_len, N_feature]
+                y  [batch_size, encode_len+pred_len]
+        '''
+        l = len(self.x)
+        for batch in range(0, l, batch_size):
+            yield (self.x[batch:min(batch + batch_size, l)], self.y[batch:min(batch + batch_size, l)])
 
 
 if __name__ == "__main__":
