@@ -21,8 +21,8 @@ class xgboost_dataset():
         '''
         if type(X_train) is pd.DataFrame:
             self.X_train = X_train.values
-            self.fea2num = {f'f{key}': X_train.columns[key]
-                            for key in range(len(X_train.columns))}
+            self.feature_map = {f'f{key}': X_train.columns[key]
+                                for key in range(len(X_train.columns))}
         else:
             self.X_train = X_train
 
