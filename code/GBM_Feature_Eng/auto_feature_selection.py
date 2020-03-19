@@ -60,7 +60,7 @@ class xgboost_utility:
                        eval_metric='rmse',
                        verbose=True)
 
-    def feature_scores(self, feature_map):
+    def feature_scores(self):
         raw_ranking = sorted(self.model.get_booster().get_score(
         ).items(), key=lambda x: x[1], reverse=True)
         ranking = []
