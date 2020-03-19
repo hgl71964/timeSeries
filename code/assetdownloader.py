@@ -6,7 +6,9 @@ from datetime import datetime
 
 
 
-def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath):
+
+
+def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath,write=False):
 	'''
 	Inputs: Binance API_KEY and API_SECRET, Binance symbol ticker, interval (Client.KLINE_INTERVAL_1HOUR, Client.KLINE_INTERVAL_1MINUTE)
 	Outputs: Writes to local
@@ -15,8 +17,6 @@ def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath):
 	binance_interval = keys[FREQ]
 	client = Client(API_KEY, API_SECRET)
 	klines = client.get_historical_klines(ticker+"USDT", binance_interval, "1 Jan, 2015")
-	# with open(f"{ticker}_{FREQ}.json", 'w') as fp:
-	#     json.dump(klines, fp)
 
 	#from binance api docs
 	columns = ["open_time","open","high","low","close","volume","close_time", "quote_asset_volume", "number_of_trades", " taker_buy_base_asset_volume", "taker_buy_quote_asset_volume","ignore"]
@@ -26,8 +26,12 @@ def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath):
 	#times are in milliseconds
 	df['open_time'] = df['open_time'].apply(lambda x: datetime.fromtimestamp(x/1000))
 	df['close_time'] = df['close_time'].apply(lambda x: datetime.fromtimestamp(x/1000))
-	path = f"{fullpath}/{ticker}USDT_{FREQ}.csv"
-	df.to_csv(path,index=False)
+	feats = ['open','high','low','close','volume','quote_asset_volume',' taker_buy_base_asset_volume','taker_buy_quote_asset_volume']
+	df[feats] = df[feats].astype('float64')
+ 	
+	if write == True:
+		path = f"{fullpath}/{ticker}USDT_{FREQ}.csv"
+		df.to_csv(path,index=False)
 	return df
 
 #add extra preprocessing here
@@ -38,11 +42,10 @@ def transform(df):
 	df2['date'] = pd.to_datetime(df2['open_time']).dt.date
 	return df2
 
-def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath):
+def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=False):
   prices = {}
   for x in tickers:
-      downloadData(x, API_KEY, API_SECRET, FREQ, fullpath) #change to HOUR, MINUTE if you want
-      prices[x] = transform(pd.read_csv(f"{fullpath}/{x}USDT_{FREQ}.csv"))
+      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath)) #change to HOUR, MINUTE if you want
 
   #Columns to take; drop open_time, close_time
   cols = ['open', 'high', 'low', 'close', 'volume','quote_asset_volume', 'number_of_trades',
