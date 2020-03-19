@@ -71,7 +71,7 @@ class xgboost_utility:
         self.ranking = ranking
         print(ranking)
 
-    def feature_selection(self, k):
+    def feature_selection(self, k: int):
         '''
         Args:
             top k features that you want to preserve
@@ -80,7 +80,17 @@ class xgboost_utility:
             return X_train, X_test with selected features
         '''
 
-        return self.X_train, self.X_test
+        # a list of integer
+        preserve_list = []
+        for i in range(k):
+            for key, value in self.feature_map.items():
+                if value == i[0]:
+                    preserve_list.append(int(key[1:]))
+
+        # so we only take the columns we want
+        X_train = self.X_train[:sorted(preserve_list)]
+        X_test = self.X_test[:sorted(preserve_list)]
+        return X_train, X_test
 
     @staticmethod
     def show_param():
@@ -101,6 +111,8 @@ class xgboost_utility:
             'lambda':1                      # L2 norm regularization, dafault 1
 
             ##### others:
+
+            ''
              
             }
 
