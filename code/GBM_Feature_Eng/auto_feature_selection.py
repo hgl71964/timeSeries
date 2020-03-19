@@ -93,6 +93,9 @@ class xgboost_utility:
         X_test = self.X_test[:sorted(preserve_list)]
         return X_train, X_test
 
+    def prediction(self, x):
+        return self.model.predict(x)
+
     @staticmethod
     def show_param():
         print('''
