@@ -36,6 +36,7 @@ class xgboost_utility:
             'verbosity': kwargs['verbosity'],
 
             'objective': kwargs['objective'],  # regression with squared loss
+
             'min_child_weight': kwargs['min_child_weight'],
 
             # L2 norm regularization, dafault 1
@@ -112,7 +113,7 @@ class xgboost_utility:
 
             ##### others:
 
-            ''
+            None
              
             }
 
