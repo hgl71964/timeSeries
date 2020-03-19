@@ -85,7 +85,7 @@ class xgboost_utility:
         preserve_list = []
         for i in range(k):
             for key, value in self.feature_map.items():
-                if value == i[0]:
+                if value == self.ranking[i][0]:
                     preserve_list.append(int(key[1:]))
 
         # so we only take the columns we want
