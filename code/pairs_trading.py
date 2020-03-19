@@ -6,6 +6,8 @@ import seaborn as sns
 import scipy
 import statsmodels
 from statsmodels.tsa.stattools import adfuller, coint
+import plotly.express as px
+import plotly.graph_objects as go
 
 def plotCorrelation(WINDOW, tickers):
   fig,ax = plt.subplots(figsize=(20,7.5),ncols=2)
