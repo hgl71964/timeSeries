@@ -39,5 +39,6 @@ ARMA(0,1) is applied to the return such that prediction is made on every time st
 ##### In the second layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
 
 - DNN: 
+- Linear Regressor:
 
 
