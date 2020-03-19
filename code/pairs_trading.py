@@ -2,7 +2,7 @@ import empyrical
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn
+import seaborn as sns
 import scipy
 import statsmodels
 from statsmodels.tsa.stattools import adfuller, coint
