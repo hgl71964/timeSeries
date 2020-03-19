@@ -103,14 +103,17 @@ class xgboost_dataset():
             print('number of samples:', new_x.shape[0])
         return new_x, new_y
 
-    def batcher(self, x, y, batch_size):
+    def batcher(self, x, y, batch_size: int):
         '''
         this method is deprecated
 
         Args:
-            -> output results attributes:
-                x  [batch_size, encode_len, N_feature]
-                y  [batch_size, encode_len+pred_len]
+            x: iterable 
+            y: iterable
+
+        Output results attributes:
+            x  [batch_size, encode_len, N_feature]
+            y  [batch_size, encode_len+pred_len]
         '''
         l = len(x)
         for batch in range(0, l, batch_size):
