@@ -43,16 +43,26 @@ class timeseries_Dataset():
         self.X_test = X_test
 
     def to_tensor(self):
-        self.X_train = torch.from_numpy(self.X_train.values).float()
-        self.y_train = torch.from_numpy(self.y_train.values).float()
-        self.X_test = torch.from_numpy(self.X_test.values).float()
-        self.y_test = torch.from_numpy(self.y_test.values).float()
+        if torch.is_tensor(self.X_train):
+            pass
+        else:
+            self.X_train = torch.from_numpy(self.X_train.values).float()
+            self.y_train = torch.from_numpy(self.y_train.values).float()
+            self.X_test = torch.from_numpy(self.X_test.values).float()
+            self.y_test = torch.from_numpy(self.y_test.values).float()
 
     def to_numpy(self):
-        self.X_train = self.X_train.values
-        self.y_train = self.y_train.values
-        self.X_test = self.X_test.values
-        self.y_test = self.y_test.values
+        if torch.is_tensor(self.X_train):
+            self.X_train = self.X_train.numpy()
+            self.y_train = self.y_train.numpy()
+            self.X_test = self.X_test.numpy()
+            self.y_test = self.y_test.numpy()
+
+        else:
+            self.X_train = self.X_train.values
+            self.y_train = self.y_train.values
+            self.X_test = self.X_test.values
+            self.y_test = self.y_test.values
 
     @staticmethod
     def estimated_autocorrelation(x):
