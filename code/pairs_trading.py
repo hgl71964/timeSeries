@@ -9,7 +9,7 @@ from statsmodels.tsa.stattools import adfuller, coint
 import plotly.express as px
 import plotly.graph_objects as go
 
-def plotCorrelation(WINDOW, tickers):
+def plotCorrelation(WINDOW, tickers, temp):
   fig,ax = plt.subplots(figsize=(20,7.5),ncols=2)
   
   #correlation between returns
@@ -18,7 +18,7 @@ def plotCorrelation(WINDOW, tickers):
   #correlation betwen closing prices
   sns.heatmap(temp[[x+"_close" for x in tickers]].iloc[-WINDOW:].corr(),annot=True,ax=ax[1])
 
-def plotCointegration(WINDOW, tickers):
+def plotCointegration(WINDOW, tickers, temp):
   n = len(tickers)
   coints_prices = np.ones((n, n))
   coints_returns = np.ones((n, n))
@@ -54,7 +54,7 @@ def statistics(x):
   print(normal_fit+"\n"+Adfuller+"\n"+mean+"\n"+SD+"\n"+skew)
   return
 
-def plotRatio(ticker1, ticker2):
+def plotRatio(ticker1, ticker2, temp):
   temp[f"{ticker1}_{ticker2}_returns_ratio"] = (temp[f'{ticker1}_returns'] / temp[f'{ticker2}_returns'])
   temp[f"{ticker1}_{ticker2}_price_ratio"] = (temp[f'{ticker1}_close'] / temp[f'{ticker2}_close'])
   temp[f"{ticker1}_{ticker2}_price_ratio_diff"] = temp[f'{ticker1}_{ticker2}_price_ratio'].diff(1)
@@ -90,7 +90,7 @@ def plotRatio(ticker1, ticker2):
 
 
 #backtest helper function, returns a dataframe of trades
-def backtest(ticker1, ticker2, sellPValue=0.55, buyPValue=0.45, starting_cap=10000, transactionCostsPct=0, indicator="returns_ratio"):
+def backtest(temp,ticker1, ticker2, sellPValue=0.55, buyPValue=0.45, starting_cap=10000, transactionCostsPct=0, indicator="returns_ratio"):
   data = temp[[f'{ticker1}_open',f'{ticker2}_open',
                f'{ticker1}_high',f'{ticker2}_high',
                f'{ticker1}_low',f'{ticker2}_low',
