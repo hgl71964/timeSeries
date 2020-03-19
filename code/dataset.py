@@ -35,6 +35,13 @@ class timeseries_Dataset():
         self.X_train = scaler.fit_transform(self.X_train)
         self.X_train = pd.DataFrame(data=self.X_train, columns=col)
 
+    def assignment(self, X_train, X_test):
+        '''
+        this function to re-assign X_train and X_test after being selected by XGBoost 
+        '''
+        self.X_train = X_train
+        self.X_test = X_test
+
     def to_tensor(self):
         self.X_train = torch.from_numpy(self.X_train.values).float()
         self.y_train = torch.from_numpy(self.y_train.values).float()
