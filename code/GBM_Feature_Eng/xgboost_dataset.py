@@ -116,6 +116,7 @@ class xgboost_dataset():
             y  [batch_size, encode_len+pred_len]
         '''
         print('this method is deprecated')
+        raise ValueError
         l = len(x)
         for batch in range(0, l, batch_size):
             yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
