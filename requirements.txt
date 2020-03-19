@@ -2,3 +2,10 @@ numpy
 python-binance
 pandas
 requests
+empyrical
+statsmodels
+plotly
+matplotlib
+seaborn
+scipy
+
