@@ -52,12 +52,16 @@ def statistics(x):
   Adfuller = f"Adfuller p-value (test for stationarity): {adfuller_p}"
   SD = f"Standard Deviation: {std}"
   print(normal_fit+"\n"+Adfuller+"\n"+mean+"\n"+SD+"\n"+skew)
-  return
+  return p, mu, std, adfuller_p, skew, normal_fit
 
-def plotRatio(ticker1, ticker2, temp):
+def transform(ticker1, ticker2, temp2):
+  temp = temp2.copy()
   temp[f"{ticker1}_{ticker2}_returns_ratio"] = (temp[f'{ticker1}_returns'] / temp[f'{ticker2}_returns'])
   temp[f"{ticker1}_{ticker2}_price_ratio"] = (temp[f'{ticker1}_close'] / temp[f'{ticker2}_close'])
   temp[f"{ticker1}_{ticker2}_price_ratio_diff"] = temp[f'{ticker1}_{ticker2}_price_ratio'].diff(1)
+  return temp
+
+def plotRatio(ticker1, ticker2, temp):
   print("Ratio of Returns")
   statistics(temp[f'{ticker1}_{ticker2}_returns_ratio'].iloc[1:])
   print("\nLog Ratio of Returns")
