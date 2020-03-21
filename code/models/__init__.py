@@ -59,7 +59,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 def featureImportances(models, X_train):
   featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-  fig, ax = plt.subplots(figsize=(15,20),nrows=2)
+  fig, ax = plt.subplots(figsize=(15,20),nrows=3)
   ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
   xgb.plot_importance(models['xgbc'],ax=ax[1])
@@ -74,5 +74,22 @@ def plotPredictions(dates, models, X, y, last_obs):
   for x in models.keys():
 	  fig.add_trace(go.Scatter(x=dates, y=models[x].predict_proba(X[last_obs:])[:,1],mode='lines',name=x))
   return fig
+
+def recommendTrade(date, X, models):
+  print("date\n")
+  print("--------------------------")
+  X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:,1])
+  print(f"Catboost Prediction p: {X2.iloc[:,0].values[0]}")
+  X2['xgbc'] = models['xgbc'].predict_proba(X)[:,1]
+  print(f"XGBoost Prediction p: {X2.iloc[:,1].values[0]}")
+  X2.columns = ['cbc','xgbc']
+  p = models['ensemble'].predict_proba(X2)[:,1]
+  proportion = 2 * (p - 0.5) * 100
+  print("Ensemble p : ", p[0])
+  if p < 0.5:
+    print(f"The model recommends a short : {abs(proportion[0]):.3f}% of capital")
+  else:
+    print(f"The model recommends a long : {abs(proportion[0]):.3f}% of capital")
+
 
 
