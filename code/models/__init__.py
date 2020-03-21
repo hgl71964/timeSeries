@@ -32,24 +32,23 @@ def autofit(X_train, X_test, y_train, y_test, c, diagnosis=True):
 	                    objective='reg:squarederror')
 	xgbc.fit(X_train, y_train)	
 	print("XGBOOST:")
-	diagnosis(y_test, xgbc.predict_proba(X_test)[:,1])
+	diagnosis(y_test * 1, xgbc.predict_proba(X_test)[:,1])
 	print("Catboost")
-	diagnosis(y_test, cbc.predict_proba(X_test)[:,1])
+	diagnosis(y_test * 1, cbc.predict_proba(X_test)[:,1])
 	models = {}
 	models['cbc'] = cbc
 	models['xgbc'] = xgbc
 
-	if diagnosis:
-		featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
+	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-		fig, ax = plt.subplots(figsize=(25,20),nrows=3)
-		ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
+	fig, ax = plt.subplots(figsize=(25,20),nrows=3)
+	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
-		xgb.plot_importance(models['xgbc'],ax=ax[1])
+	xgb.plot_importance(models['xgbc'],ax=ax[1])
 
-		xgb.plot_tree(models['xgbc'],ax=ax[2])
+	xgb.plot_tree(models['xgbc'],ax=ax[2])
 
-		models['cbc'].plot_tree(0,pool)
+
 
 
 
@@ -65,7 +64,7 @@ def autofit(X_train, X_test, y_train, y_test, c, diagnosis=True):
 
 	print("ENSEMBLE")
 	diagnosis(y_test, models['ensemble'].predict_proba(test_df)[:,1])
-	return models
+	return models, ax, models['cbc'].plot_tree(0,pool)
 
 
 
