@@ -12,7 +12,7 @@ def transform(df, ti=False):
 	return df2
 
 
-def addTechnicalindicators(df, ticker):
+def addTechnicalIndicators(df, ticker):
 	df2 = df.copy()
 	MA_WINDOW = 21
 	df2[ticker+'_ma_21_rate'] = (df2[ticker+'_close'] /  df2[ticker+'_close'].rolling(MA_WINDOW).mean()) - 1
