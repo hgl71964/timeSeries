@@ -17,9 +17,10 @@ def merge(quandl_api_key, GLASSNODE_API_KEY, fullpath):
   merged_feats= quandlDownloader(quandl_api_key, fullpath)
   print("QUANDL - COMPLETE")
   bitfinex = bitfinexDownload(fullpath)
-  bitfinex['Date'] = pd.to_datetime(bitfinex['Date'])
   print("BITFINEX - COMPLETE")
   #merge quandl with bitfinex
+  merged_feats['Date'] = pd.to_datetime(merged_feats['Date'])
+  bitfinex['Date'] = pd.to_datetime(bitfinex['Date'])
   merged_feats = pd.merge(merged_feats,bitfinex,how='left',on='Date')
   bitmex = cleanBitMex(bitmexDownload(fullpath, write=True))
   #merge with bitmex
@@ -27,7 +28,6 @@ def merge(quandl_api_key, GLASSNODE_API_KEY, fullpath):
   #merge with sp500
   sp500_data = sp500(fullpath)
   print("SP500 - COMPLETE")
-  merged_feats['Date'] = pd.to_datetime(merged_feats['Date'])
   merged_feats = pd.merge(merged_feats,sp500_data, how='left',on='Date')
   glassnode = glassnodeDownloader(GLASSNODE_API_KEY, fullpath)
   merged_feats = pd.merge(merged_feats,glassnode, how='left',on='Date')
