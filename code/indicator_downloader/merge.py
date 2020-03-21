@@ -7,8 +7,14 @@ from datetime import date, datetime
 from binance.client import Client
 
 
+from bitfinex_downloader import *
+from bitmex_downloader import *
+from glassnode_downloader import *
+from quandl_downloader import *
+from sp500_downloader import *
+
 def merge(quandl_api_key, GLASSNODE_API_KEY, fullpath):
-  merged_feats= quandlDownloader(quandl_api_key)
+  merged_feats= quandlDownloader(quandl_api_key, fullpath)
   bitfinex = bitfinexDownload(fullpath)
   bitfinex['Date'] = pd.to_datetime(bitfinex['Date'])
   #merge quandl with bitfinex

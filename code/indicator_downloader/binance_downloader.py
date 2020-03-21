@@ -6,6 +6,7 @@ import requests
 from datetime import date, datetime
 from binance.client import Client
 
+from technical_indicators import *
 
 #Read in any data if it already exists
 def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath, write=False):
