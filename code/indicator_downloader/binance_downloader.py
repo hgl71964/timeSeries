@@ -39,7 +39,7 @@ def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
   prices = {}
   for x in tickers:
     if x == "BTC":
-      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write), True) #change to HOUR, MINUTE if you want
+      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write), ti=True) #change to HOUR, MINUTE if you want
       print(f"DONE -{x}")
     else:
       prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write))
