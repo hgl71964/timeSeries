@@ -34,7 +34,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	print("XGBOOST:")
 	diagnosis(y_test, xgbc.predict_proba(X_test)[:,1])
 	print("Catboost")
-	diagnosis(y_test, cbr.predict_proba(X_test)[:,1])
+	diagnosis(y_test, cbc.predict_proba(X_test)[:,1])
 	models = {}
 	models['cbc'] = cbc
 	models['xgbc'] = xgbc
@@ -68,9 +68,8 @@ def featureImportances(model, X_train):
 #this plots predicted vs actual
 def plotPredictions(dates, models, X, y, last_obs):
   fig = go.Figure()
-  fig.add_trace(go.Scatter(x=dates, y=models['cbc'].predict_proba(X[last_obs:])[:,1],mode='lines',name="Catboost"))
-  fig.add_trace(go.Scatter(x=dates, y=models['xgbc'].predict_proba(X[last_obs:])[:,1],mode='lines',name="XGBoost"))
-  fig.add_trace(go.Scatter(x=dates, y=y[last_obs:]*1,mode='markers',marker_symbol=y[last_obs:]*1,marker_color=y[last_obs:]*1,name="Actual"))
+  for x in models.keys():
+	  fig.add_trace(go.Scatter(x=dates, y=models[x].predict_proba(X[last_obs:])[:,1],mode='lines',name=x))
   return fig
 
 
