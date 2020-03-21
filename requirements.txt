@@ -1,6 +1,6 @@
 numpy
 python-binance
-pandas
+pandas>=1.0.2
 requests
 empyrical
 statsmodels
