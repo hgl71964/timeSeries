@@ -21,14 +21,14 @@ def diagnosis(y_actual, y_pred_proba):
 
 def autofit(X_train, X_test, y_train, y_test, c):
 
-	cbc = CatBoostClassifier(n_estimators=500, 
+	cbc = CatBoostClassifier(n_estimators=1000, 
 	                        max_depth=8,
 	                        verbose=0)
 	pool = Pool(X_train, y_train, feature_names=list(X_test.columns))
 	cbc.fit(pool)
 
-	xgbc = XGBClassifier(n_estimators=500,
-	                    max_depth=3,
+	xgbc = XGBClassifier(n_estimators=1000,
+	                    max_depth=8,
 	                    objective='reg:squarederror')
 	xgbc.fit(X_train, y_train)	
 	print("XGBOOST:")
@@ -56,7 +56,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 
 
-def featureImportances(model, X_train):
+def featureImportances(models, X_train):
   featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
   fig, ax = plt.subplots(figsize=(15,20),nrows=2)
