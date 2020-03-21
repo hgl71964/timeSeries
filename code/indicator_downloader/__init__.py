@@ -10,7 +10,7 @@ from technical_indicators import *
 
 def getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, FREQ, fullpath, fullpath2, write=True):
 	data = downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=True)
-	data['Date'] = pd.to_datetime(data['Date'])
+	data['date'] = pd.to_datetime(data['date'])
 	indicators = merge(QUANDL_API, GLASSNODE_API_KEY, fullpath2)
 	indicators['Date'] = pd.to_datetime(indicators['Date'])
 	merged_df = pd.merge(data,indicators,how='left',left_on='date',right_on='Date')
