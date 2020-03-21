@@ -19,7 +19,7 @@ def diagnosis(y_actual, y_pred_proba):
 	print(f"ROC AUC Score: {roc_auc_score(y_actual, y_pred_proba > 0.5)}")
 	return
 
-def autofit(X_train, X_test, y_train, y_test, c):
+def autofit(X_train, X_test, y_train, y_test, c, diagnosis=True):
 
 	cbc = CatBoostClassifier(n_estimators=1000, 
 	                        max_depth=8,
@@ -39,6 +39,19 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	models['cbc'] = cbc
 	models['xgbc'] = xgbc
 
+	if diagnosis:
+		featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
+
+		fig, ax = plt.subplots(figsize=(25,20),nrows=3)
+		ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
+
+		xgb.plot_importance(models['xgbc'],ax=ax[1])
+
+		xgb.plot_tree(models['xgbc'],ax=ax[2])
+
+		models['cbc'].plot_tree(0,pool)
+
+
 
 	train_df = pd.DataFrame(models['cbc'].predict_proba(X_train)[:,1])
 	train_df['xgbc'] = models['xgbc'].predict_proba(X_train)[:,1]
@@ -56,16 +69,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 
 
-def featureImportances(models, X_train):
-  featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-  fig, ax = plt.subplots(figsize=(25,20),nrows=3)
-  ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
-
-  xgb.plot_importance(models['xgbc'],ax=ax[1])
-
-  xgb.plot_tree(models['xgbc'],ax=ax[2])
-  return ax
 
 
 #this plots predicted vs actual
@@ -81,9 +85,15 @@ def plotPredictions(dates, models, X, y, last_obs):
 
   fig.add_trace(go.Scatter(x=dates.iloc[1:], y=models['ensemble'].predict_proba(test_df)[:,1],mode='lines',name="Ensemble"))  
 
-  fig.add_trace(go.Scatter(x=dates.iloc[1:], y=y[last_obs:],mode='markers',name="Actual Direction"))
+  fig.add_trace(go.Scatter(x=dates.iloc[1:], 
+                           y=y[last_obs:]*1,
+                           mode='markers',
+                           name="Actual Direction",
+                           marker_color=1-(y[last_obs:]*1),
+                           marker_symbol=y[last_obs:]*3,
+                           marker_line_width=1,
+                           marker={"size":12,"colorscale":"Bluered"}))
   return fig
-
 def recommendTrade(date, X, models):
   print(f"{date}\n--------------------------")
   X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:,1])
