@@ -6,13 +6,6 @@ import requests
 from datetime import date, datetime
 from binance.client import Client
 
-from technical_indicators import *
-from binance_downloader import *
-from quandl_downloader import *
-from bitfinex_downloader import *
-from glassnode_downloader import *
-from sp500_downloader import *
-from bitmex_downloader import *
 
 def merge(quandl_api_key, GLASSNODE_API_KEY, fullpath):
   merged_feats= quandlDownloader(quandl_api_key)
