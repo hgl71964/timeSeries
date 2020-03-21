@@ -8,4 +8,6 @@ plotly
 matplotlib
 seaborn
 scipy
-
+catboost
+xgboost
+shapley
