@@ -15,7 +15,7 @@ def bitmexDownload(fullpath, write=True):
     prior_df = pd.read_csv(f"{fullpath}/bitmex_fundingrate.csv")
     prior_df['timestamp'] = pd.to_datetime(prior_df['timestamp'])
     start_date = prior_df['timestamp'].iloc[0]
-    print("preexisting data in table - Bitmex")
+    print("found preexisting data in table - BITMEX")
   except:
     success = False
 

@@ -17,7 +17,7 @@ def bitfinexDownload(fullpath, write=False):
     bitfinex_shorts = pd.read_csv(f"{fullpath}/bitfinex_shorts.csv")
     bitfinex_longs.columns=['timestamp','longs']
     bitfinex_shorts.columns=['timestamp','shorts']  
-    print("existing data in table")
+    print("found existing data in table - BITFINEX")
   except:
     long_success=False
     short_success=False

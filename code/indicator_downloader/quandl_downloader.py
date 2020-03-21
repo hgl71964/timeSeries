@@ -15,7 +15,7 @@ def quandlDownloader(QUANDL_API_KEY,fullpath, write=True):
     prior_df = pd.read_csv(f"{fullpath}/quandl_indicators.csv")
     prior_df['Date'] = pd.to_datetime(prior_df['Date'])
     start_date = str(prior_df['Date'].iloc[0])[:10]
-    print("preexisting data in table")
+    print("found preexisting data in table - QUANDL")
   except:
     success = False
   #dict of quandl features and its API name     

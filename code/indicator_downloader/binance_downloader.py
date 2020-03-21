@@ -40,10 +40,10 @@ def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
   for x in tickers:
     if x == "BTC":
       prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write)) #change to HOUR, MINUTE if you want
-      print(f"DONE -{x}")
+      print(f"DONE - {x}")
     else:
       prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write))
-      print(f"DONE -{x}")
+      print(f"DONE - {x}")
 
   #Columns to take; drop open_time, close_time
   cols = ['open', 'high', 'low', 'close', 'volume','quote_asset_volume', 'number_of_trades',
@@ -60,3 +60,5 @@ def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
   	temp.to_csv(f"{fullpath}/UNIVERSE_{FREQ}.csv",index=False)
   print(f"DOWNLOADED ALL ASSETS")
   return temp
+
+

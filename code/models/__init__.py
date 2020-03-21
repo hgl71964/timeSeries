@@ -21,15 +21,15 @@ def diagnosis(y_actual, y_pred_proba):
 
 def autofit(X_train, X_test, y_train, y_test, c):
 
-	cbc = CatBoostClassifier(n_estimators=100, 
-	                        max_depth=3,
+	cbc = CatBoostClassifier(n_estimators=500, 
+	                        max_depth=5,
                           thread_count=10,
 	                        verbose=0)
 	trainPool = Pool(X_train, y_train, feature_names=list(X_test.columns),thread_count=1)
 	cbc.fit(trainPool)
 
-	xgbc = XGBClassifier(n_estimators=100,
-	                    max_depth=3,
+	xgbc = XGBClassifier(n_estimators=500,
+	                    max_depth=5,
 	                    objective='reg:squarederror')
 	xgbc.fit(X_train, y_train)	
 	print("XGBOOST:")
@@ -91,6 +91,8 @@ def plotPredictions(dates, models, X, y, last_obs):
                            marker_line_width=1,
                            marker={"size":12,"colorscale":"Bluered"}))
   return fig
+
+ 
 def recommendTrade(date, X, models):
   print(f"{date}\n--------------------------")
   X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:,1])
