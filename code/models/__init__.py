@@ -51,7 +51,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	models['ensemble'].fit(train_df, y_train)
 
 	print("ENSEMBLE")
-	diagnosis(y_test, models['ensemble'].predict_proba(X_test)[:,1])
+	diagnosis(y_test, models['ensemble'].predict_proba(test_df)[:,1])
 	return models
 
 
