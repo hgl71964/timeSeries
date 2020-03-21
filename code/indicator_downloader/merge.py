@@ -23,7 +23,7 @@ def merge(quandl_api_key, GLASSNODE_API_KEY, fullpath):
   #merge with bitmex
   merged_feats = pd.merge(merged_feats,bitmex, how='left',on='Date')
   #merge with sp500
-  sp500_data = sp500()
+  sp500_data = sp500(fullpath)
   merged_feats = pd.merge(merged_feats,sp500_data, how='left',on='Date')
   glassnode = glassnodeDownloader(GLASSNODE_API_KEY, fullpath)
   merged_feats = pd.merge(merged_feats,glassnode, how='left',on='Date')

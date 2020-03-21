@@ -15,26 +15,24 @@ def bitmexDownload(fullpath, write=True):
     prior_df = pd.read_csv(f"{fullpath}/bitmex_fundingrate.csv")
     prior_df['timestamp'] = pd.to_datetime(prior_df['timestamp'])
     start_date = prior_df['timestamp'].iloc[0]
-    print("preexisting data in table")
+    print("preexisting data in table - Bitmex")
   except:
     success = False
 
   r = requests.get('https://www.bitmex.com/api/v1/funding?symbol=XBTUSD&count=300&reverse=True')
-  funding_rate = pd.io.json.json_normalize(r.json())
+  funding_rate = pd.json_normalize(r.json())
   count = 300
   if success == True:
-    print(prior_df.shape)
-    print(funding_rate['timestamp'].iloc[-1], start_date)
     while pd.to_datetime(funding_rate['timestamp'].iloc[-1]) > start_date:
       r = requests.get(f'https://www.bitmex.com/api/v1/funding?symbol=XBTUSD&count=300&start={count}&reverse=True')
-      temp = pd.io.json.json_normalize(r.json())
+      temp = pd.json_normalize(r.json())
       funding_rate = pd.concat([funding_rate, temp],axis=0)
       count += 300
   #download 3300 rows f ~3 years of data if there is none
   else:
     for i in range(10):
       r = requests.get(f'https://www.bitmex.com/api/v1/funding?symbol=XBTUSD&count=300&start={count}&reverse=True')
-      temp = pd.io.json.json_normalize(r.json())
+      temp = pd.json_normalize(r.json())
       funding_rate = pd.concat([funding_rate, temp],axis=0)
       count += 300
   funding_rate['timestamp'] = pd.to_datetime(funding_rate['timestamp'])
