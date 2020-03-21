@@ -27,7 +27,7 @@ def glassnodeDownloader(GLASSNODE_API_KEY, fullpath, write=False):
     r = requests.get(f"{url}{indicators[list(indicators.keys())[0]]}?a=BTC&s={start_date}",{'api_key':GLASSNODE_API_KEY})
   else:
     r = requests.get(f"{url}{indicators[list(indicators.keys())[0]]}?a=BTC",{'api_key':GLASSNODE_API_KEY})
-  df = pd.json_normalize(r.json())
+  df = pd.io.json.json_normalize(r.json())
   df.columns = ['timestamp',list(indicators.keys())[0]]
 
   for x in list(indicators.keys())[1:]:
@@ -35,7 +35,7 @@ def glassnodeDownloader(GLASSNODE_API_KEY, fullpath, write=False):
       r = requests.get(f"{url}{indicators[x]}?a=BTC&s={start_date}",{'api_key':GLASSNODE_API_KEY})
     else:
       r = requests.get(f"{url}{indicators[list(indicators.keys())[0]]}?a=BTC",{'api_key':GLASSNODE_API_KEY})
-    temp = pd.json_normalize(r.json())
+    temp = pd.io.json.json_normalize(r.json())
     temp.columns = ['timestamp', x]
     df = pd.merge(df, temp, how='inner',left_on='timestamp',right_on='timestamp')
 
