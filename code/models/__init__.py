@@ -59,7 +59,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 def featureImportances(models, X_train):
   featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-  fig, ax = plt.subplots(figsize=(15,20),nrows=3)
+  fig, ax = plt.subplots(figsize=(25,20),nrows=3)
   ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
   xgb.plot_importance(models['xgbc'],ax=ax[1])
@@ -72,12 +72,20 @@ def featureImportances(models, X_train):
 def plotPredictions(dates, models, X, y, last_obs):
   fig = go.Figure()
   for x in models.keys():
-	  fig.add_trace(go.Scatter(x=dates, y=models[x].predict_proba(X[last_obs:])[:,1],mode='lines',name=x))
+    if x != "ensemble":
+        fig.add_trace(go.Scatter(x=dates, y=models[x].predict_proba(X[last_obs:])[:,1],mode='lines',name=x))
+  
+  test_df = pd.DataFrame(models['cbc'].predict_proba(X[last_obs:])[:,1])
+  test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X[last_obs:])[:,1]) 
+  test_df.columns = ['cbc','xgbc']
+
+  fig.add_trace(go.Scatter(x=dates.iloc[1:], y=models['ensemble'].predict_proba(test_df)[:,1],mode='lines',name="Ensemble"))  
+
+  fig.add_trace(go.Scatter(x=dates.iloc[1:], y=y[last_obs:],mode='markers',name="Actual Direction"))
   return fig
 
 def recommendTrade(date, X, models):
-  print("date\n")
-  print("--------------------------")
+  print(f"{date}\n--------------------------")
   X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:,1])
   print(f"Catboost Prediction p: {X2.iloc[:,0].values[0]}")
   X2['xgbc'] = models['xgbc'].predict_proba(X)[:,1]
