@@ -15,7 +15,7 @@ def quandlDownloader(QUANDL_API_KEY,fullpath, write=True):
     prior_df = pd.read_csv(f"{fullpath}/quandl_indicators.csv")
     prior_df['Date'] = pd.to_datetime(prior_df['Date'])
     start_date = str(prior_df['Date'].iloc[0])[:10]
-    print("preexisting data in table - Quandl")
+    print("preexisting data in table")
   except:
     success = False
   #dict of quandl features and its API name     
@@ -24,14 +24,12 @@ def quandlDownloader(QUANDL_API_KEY,fullpath, write=True):
          "Mining Revenue":"MIREV"}
   
   url = 'https://www.quandl.com/api/v3/datasets/BCHAIN/'
-
   if success == True:
     df = pd.read_csv(f'{url}{names[list(names.keys())[0]]}.csv?api_key={QUANDL_API_KEY}&start_date={start_date}')
   else:
     df = pd.read_csv(f'{url}{names[list(names.keys())[0]]}.csv?api_key={QUANDL_API_KEY}')
   df.columns = ['Date',names[list(names.keys())[0]]]
   df['Date'] = pd.to_datetime(df['Date'])
-
   for x in list(names.keys())[1:]:
     if success == True: 
       temp = pd.read_csv(f'https://www.quandl.com/api/v3/datasets/BCHAIN/{names[x]}.csv?api_key={QUANDL_API_KEY}&start_date={start_date}')

@@ -54,4 +54,6 @@ def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
     temp2.columns = ['date']+[x +"_" + col for col in cols]
     temp = pd.merge(temp, temp2,how='left',on='date')
   temp['date'] = pd.to_datetime(temp['date'])
+  if write == True:
+  	temp.to_csv(f"{fullpath}/UNIVERSE_{FREQ}.csv",index=False)
   return temp
