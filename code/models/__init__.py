@@ -42,7 +42,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-	fig, ax = plt.subplots(figsize=(20,30),nrows=3)
+	fig, ax = plt.subplots(figsize=(20,50),nrows=3)
 	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	xgb.plot_importance(models['xgbc'],ax=ax[1])
@@ -57,7 +57,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X_test)[:,1])
 	test_df.columns = list(models.keys())
 
-	models['ensemble'] = XGBClassifier(n_estimators=500,max_depth=3)
+	models['ensemble'] = XGBClassifier(n_estimators=500,max_depth=5)
 	models['ensemble'].fit(train_df, y_train)
 
 	print("ENSEMBLE")
@@ -80,10 +80,10 @@ def plotPredictions(dates, models, X, y, last_obs):
   test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X[last_obs:])[:,1]) 
   test_df.columns = ['cbc','xgbc']
 
-  fig.add_trace(go.Scatter(x=dates.iloc[1:], y=models['ensemble'].predict_proba(test_df)[:,1],mode='lines',name="Ensemble"))  
+  fig.add_trace(go.Scatter(x=dates, y=models['ensemble'].predict_proba(test_df)[:,1],mode='lines',name="Ensemble"))  
 
   fig.add_trace(go.Scatter(x=dates.iloc[1:], 
-                           y=y[last_obs:]*1,
+                           y=(y[last_obs:]*1).shift(1),
                            mode='markers',
                            name="Actual Direction",
                            marker_color=1-(y[last_obs:]*1),
@@ -92,7 +92,7 @@ def plotPredictions(dates, models, X, y, last_obs):
                            marker={"size":12,"colorscale":"Bluered"}))
   return fig
 
- 
+
 def recommendTrade(date, X, models):
   print(f"{date}\n--------------------------")
   X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:,1])
