@@ -10,4 +10,4 @@ seaborn
 scipy
 catboost
 xgboost
-shapley
+shap
