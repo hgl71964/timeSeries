@@ -1,9 +1,21 @@
 from binance_downloader import *
 from merge import merge
-
 from bitfinex_downloader import *
 from bitmex_downloader import *
 from glassnode_downloader import *
 from quandl_downloader import *
 from sp500_downloader import *
+from technical_indicators import *
+
+
+def getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, FREQ, fullpath, write=True):
+	data = downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=True)
+	indicators = merge(QUANDL_API, GLASSNODE_API_KEY, fullpath)
+	merged_df = pd.merge(data,indicators,how='left',left_on='date',right_on='Date')
+	merged_df = addTechnicalIndicators(merged_df,"BTC")
+	if write == True:
+		merged_df.to_csv(f"{fullpath}/BTCUSDT_Daily_WITH_INDICATORS.csv",index=False)
+	return merged_df
+
+
 
