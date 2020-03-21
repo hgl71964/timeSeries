@@ -51,7 +51,7 @@ class DNN_utility:
         try:
             pred = self.m(x)
         except:
-            raise ValueError('have not trained model')
+            raise NameError('have not trained model')
 
         return pred
 
