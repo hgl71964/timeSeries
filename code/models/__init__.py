@@ -15,41 +15,39 @@ import shap
 
 
 def diagnosis(y_actual, y_pred_proba):
-	print(f"ACCURACY: {accuracy_score(y_actual, y_pred_proba > 0.5)}")
-	print(f"ROC AUC Score: {roc_auc_score(y_actual, y_pred_proba > 0.5)}")
+	print(f"ACCURACY: {accuracy_score(y_actual, np.round(y_pred_proba))}")
+	print(f"ROC AUC Score: {roc_auc_score(y_actual, y_pred_proba)}")
 	return
 
-def autofit(X_train, X_test, y_train, y_test, c, diagnosis=True):
+def autofit(X_train, X_test, y_train, y_test, c):
 
-	cbc = CatBoostClassifier(n_estimators=1000, 
-	                        max_depth=8,
+	cbc = CatBoostClassifier(n_estimators=100, 
+	                        max_depth=3,
+                          thread_count=10,
 	                        verbose=0)
-	pool = Pool(X_train, y_train, feature_names=list(X_test.columns))
-	cbc.fit(pool)
+	trainPool = Pool(X_train, y_train, feature_names=list(X_test.columns),thread_count=1)
+	cbc.fit(trainPool)
 
-	xgbc = XGBClassifier(n_estimators=1000,
-	                    max_depth=8,
+	xgbc = XGBClassifier(n_estimators=100,
+	                    max_depth=3,
 	                    objective='reg:squarederror')
 	xgbc.fit(X_train, y_train)	
 	print("XGBOOST:")
-	diagnosis(y_test * 1, xgbc.predict_proba(X_test)[:,1])
+	diagnosis(y_test.values * 1, xgbc.predict_proba(X_test)[:,1])
 	print("Catboost")
-	diagnosis(y_test * 1, cbc.predict_proba(X_test)[:,1])
+	diagnosis(y_test.values * 1, cbc.predict_proba(X_test)[:,1])
 	models = {}
 	models['cbc'] = cbc
 	models['xgbc'] = xgbc
 
 	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-	fig, ax = plt.subplots(figsize=(25,20),nrows=3)
+	fig, ax = plt.subplots(figsize=(20,30),nrows=3)
 	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	xgb.plot_importance(models['xgbc'],ax=ax[1])
 
 	xgb.plot_tree(models['xgbc'],ax=ax[2])
-
-
-
 
 
 	train_df = pd.DataFrame(models['cbc'].predict_proba(X_train)[:,1])
@@ -64,7 +62,7 @@ def autofit(X_train, X_test, y_train, y_test, c, diagnosis=True):
 
 	print("ENSEMBLE")
 	diagnosis(y_test, models['ensemble'].predict_proba(test_df)[:,1])
-	return models, ax, models['cbc'].plot_tree(0,pool)
+	return models, ax
 
 
 
