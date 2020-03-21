@@ -42,7 +42,10 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 	train_df = pd.DataFrame(models['cbc'].predict_proba(X_train)[:,1])
 	train_df['xgbc'] = models['xgbc'].predict_proba(X_train)[:,1]
-
+	train_df.columns = list(models.keys())
+	test_df = pd.DataFrame(models['cbc'].predict_proba(X_test)[:,1])
+	test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X_test)[:,1])
+	test_df.columns = list(models.keys())
 
 	models['ensemble'] = XGBClassifier(n_estimators=500,max_depth=3)
 	models['ensemble'].fit(train_df, y_train)
