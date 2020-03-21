@@ -15,8 +15,8 @@ import shap
 
 
 def diagnosis(y_actual, y_pred_proba):
-	print(f"ACCURACY: {accuracy_score(y_test, y_pred_proba > 0.5)}")
-	print(f"ROC AUC Score: {roc_auc_score(y_test, y_pred_proba > 0.5)}")
+	print(f"ACCURACY: {accuracy_score(y_actual, y_pred_proba > 0.5)}")
+	print(f"ROC AUC Score: {roc_auc_score(y_actual, y_pred_proba > 0.5)}")
 	return
 
 def autofit(X_train, X_test, y_train, y_test, c):
@@ -52,4 +52,25 @@ def ensemble(models, X_train, X_test, y_train, y_test):
 	diagnosis(y_test, ensembler.predict_proba(X_test)[:,1])
 
 	return ensemble
+
+def featureImportances(model, X_train):
+  featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
+
+  fig, ax = plt.subplots(figsize=(15,20),nrows=2)
+  ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
+
+  xgb.plot_importance(models['xgbc'],ax=ax[1])
+
+  xgb.plot_tree(models['xgbc'],ax=ax[2])
+  return ax
+
+
+#this plots predicted vs actual
+def plotPredictions(dates, models, X, y, last_obs):
+  fig = go.Figure()
+  fig.add_trace(go.Scatter(x=dates, y=models['cbc'].predict_proba(X[last_obs:])[:,1],mode='lines',name="Catboost"))
+  fig.add_trace(go.Scatter(x=dates, y=models['xgbc'].predict_proba(X[last_obs:])[:,1],mode='lines',name="XGBoost"))
+  fig.add_trace(go.Scatter(x=dates, y=y[last_obs:]*1,mode='markers',marker_symbol=y[last_obs:]*1,marker_color=y[last_obs:]*1,name="Actual"))
+  return fig
+
 
