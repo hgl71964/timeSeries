@@ -82,8 +82,8 @@ def plotPredictions(dates, models, X, y, last_obs):
 
   fig.add_trace(go.Scatter(x=dates, y=models['ensemble'].predict_proba(test_df)[:,1],mode='lines',name="Ensemble"))  
 
-  fig.add_trace(go.Scatter(x=dates.iloc[1:], 
-                           y=(y[last_obs:]*1).shift(1),
+  fig.add_trace(go.Scatter(x=dates.iloc[:-1], 
+                           y=(y[last_obs:]*1),
                            mode='markers',
                            name="Actual Direction",
                            marker_color=1-(y[last_obs:]*1),
