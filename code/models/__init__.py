@@ -125,6 +125,7 @@ def recommendTrade(data2, X, models):
   p = models['ensemble'].predict_proba(X2)[:,1]
   proportion = 2 * (p - 0.5) * 100
   print("Ensemble p : ", p[0])
+  print("--------------------------")
   if p < 0.5:
     print(f"The model recommends a short : {abs(proportion[0]):.3f}% of capital")
   else:
