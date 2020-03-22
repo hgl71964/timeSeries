@@ -66,7 +66,7 @@ class xgboost_utility:
             'learning_rate': 0.3,  # Boosting learning rate (xgb’s “eta”)
 
             # 0 (silent), 1 (warning), 2 (info), 3 (debug).
-            'verbosity': 1,
+            'verbosity': False,
 
             'objective': 'reg:squarederror',  # regression with squared loss
             'min_child_weight': 10,
@@ -81,7 +81,7 @@ class xgboost_utility:
                        eval_set=[(self.X_train, self.y_train),
                                  (self.X_test, self.y_test)],
                        eval_metric='rmse',
-                       verbose=True)
+                       verbose=self.model_param['verbosity'])
 
     @property
     def feature_scores(self):
