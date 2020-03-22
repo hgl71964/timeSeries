@@ -1,14 +1,15 @@
 import numpy as np
 import json
 import pandas as pd
+import requests
+
+from datetime import date, datetime
 from binance.client import Client
-from datetime import datetime
 
+from technical_indicators import *
 
-
-
-
-def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath,write=False):
+#Read in any data if it already exists
+def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath, write=False):
 	'''
 	Inputs: Binance API_KEY and API_SECRET, Binance symbol ticker, interval (Client.KLINE_INTERVAL_1HOUR, Client.KLINE_INTERVAL_1MINUTE)
 	Outputs: Writes to local
@@ -34,22 +35,19 @@ def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath,write=False):
 		df.to_csv(path,index=False)
 	return df
 
-#add extra preprocessing here
-def transform(df):
-	df2 = df.copy()
-	df2['ohlc'] = np.mean(df2[['open', 'high', 'low','close']].values,axis=1)
-	df2['returns'] = (df2['close'] / df2['close'].shift(1))
-	df2['date'] = pd.to_datetime(df2['open_time']).dt.date
-	return df2
-
-def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=False):
+def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
   prices = {}
   for x in tickers:
-      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath)) #change to HOUR, MINUTE if you want
+    if x == "BTC":
+      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write)) #change to HOUR, MINUTE if you want
+      print(f"DONE - {x}")
+    else:
+      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write))
+      print(f"DONE - {x}")
 
   #Columns to take; drop open_time, close_time
   cols = ['open', 'high', 'low', 'close', 'volume','quote_asset_volume', 'number_of_trades',
-        ' taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume','ohlc', 'returns', 'date']
+        ' taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume','ohlc', 'returns']
   temp = prices[tickers[0]][['date']+cols]
   temp.columns = ['date']+[tickers[0]+"_"+ col for col in cols]
   #Merge all price datas
@@ -58,4 +56,9 @@ def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=False):
     temp2.columns = ['date']+[x +"_" + col for col in cols]
     temp = pd.merge(temp, temp2,how='left',on='date')
   temp['date'] = pd.to_datetime(temp['date'])
+  if write == True:
+  	temp.to_csv(f"{fullpath}/UNIVERSE_{FREQ}.csv",index=False)
+  print(f"DOWNLOADED ALL ASSETS")
   return temp
+
+
