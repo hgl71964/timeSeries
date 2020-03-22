@@ -3,30 +3,24 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-def backtest(X_test,models, data2, transaction_costs, longLimit=1, shortLimit=-1, ls = False):
+def backtest(X_test,models, data2, starting_cap = 10000, transaction_costs, longLimit=1, shortLimit=-1, ls = False):
   test_df = pd.DataFrame(models['cbc'].predict_proba(X_test)[:,1])
   test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X_test)[:,1])
   test_df.columns=['cbc','xgbc']
   signals =  models['ensemble'].predict_proba(test_df)[:,1]
 
-  data = X_test.copy()
-  data['close'] = data2.loc[X_test.index[0]:,'BTC_close']
-  data = data.reset_index(drop=True)
-
-
-  starting_cap = 10000
 
   #units of cash, units of btc
   positions = np.array([[0.0 for i in range(6)] for j in range(len(signals)+1)])
   positions[0,0] = starting_cap #set startin cash to starting_cap
   positions[0,3] = starting_cap #set starting value to starting_value
   positions = pd.DataFrame(positions)
-  positions.columns=["cash", "btc","traded","value", 'btc_close','date']
-  positions.loc[1:,'btc_close'] = data['close']
+  positions.columns=["cash", "btc","traded","value", 'btc_open','date']
+  positions.loc[1:,'btc_open'] = data2.loc[X_test.index[0]:,'BTC_open'].reset_index(drop=True)
   positions.loc[:,'date'] = data2.loc[X_test.index[0]:,'date'].reset_index(drop=True)
 
   for i in range(len(signals)):
-    entry_price = data.iloc[i]['close']
+    entry_price = positions.iloc[i+1, 4]
     positions.iloc[i+1,0:2] = positions.iloc[i,0:2]
     p = signals[i]
     if ls == False:
