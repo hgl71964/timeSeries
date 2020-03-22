@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 
-def backtest(X_test,models, data2, transaction_costs, ls = False):
+def backtest(X_test,models, data2, transaction_costs, longLimit=1, shortLimit=-1, ls = False):
   test_df = pd.DataFrame(models['cbc'].predict_proba(X_test)[:,1])
   test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X_test)[:,1])
   test_df.columns=['cbc','xgbc']
@@ -23,7 +23,7 @@ def backtest(X_test,models, data2, transaction_costs, ls = False):
   positions = pd.DataFrame(positions)
   positions.columns=["cash", "btc","traded","value", 'btc_close','date']
   positions.loc[1:,'btc_close'] = data['close']
-  positions['date'] = data2.loc[X_test.index[0]:,'date'].reset_index(drop=True)
+  positions.loc[:,'date'] = data2.loc[X_test.index[0]:,'date'].reset_index(drop=True)
 
   for i in range(len(signals)):
     entry_price = data.iloc[i]['close']
@@ -40,12 +40,13 @@ def backtest(X_test,models, data2, transaction_costs, ls = False):
           positions.iloc[i+1,0] -= (positions.iloc[i+1,1] - positions.iloc[i,1]) * entry_price * (1 - transaction_costs)
           positions.iloc[i+1,2] = -1
     if ls == True:
-        targetValue = positions.iloc[i,3] * (2 * p - 1)
         if signals[i] > 0.5:
+          targetValue = positions.iloc[i,3] * min((2 * p - 1), longLimit)
           positions.iloc[i+1,1] = targetValue / (entry_price * (1 + transaction_costs))
           positions.iloc[i+1,0] -= (positions.iloc[i+1,1]- positions.iloc[i,1]) * entry_price * (1 + transaction_costs)
           positions.iloc[i+1,2] = 1
         else:
+          targetValue = positions.iloc[i,3] * max((2 * p - 1), shortLimit)
           positions.iloc[i+1,1] = targetValue / (entry_price - (1 + transaction_costs))
           positions.iloc[i+1,0] -= (positions.iloc[i+1,1] - positions.iloc[i,1]) * entry_price * (1 - transaction_costs)
           positions.iloc[i+1,2] = -1
@@ -54,11 +55,10 @@ def backtest(X_test,models, data2, transaction_costs, ls = False):
 
 
   positions['returns'] = positions['value'] / positions['value'].shift(1)
-  dates = data2.loc[X_test.index[0]:,'date']
-  y1 = np.exp(np.log(positions['returns']).cumsum()).iloc[1:]
-  y2 = np.exp(np.log(data2.loc[X_test.index[0]:,'BTC_returns'].shift(1)).cumsum())
-  fig = go.Figure(go.Scatter(x=dates,y=y1.iloc[1:],marker_color=positions['traded'], mode='markers+lines', name='Strategy returns (%)'))
-  fig.add_trace(go.Scatter(x=dates, y=y2.iloc[1:], name='Buy and Hold Returns (%)'))
+  y1 = np.exp(np.log(positions.iloc[1:]['returns']).cumsum())
+  y2 = np.exp(np.log(data2.loc[X_test.index[0]+1:,'BTC_returns']).cumsum())
+  fig = go.Figure(go.Scatter(x=positions.loc[1:,'date'],y=y1,marker_color=positions['traded'], mode='markers+lines', name='Strategy returns (%)'))
+  fig.add_trace(go.Scatter(x=positions.loc[1:,'date'], y=y2, name='Buy and Hold Returns (%)'))
   layout = go.Layout(yaxis=dict(tickformat=".2%"))
 
   sharpe = empyrical.sharpe_ratio(positions.loc[1:,'returns']-1,risk_free=0)
@@ -66,5 +66,5 @@ def backtest(X_test,models, data2, transaction_costs, ls = False):
   sortino = empyrical.sortino_ratio(positions.loc[1:,'returns']-1,required_return=1.07**(1/365)-1)
   print(f"Sharpe: {sharpe}\nMax Drawdown: {md}\nSortino: {sortino}")
   
-  return positions.iloc[1:], fig
+  return positions, fig
 

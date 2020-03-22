@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, classification_report, confusion_matrix, roc_auc_score, accuracy_score
+from sklearn.linear_model import LogisticRegression
 from catboost import CatBoostRegressor, CatBoostClassifier, Pool
 from xgboost import XGBRegressor, XGBClassifier
 import xgboost as xgb
@@ -57,7 +58,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-	fig, ax = plt.subplots(figsize=(20,30),nrows=2)
+	fig, ax = plt.subplots(figsize=(10,20),nrows=3)
 	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	xgb.plot_importance(models['xgbc'],ax=ax[1])
@@ -69,11 +70,13 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X_test)[:,1])
 	test_df.columns = list(models.keys())
 
-	models['ensemble'] = CatBoostClassifier(n_estimators=500, 
-	                        max_depth=2,
-                          thread_count=10,
-	                        verbose=0)
+	# models['ensemble'] = CatBoostClassifier(n_estimators=500, 
+	#                         max_depth=2,verbose=0)
+	models['ensemble'] = LogisticRegression()
 	models['ensemble'].fit(train_df, y_train)
+
+	featImportances = dict(sorted(zip(list(models.keys()),models['ensemble'].coef_),key=lambda k: k[1]))
+	ax[2].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	print("ENSEMBLE")
 	diagnosis(y_test, models['ensemble'].predict_proba(test_df)[:,1])
