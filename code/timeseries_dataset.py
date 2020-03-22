@@ -16,7 +16,8 @@ This script formats the time series data
 '''
 
 
-class timeseries_Dataset():
+class timeseries_Dataset:
+
     def __init__(self, df):
         '''
         Args:
@@ -34,6 +35,30 @@ class timeseries_Dataset():
     def drop_column(self, drop_list):
         self.df = self.df.drop(columns=[col for col in drop_list])
 
+    def replace_missing_data(self, mode='interpolate'):
+        if mode == 'interpolate':
+            self.df = self.df.reindex(fill_value='NaN').astype(
+                float).interpolate(method='linear', axis=0).ffill().bfill()
+        elif mode == 'mean':
+            self.df = self.df.fillna(self.df.mean())
+        elif mode == 'median':
+            self.df = self.df.fillna(self.df.mean())
+
+    def to_x_y(self, x_name, y_name):
+        '''
+        set arrtibute use to desirable columns
+
+        Args:
+            x_name -> list of str; column name
+            y_name -> list of str; column name
+
+        Returns:
+            self.x -> dataFrame
+            self.y -> dataFrame
+        '''
+        self.x = self.df.drop(columns=y_name)
+        self.y = self.df[y_name]
+
     def trian_test_split(self, test_size=0.2, shuffle=False):
         # for sequential data we should not shuffle
         self.X_train, self.X_test, self.y_train, self.y_test = sk_ModelSelection.train_test_split(self.x, self.y,
@@ -47,7 +72,7 @@ class timeseries_Dataset():
 
     def reset(self, X_train, X_test):
         '''
-        this function to re-assign X_train and X_test after being selected by XGBoost 
+        this function to re-assign X_train and X_test after being selected by XGBoost
         '''
         self.X_train = X_train
         self.X_test = X_test
@@ -60,7 +85,7 @@ class timeseries_Dataset():
 
         To estimate the autocorrelation function of x,
             in order to determine the encode sequence length
-        Args: 
+        Args:
             x, type pandas.Series, 1-d series
         """
         x = x.values  # to 1-d array
