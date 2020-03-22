@@ -57,13 +57,10 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-	fig, ax = plt.subplots(figsize=(20,50),nrows=3)
+	fig, ax = plt.subplots(figsize=(20,50),nrows=2)
 	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	xgb.plot_importance(models['xgbc'],ax=ax[1])
-
-	xgb.plot_tree(models['xgbc'],ax=ax[2])
-
 
 	train_df = pd.DataFrame(models['cbc'].predict_proba(X_train)[:,1])
 	train_df['xgbc'] = models['xgbc'].predict_proba(X_train)[:,1]
@@ -72,7 +69,10 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	test_df['xgbc'] = pd.DataFrame(models['xgbc'].predict_proba(X_test)[:,1])
 	test_df.columns = list(models.keys())
 
-	models['ensemble'] = CatBoostClassifier(n_estimators=500,max_depth=5)
+	models['ensemble'] = CatBoostClassifier(n_estimators=500, 
+	                        max_depth=5,
+                          thread_count=10,
+	                        verbose=0)
 	models['ensemble'].fit(train_df, y_train)
 
 	print("ENSEMBLE")
@@ -85,7 +85,8 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 
 #this plots predicted vs actual
-def plotPredictions(models, data2, last_obs):
+def plotPredictions(models, data2, X_test):
+  last_obs = X_test.index[0]	
   dates = data2.loc[last_obs:]['Date']
   fig = go.Figure()
   for x in models.keys():
@@ -110,7 +111,8 @@ def plotPredictions(models, data2, last_obs):
   return fig
 
 
-def recommendTrade(date, X, models):
+def recommendTrade(data2, X, models):
+  date = data2.iloc[-1]['Date']
   print(f"{date}\n--------------------------")
   X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:,1])
   print(f"Catboost Prediction p: {X2.iloc[:,0].values[0]}")

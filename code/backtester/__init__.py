@@ -1,7 +1,7 @@
 import empyrical
 import numpy as np
 import pandas as pd
-
+import plotly.graph_objects as go
 
 def backtest(X_test,models, data2, transaction_costs, ls = False):
   test_df = pd.DataFrame(models['cbc'].predict_proba(X_test)[:,1])
