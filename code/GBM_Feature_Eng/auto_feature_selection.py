@@ -112,7 +112,7 @@ class xgboost_utility:
         # so we only take the columns we want
         X_train = self.X_train[:, sorted(preserve_list)]
         X_test = self.X_test[:, sorted(preserve_list)]
-        return X_train, X_test
+        return (X_train, X_test)
 
     def prediction(self, x):
         return self.model.predict(x)

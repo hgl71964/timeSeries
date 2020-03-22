@@ -42,7 +42,7 @@ class timeseries_Dataset:
 
     def drop_column(self, threshold: int):
         '''
-        features with number of missing data > threshold will be drop 
+        features with number of missing data > threshold will be drop
         '''
         na_col = self.show_missing_data
         drop_list = []
@@ -100,12 +100,15 @@ class timeseries_Dataset:
         except NameError:
             print('timeSeries_Dataset has not processed')
 
-    def reset(self, X_train, X_test):
+    def reset(self, reset_data)):
         '''
         this function to re-assign X_train and X_test after being selected by XGBoost
+
+        Args:
+            reset_data = (X_train, X_test)
         '''
-        self.X_train = X_train
-        self.X_test = X_test
+        self.X_train=reset_data[0]
+        self.X_test=reset_data[1]
 
     @staticmethod
     def batcher(x, y, batch_size: int):
@@ -113,7 +116,7 @@ class timeseries_Dataset:
         make batch along first dimension
 
         Args:
-            x: iterable 
+            x: iterable
             y: iterable
 
         Return:
@@ -121,7 +124,7 @@ class timeseries_Dataset:
             y  [batch_size, encode_len+pred_len]
         '''
 
-        l = len(x)
+        l=len(x)
         for batch in range(0, l, batch_size):
             yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
 
@@ -136,12 +139,12 @@ class timeseries_Dataset:
         Args:
             x, type pandas.Series, 1-d series
         """
-        x = x.values  # to 1-d array
-        n = len(x)
-        variance = x.var()
-        x = x-x.mean()
-        r = np.correlate(x, x, mode='full')[-n:]
+        x=x.values  # to 1-d array
+        n=len(x)
+        variance=x.var()
+        x=x-x.mean()
+        r=np.correlate(x, x, mode = 'full')[-n:]
         assert np.allclose(r, np.array(
             [(x[:n-k]*x[-(n-k):]).sum() for k in range(n)]))
-        result = r/(variance*(np.arange(n, 0, -1)))
+        result=r/(variance*(np.arange(n, 0, -1)))
         return result
