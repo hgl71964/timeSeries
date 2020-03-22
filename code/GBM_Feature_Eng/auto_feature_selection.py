@@ -18,33 +18,36 @@ class xgboost_utility:
 
         grid sets other parameter
         '''
-        self.other_param = {
+        try:
+            self.model_param = {
+                # Number of gradient boosted trees. Equivalent to number of boosting rounds.
+                'num_estimators': kwargs['num_estimators'],
 
-        }
+                # Maximum tree depth for base learners.
+                'max_depth': kwargs['max_depth'],
 
-        self.model_grid = {
-            # Number of gradient boosted trees. Equivalent to number of boosting rounds.
-            'num_estimators': kwargs['num_estimators'],
+                # Boosting learning rate (xgb’s “eta”)
+                'learning_rate': kwargs['learning_rate'],
 
-            # Maximum tree depth for base learners.
-            'max_depth': kwargs['max_depth'],
+                # 0 (silent), 1 (warning), 2 (info), 3 (debug).
+                'verbosity': kwargs['verbosity'],
 
-            # Boosting learning rate (xgb’s “eta”)
-            'learning_rate': kwargs['learning_rate'],
+                # regression with squared loss
+                'objective': kwargs['objective'],
 
-            # 0 (silent), 1 (warning), 2 (info), 3 (debug).
-            'verbosity': kwargs['verbosity'],
+                'min_child_weight': kwargs['min_child_weight'],
 
-            'objective': kwargs['objective'],  # regression with squared loss
+                # L2 norm regularization, dafault 1
+                'lambda': kwargs['lambda'],
+                # 'subsample': 0.5,                 # Subsample ratio of the training instance
+                # 'colsample_bytree': 0.6,
+                # 'reg_lambda':,                   # L2 regularization term on weights
+            }
+        except:
+            print('''hyper-parameter setting fails, 
+                    model uses default settings''')
+            self.default_setting()
 
-            'min_child_weight': kwargs['min_child_weight'],
-
-            # L2 norm regularization, dafault 1
-            'lambda': kwargs['lambda'],
-            # 'subsample': 0.5,                 # Subsample ratio of the training instance
-            # 'colsample_bytree': 0.6,
-            # 'reg_lambda':,                   # L2 regularization term on weights
-        }
         self.X_train = X_train
         self.y_train = y_train
         self.X_test = X_test
@@ -52,7 +55,26 @@ class xgboost_utility:
         self.feature_map = feature_map
 
         # instantiate model according to hyper-parameters
-        self.model = xgboost.XGBRegressor(**self.model_grid)
+        self.model = xgboost.XGBRegressor(**self.model_param)
+
+    @property
+    def default_setting(self):
+        self.model_param = {
+            # Number of gradient boosted trees. Equivalent to number of boosting rounds.
+            'num_estimators': 1000,
+            'max_depth': 10,  # Maximum tree depth for base learners.
+            'learning_rate': 0.3,  # Boosting learning rate (xgb’s “eta”)
+
+            # 0 (silent), 1 (warning), 2 (info), 3 (debug).
+            'verbosity': 1,
+
+            'objective': 'reg:squarederror',  # regression with squared loss
+            'min_child_weight': 10,
+            'lambda': 1,                      # L2 norm regularization, dafault 1
+            # 'subsample': 0.5,                 # Subsample ratio of the training instance
+            # 'colsample_bytree': 0.6,
+            # 'reg_lambda':,                   # L2 regularization term on weights
+        }
 
     def training(self):
         self.model.fit(self.X_train, self.y_train,
