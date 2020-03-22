@@ -32,7 +32,17 @@ class timeseries_Dataset:
             na_col[col] = self.df[col].isna().sum()
         return na_col
 
-    def drop_column(self, drop_list):
+    def drop_column(self, threshold: int):
+        '''
+        features with number of missing data > threshold will be drop 
+        '''
+        na_col = self.show_missing_data
+        drop_list = []
+
+        for key, value in na_col.items():
+            if value > threshold:
+                drop_list.append(key)
+
         self.df = self.df.drop(columns=[col for col in drop_list])
 
     def replace_missing_data(self, mode='interpolate'):
