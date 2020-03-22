@@ -100,15 +100,15 @@ class timeseries_Dataset:
         except NameError:
             print('timeSeries_Dataset has not processed')
 
-    def reset(self, reset_data):
+    def select_feature(self, preserve_list):
         '''
         this function to re-assign X_train and X_test after being selected by XGBoost
 
         Args:
-            reset_data = (X_train, X_test)
+            list of str of feature names (which is going to preserve)
         '''
-        self.X_train = reset_data[0]
-        self.X_test = reset_data[1]
+        self.X_train = self.X_train[preserve_list]
+        self.X_test = self.X_test[preserve_list]
 
     @staticmethod
     def batcher(x, y, batch_size: int):
