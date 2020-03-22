@@ -75,11 +75,13 @@ class timeseries_Dataset:
         '''
         self.x = self.df.drop(columns=y_name)
         self.y = self.df[y_name]
+        return self
 
     def trian_test_split(self, test_size=0.2, shuffle=False):
         # for sequential data we should not shuffle
         self.X_train, self.X_test, self.y_train, self.y_test = sk_ModelSelection.train_test_split(self.x, self.y,
                                                                                                   test_size=test_size, shuffle=shuffle)
+        return self
 
     def scale_X_train(self):
         col = self.X_train.columns
