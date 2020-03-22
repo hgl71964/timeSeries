@@ -26,7 +26,7 @@ class xgboost_dataset():
         else:
             self.X_train = X_train
 
-        if type(y_train) is pd.Series:
+        if type(y_train) is pd.Series or type(y_train) is pd.DataFrame:
             self.y_train = y_train.values
         else:
             self.y_train = y_train
@@ -36,11 +36,10 @@ class xgboost_dataset():
 
         if type(X_test) is pd.DataFrame:
             self.X_test = X_test.values
-
         else:
             self.X_test = X_test
 
-        if type(y_test) is pd.Series:
+        if type(y_train) is pd.Series or type(y_train) is pd.DataFrame:
             self.y_test = y_test.values
         else:
             self.y_test = y_test
