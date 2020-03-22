@@ -83,7 +83,11 @@ class xgboost_utility:
                        eval_metric='rmse',
                        verbose=True)
 
+    @property
     def feature_scores(self):
+        '''
+        self.ranking -> ranked feature importance list 
+        '''
         raw_ranking = sorted(self.model.get_booster().get_score(
         ).items(), key=lambda x: x[1], reverse=True)
         ranking = []
@@ -98,21 +102,18 @@ class xgboost_utility:
         Args:
             top k features that you want to preserve
 
-        Outputs:
-            return X_train, X_test with selected features
+        Returns:
+            -> list of str of feature names (which is going to preserve)
         '''
 
-        # a list of integer
+        if k > len(self.ranking):
+            raise ValueError('you are selecting all features!')
+
         preserve_list = []
         for i in range(k):
-            for key, value in self.feature_map.items():
-                if value == self.ranking[i][0]:
-                    preserve_list.append(int(key[1:]))
+            preserve_list.append(self.ranking[i][0])
 
-        # so we only take the columns we want
-        X_train = self.X_train[:, sorted(preserve_list)]
-        X_test = self.X_test[:, sorted(preserve_list)]
-        return (X_train, X_test)
+        return preserve_list
 
     def prediction(self, x):
         return self.model.predict(x)

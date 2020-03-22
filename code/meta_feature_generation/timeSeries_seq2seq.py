@@ -91,6 +91,23 @@ class seq2seq_utility():
 
         return (grid, model, optimiser, lossfunction)
 
+    @property
+    def default_model_setting(self):
+        self.all_grid = {'max_epochs': 1024,
+                         'learning_rate': 0.9,
+                         'clip': 1,
+                         'teacher_forcing_ratio': 0.5,  # during training
+                         'OUTPUT_DIM': 1,
+                         'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
+                         'ENC_HID_DIM': 24,
+                         'DEC_HID_DIM': 24,
+                         'ENC_DROPOUT': 0,
+                         'DEC_DROPOUT': 0,
+                         'encode_len': 6,           # how many days we want the ecoder encode
+                         'pred_len': 2,              # how many days we hope to predict
+                         'batch_size': 10,         # your batch size is constrained by the chunk of seq length
+                         'device': device}
+
     @staticmethod
     def seq2seq_training(model, training_Loader, optimiser, lossfunction, clip, teacher_forcing_ratio, batch_size):
         model.train()
