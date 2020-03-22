@@ -39,5 +39,13 @@ def backtest(X_test,models, data2, transaction_costs):
           positions.iloc[i+1,2] = -1
     value = entry_price * positions.iloc[i+1,1] + positions.iloc[i+1,0]
     positions.iloc[i+1,3] = value
-  return positions
+  positions['returns'] = positions['value'] / positions['value'].shift(1)
+
+  dates = data2.loc[X_test.index[0]:'date']
+  y1 = np.log(backtestResults['value']/backtestResults['value'].shift(1)).cumsum()
+  y2 = np.log(data['close']/data['close'].shift(1)).cumsum()
+  fig = go.Figure(go.Scatter(y=y1.iloc[1:],marker_color=backtestResults['traded'], mode='markers+lines', name='Strategy returns'))
+  fig.add_trace(go.Scatter(y=y2.iloc[1:], name='Buy and Hold Returns'))
+
+  return positions, fig
 
