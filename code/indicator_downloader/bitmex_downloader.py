@@ -44,7 +44,7 @@ def bitmexDownload(fullpath, write=True):
     funding_rate2 = funding_rate.drop_duplicates(['timestamp'],keep='first')
   if write == True:
     funding_rate2.reset_index(drop=True).to_csv(f"{fullpath}/bitmex_fundingrate.csv",index=False)
-  return funding_rate2.drop('fundingInterval',axis=1)
+  return funding_rate2
 
 
 def cleanBitMex(funding_rate):

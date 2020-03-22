@@ -38,11 +38,7 @@ def downloadData(ticker, API_KEY, API_SECRET, FREQ, fullpath, write=False):
 def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
   prices = {}
   for x in tickers:
-    if x == "BTC":
       prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write)) #change to HOUR, MINUTE if you want
-      print(f"DONE - {x}")
-    else:
-      prices[x] =  transform(downloadData(x, API_KEY, API_SECRET, FREQ, fullpath, write))
       print(f"DONE - {x}")
 
   #Columns to take; drop open_time, close_time
