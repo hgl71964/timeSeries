@@ -103,20 +103,20 @@ class xgboost_dataset():
             print('number of samples:', new_x.shape[0])
         return new_x, new_y
 
-    def batcher(self, x, y, batch_size: int):
+    @staticmethod
+    def batcher(x, y, batch_size: int):
         '''
-        this method is deprecated
+        make batch along first dimension
 
         Args:
             x: iterable 
             y: iterable
 
-        Output results attributes:
+        Return:
             x  [batch_size, encode_len, N_feature]
             y  [batch_size, encode_len+pred_len]
         '''
-        print('this method is deprecated')
-        raise ValueError
+
         l = len(x)
         for batch in range(0, l, batch_size):
             yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
