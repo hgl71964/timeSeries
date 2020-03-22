@@ -25,6 +25,7 @@ def backtest(X_test,models, data2, transaction_costs):
   for i in range(len(signals)):
     entry_price = data.iloc[i]['close']
     positions.iloc[i+1,0:2] = positions.iloc[i,0:2]
+    p = abs(signals[i] - 0.5)
     if signals[i] > 0.5:
       entry_capital = positions.iloc[i,0] * p 
       if entry_capital > 0:
