@@ -57,7 +57,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-	fig, ax = plt.subplots(figsize=(20,50),nrows=2)
+	fig, ax = plt.subplots(figsize=(20,30),nrows=2)
 	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	xgb.plot_importance(models['xgbc'],ax=ax[1])
@@ -70,7 +70,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	test_df.columns = list(models.keys())
 
 	models['ensemble'] = CatBoostClassifier(n_estimators=500, 
-	                        max_depth=5,
+	                        max_depth=2,
                           thread_count=10,
 	                        verbose=0)
 	models['ensemble'].fit(train_df, y_train)
