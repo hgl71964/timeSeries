@@ -1,3 +1,4 @@
+import empyrical
 import numpy as np
 import pandas as pd
 
@@ -63,7 +64,7 @@ def backtest(X_test,models, data2, transaction_costs, ls = False):
   sharpe = empyrical.sharpe_ratio(positions.loc[1:,'returns']-1,risk_free=0)
   md = empyrical.max_drawdown(positions.loc[1:,'returns']-1)
   sortino = empyrical.sortino_ratio(positions.loc[1:,'returns']-1,required_return=1.07**(1/365)-1)
-  print(f"Sharpe: {sharpe}\n Max Drawdown: {md}\n Sortino: {sortino}")
+  print(f"Sharpe: {sharpe}\nMax Drawdown: {md}\nSortino: {sortino}")
   
   return positions.iloc[1:], fig
 
