@@ -20,10 +20,16 @@ class timeseries_Dataset():
     def __init__(self, x, y):
         '''
         Args:
-            input: all x,y after initial pre-processing type = pandas.DataFrame
+            df -> raw dataFrame
         '''
-        self.x = x
-        self.y = y
+        self.df = df
+
+    @property
+    def show_missing_data(self):
+        na_col = {}
+        for col in df.columns:
+            na_col[col] = df[col].isna().sum()
+        return na_col
 
     def trian_test_split(self, test_size=0.2, shuffle=False):
         self.X_train, self.X_test, self.y_train, self.y_test = sk_ModelSelection.train_test_split(self.x, self.y,
