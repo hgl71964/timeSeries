@@ -66,7 +66,7 @@ class xgboost_utility:
             'learning_rate': 0.3,  # Boosting learning rate (xgb’s “eta”)
 
             # 0 (silent), 1 (warning), 2 (info), 3 (debug).
-            'verbosity': False,
+            'verbosity': 0,
 
             'objective': 'reg:squarederror',  # regression with squared loss
             'min_child_weight': 10,
