@@ -7,6 +7,7 @@ import seaborn as sns
 import os
 import sklearn
 import random
+import xgb_data_format as xgb_format
 
 
 class xgboost_dataset():
@@ -26,7 +27,7 @@ class xgboost_dataset():
         else:
             self.X_train = X_train
 
-        if type(y_train) is pd.Series:
+        if type(y_train) is pd.Series or type(y_train) is pd.DataFrame:
             self.y_train = y_train.values
         else:
             self.y_train = y_train
@@ -36,11 +37,10 @@ class xgboost_dataset():
 
         if type(X_test) is pd.DataFrame:
             self.X_test = X_test.values
-
         else:
             self.X_test = X_test
 
-        if type(y_test) is pd.Series:
+        if type(y_train) is pd.Series or type(y_train) is pd.DataFrame:
             self.y_test = y_test.values
         else:
             self.y_test = y_test
@@ -102,24 +102,6 @@ class xgboost_dataset():
         if print_info:
             print('number of samples:', new_x.shape[0])
         return new_x, new_y
-
-    def batcher(self, x, y, batch_size: int):
-        '''
-        this method is deprecated
-
-        Args:
-            x: iterable 
-            y: iterable
-
-        Output results attributes:
-            x  [batch_size, encode_len, N_feature]
-            y  [batch_size, encode_len+pred_len]
-        '''
-        print('this method is deprecated')
-        raise ValueError
-        l = len(x)
-        for batch in range(0, l, batch_size):
-            yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
 
 
 # if __name__ == "__main__":
