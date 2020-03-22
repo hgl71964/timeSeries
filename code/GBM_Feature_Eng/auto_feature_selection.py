@@ -46,7 +46,7 @@ class xgboost_utility:
         except:
             print('''hyper-parameter setting fails, 
                     model uses default settings''')
-            self.default_setting()
+            self.default_model_setting
 
         self.X_train = X_train
         self.y_train = y_train
@@ -58,7 +58,7 @@ class xgboost_utility:
         self.model = xgboost.XGBRegressor(**self.model_param)
 
     @property
-    def default_setting(self):
+    def default_model_setting(self):
         self.model_param = {
             # Number of gradient boosted trees. Equivalent to number of boosting rounds.
             'num_estimators': 1000,
