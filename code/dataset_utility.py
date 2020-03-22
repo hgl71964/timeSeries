@@ -35,34 +35,12 @@ class timeseries_Dataset():
         self.X_train = scaler.fit_transform(self.X_train)
         self.X_train = pd.DataFrame(data=self.X_train, columns=col)
 
-    def assignment(self, X_train, X_test):
+    def reset(self, X_train, X_test):
         '''
         this function to re-assign X_train and X_test after being selected by XGBoost 
         '''
         self.X_train = X_train
         self.X_test = X_test
-
-    def to_tensor(self):
-        if torch.is_tensor(self.X_train):
-            pass
-        else:
-            self.X_train = torch.from_numpy(self.X_train.values).float()
-            self.y_train = torch.from_numpy(self.y_train.values).float()
-            self.X_test = torch.from_numpy(self.X_test.values).float()
-            self.y_test = torch.from_numpy(self.y_test.values).float()
-
-    def to_numpy(self):
-        if torch.is_tensor(self.X_train):
-            self.X_train = self.X_train.numpy()
-            self.y_train = self.y_train.numpy()
-            self.X_test = self.X_test.numpy()
-            self.y_test = self.y_test.numpy()
-
-        else:
-            self.X_train = self.X_train.values
-            self.y_train = self.y_train.values
-            self.X_test = self.X_test.values
-            self.y_test = self.y_test.values
 
     @staticmethod
     def estimated_autocorrelation(x):
