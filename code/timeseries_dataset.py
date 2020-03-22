@@ -10,6 +10,7 @@ import seaborn as sns
 import os
 import sklearn
 import random
+import xgb_data_format
 
 '''
 This script formats the time series data
@@ -89,12 +90,40 @@ class timeseries_Dataset:
         self.X_train = scaler.fit_transform(self.X_train)
         self.X_train = pd.DataFrame(data=self.X_train, columns=col)
 
+    @property
+    def to_xgb_data_format(self):
+
+        try:
+            self.xgb = xgb_data_format.xgboost_dataset(
+                self.X_train, self.y_train, self.X_test, self.y_test)
+
+        except NameError:
+            print('timeSeries_Dataset has not processed')
+
     def reset(self, X_train, X_test):
         '''
         this function to re-assign X_train and X_test after being selected by XGBoost
         '''
         self.X_train = X_train
         self.X_test = X_test
+
+    @staticmethod
+    def batcher(x, y, batch_size: int):
+        '''
+        make batch along first dimension
+
+        Args:
+            x: iterable 
+            y: iterable
+
+        Return:
+            x  [batch_size, encode_len, N_feature]
+            y  [batch_size, encode_len+pred_len]
+        '''
+
+        l = len(x)
+        for batch in range(0, l, batch_size):
+            yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
 
     @staticmethod
     def estimated_autocorrelation(x):

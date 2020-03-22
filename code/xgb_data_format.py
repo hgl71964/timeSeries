@@ -103,24 +103,6 @@ class xgboost_dataset():
             print('number of samples:', new_x.shape[0])
         return new_x, new_y
 
-    @staticmethod
-    def batcher(x, y, batch_size: int):
-        '''
-        make batch along first dimension
-
-        Args:
-            x: iterable 
-            y: iterable
-
-        Return:
-            x  [batch_size, encode_len, N_feature]
-            y  [batch_size, encode_len+pred_len]
-        '''
-
-        l = len(x)
-        for batch in range(0, l, batch_size):
-            yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
-
 
 # if __name__ == "__main__":
 #     x = np.random.rand(20, 4)
