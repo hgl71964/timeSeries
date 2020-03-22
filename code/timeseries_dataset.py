@@ -32,6 +32,13 @@ class timeseries_Dataset:
             na_col[col] = self.df[col].isna().sum()
         return na_col
 
+    @property
+    def show_features_name(self):
+        cols = []
+        for col in self.df.columns:
+            cols.append(col)
+        return cols
+
     def drop_column(self, threshold: int):
         '''
         features with number of missing data > threshold will be drop 
