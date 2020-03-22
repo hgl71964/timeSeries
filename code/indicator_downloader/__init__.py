@@ -39,7 +39,7 @@ technicalFeats = ['BTC_ma_21_rate','BTC_ma_21_std_center', 'BTC_ma_21_std', 'BTC
 
 feats = binanceFeats + rivalFeats + onchainFeats + bitfinexFeats + bitmexFeats + glassnodeFeats + technicalFeats
 
-def selectTrainingFeatures(fullpath,printFeats=False, write=True):
+def selectTrainingFeatures(data2,fullpath,printFeats=False, write=True):
 	X = data2[feats]
 	if write == True:
 		X.to_csv(f"{fullpath2}/train.csv",index=False)
