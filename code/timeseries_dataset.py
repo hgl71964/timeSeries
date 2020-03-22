@@ -17,21 +17,25 @@ This script formats the time series data
 
 
 class timeseries_Dataset():
-    def __init__(self, x, y):
+    def __init__(self, df):
         '''
         Args:
-            df -> raw dataFrame
+            df -> dataFrame; all raw data
         '''
         self.df = df
 
     @property
     def show_missing_data(self):
         na_col = {}
-        for col in df.columns:
-            na_col[col] = df[col].isna().sum()
+        for col in self.df.columns:
+            na_col[col] = self.df[col].isna().sum()
         return na_col
 
+    def drop_column(self, drop_list):
+        self.df = self.df.drop(columns=[col for col in drop_list])
+
     def trian_test_split(self, test_size=0.2, shuffle=False):
+        # for sequential data we should not shuffle
         self.X_train, self.X_test, self.y_train, self.y_test = sk_ModelSelection.train_test_split(self.x, self.y,
                                                                                                   test_size=test_size, shuffle=shuffle)
 
