@@ -96,6 +96,7 @@ class xgboost_utility:
                 if t[0] == key:
                     ranking.append((self.feature_map[key], t[1]))
         self.ranking = ranking
+        return ranking
 
     def feature_selection(self, k: int):
         '''
