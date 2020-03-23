@@ -42,6 +42,7 @@ class seq2seq_utility():
                     'encode_len': 10,
                     'pred_len': 1,
                     'batch_size':1,
+                    'teacher_forcing_ratio': 1,  # teacher forcing during training
                     'device':device}
             #####
             Training:
@@ -71,6 +72,7 @@ class seq2seq_utility():
                          'encode_len': kwargs['encode_len'],
                          'pred_len': kwargs['pred_len'],
                          'batch_size': kwargs['batch_size'],
+                         'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
                          }
             OUTPUT_DIM = kwargs['OUTPUT_DIM']
             ENC_EMB_DIM = kwargs['ENC_EMB_DIM']
@@ -106,7 +108,6 @@ class seq2seq_utility():
         self.grid = {'max_epochs': 1024,
                      'learning_rate': 0.9,
                      'clip': 1,
-                     'teacher_forcing_ratio': 0.5,  # during training
                      'OUTPUT_DIM': 1,
                      'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
                      'ENC_HID_DIM': 24,
@@ -116,6 +117,7 @@ class seq2seq_utility():
                      'encode_len': 6,           # how many days we want the ecoder encode
                      'pred_len': 2,              # how many days we hope to predict
                      'batch_size': 10,         # your batch size is constrained by the chunk of seq length
+                     'teacher_forcing_ratio': 1,
                      'device': 'cuda'}
 
     def seq2seq_training(self, training_Loader, clip, teacher_forcing_ratio, batch_size):
@@ -172,8 +174,15 @@ class seq2seq_utility():
                 epoch_loss += loss.item()
         return epoch_loss
 
-    def run_epoch(self, X_train, y_train, X_test, y_test,
-                  teacher_forcing_ratio):
+    def run_epoch(self, X_train, y_train, X_test, y_test):
+        '''
+        Args:
+            X_train: [N_samples,N-features] -> Tensor
+            X_test: [N_samples,N-features] -> Tensor
+            y_train: [N_samples]  labels -> Tensor
+            y_test: [N_samples]  labels -> Tensor
+
+        '''
 
         best_valid_loss = float('inf')
 
@@ -189,7 +198,7 @@ class seq2seq_utility():
         for epoch in range(self.grid['max_epochs']):
 
             train_loss = self.seq2seq_training(training_Loader,
-                                               self.grid['clip'], teacher_forcing_ratio, self.grid['batch_size'])
+                                               self.grid['clip'], self.grid['teacher_forcing_ratio'], self.grid['batch_size'])
             valid_loss = self.seq2seq_evaluate(test_Loader,
                                                self.grid['batch_size'])
 
