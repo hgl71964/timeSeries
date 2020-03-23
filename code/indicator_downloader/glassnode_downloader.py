@@ -5,7 +5,7 @@ import requests
 
 from datetime import date, datetime
 
-def glassnodeDownloader(GLASSNODE_API_KEY, fullpath, write=False):
+def glassnodeDownloader(GLASSNODE_API_KEY, fullpath, write=True):
   url = 'https://api.glassnode.com/v1/metrics/'
 
   indicators = {"exchange_outflow":"transactions/transfers_volume_from_exchanges_sum",
@@ -19,7 +19,9 @@ def glassnodeDownloader(GLASSNODE_API_KEY, fullpath, write=False):
   success = True
   try:
     prior_df = pd.read_csv(f"{fullpath}/glassnode_indicators.csv")
+    prior_df['Date'] = pd.to_datetime(prior_df['Date'])
     start_date = prior_df['timestamp'].iloc[-1]
+    print("preexisting data in table")
   except:
     success = False
   
@@ -31,17 +33,18 @@ def glassnodeDownloader(GLASSNODE_API_KEY, fullpath, write=False):
   df.columns = ['timestamp',list(indicators.keys())[0]]
 
   for x in list(indicators.keys())[1:]:
+    print(f"downloading: {x}")
     if success == True:
       r = requests.get(f"{url}{indicators[x]}?a=BTC&s={start_date}",{'api_key':GLASSNODE_API_KEY})
     else:
-      r = requests.get(f"{url}{indicators[list(indicators.keys())[0]]}?a=BTC",{'api_key':GLASSNODE_API_KEY})
+      r = requests.get(f"{url}{indicators[x]}?a=BTC",{'api_key':GLASSNODE_API_KEY})
     temp = pd.io.json.json_normalize(r.json())
     temp.columns = ['timestamp', x]
-    df = pd.merge(df, temp, how='inner',left_on='timestamp',right_on='timestamp')
+    df = pd.merge(df, temp, how='left',left_on='timestamp',right_on='timestamp')
 
   df['Date'] = pd.to_datetime(df['timestamp'].apply(lambda x: datetime.fromtimestamp(x)))
   if success == True:
-    df = pd.concat([df,prior_df], axis=0).drop_duplicates().reset_index(drop=True)
+    df = pd.concat([prior_df,df], axis=0).drop_duplicates('timestamp').reset_index(drop=True)
   if write == True:
     df.to_csv(f"{fullpath}/glassnode_indicators.csv",index=False)
   return df

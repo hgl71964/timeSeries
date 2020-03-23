@@ -37,14 +37,14 @@ def bitmexDownload(fullpath, write=True):
       count += 300
   funding_rate['timestamp'] = pd.to_datetime(funding_rate['timestamp'])
   if success == True:
-    funding_rate2 = pd.concat([prior_df,funding_rate.drop('fundingInterval',axis=1)],axis=0,
+    funding_rate2 = pd.concat([prior_df,funding_rate],axis=0,
                               sort=True).reset_index(drop=True)
     funding_rate2 = funding_rate2.drop_duplicates(['timestamp'],keep='first')                  
   else:
     funding_rate2 = funding_rate.drop_duplicates(['timestamp'],keep='first')
   if write == True:
     funding_rate2.reset_index(drop=True).to_csv(f"{fullpath}/bitmex_fundingrate.csv",index=False)
-  return funding_rate2.drop('fundingInterval',axis=1)
+  return funding_rate2
 
 
 def cleanBitMex(funding_rate):

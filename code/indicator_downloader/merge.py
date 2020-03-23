@@ -35,4 +35,7 @@ def merge(quandl_api_key, GLASSNODE_API_KEY, fullpath):
   glassnode['Date'] = pd.to_datetime(glassnode['Date'])
   merged_feats = pd.merge(merged_feats,glassnode, how='left',on='Date')
   print("DONE -GLASSNODE")
+  
+  merged_feats.loc[:,'snp_returns'].fillna(1,inplace=True)
+  merged_feats.loc[:,'stablecoin_supply_ratio'].fillna(method='ffill',inplace=True)
   return merged_feats
