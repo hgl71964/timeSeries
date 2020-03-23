@@ -37,6 +37,7 @@ Description: these models does not have sequential properties (or weak sequentia
 
 ##### In the second layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
 
+Due to its inherent sequential property, we can easily encode a sequence with arbitrary length and produce another sequence with arbitrary length. 
 
-- Seq2seq:
+- Seq2seq: standard seq2seq model with attention; attention mechanism may be helpful for periodicity.
 
