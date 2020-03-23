@@ -7,7 +7,7 @@ import os
 
 
 class DNN_utility:
-    def __init__(self, X_train, y_train, X_test, y_test, **kwargs):
+    def __init__(self, input_dim, **kwargs):
         '''
         Args:
             X_train, y_train, X_test, y_test -> np.darray
@@ -17,7 +17,7 @@ class DNN_utility:
 
         # set all parameters
 
-        self.dim = X_train.shape[0]
+        self.dim = input_dim
 
         try:
             self.other_param = {'max_epochs': kwargs['max_epochs'],
@@ -26,7 +26,7 @@ class DNN_utility:
                                 'device': kwargs['device']
                                 }
 
-            self.model_param = {'input_dim': kwargs['input_dim'],
+            self.model_param = {'input_dim': input_dim,
                                 'first_hidden': kwargs['first_hidden'],
                                 'second_hidden': kwargs['second_hidden'],
                                 }
@@ -38,11 +38,6 @@ class DNN_utility:
         # instantiate
         self.model = DNN(self.model_param['input_dim'],
                          self.model_param['first_hidden'], self.model_param['second_hidden'])
-
-        self.X_train = torch.from_numpy(X_train).float()
-        self.y_train = torch.from_numpy(y_train).float()
-        self.X_test = torch.from_numpy(X_test).float()
-        self.y_test = torch.from_numpy(y_test).float()
 
         self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.other_param['learning_rate'])
@@ -64,11 +59,11 @@ class DNN_utility:
     def run_epoch(self, X_train, y_train, X_test, y_test):
         '''
         Args:
-            X_train: [N_samples,input_dim];  -> Tensor
-            y_train: [N_samples,];  -> Tensor
+            X_train: [N_samples,input_dim];  -> Tensor or np
+            y_train: [N_samples,];  -> Tensor or np
 
-            X_test: [N_samples,input_dim];  -> Tensor
-            y_test: [N_samples,];  -> Tensor
+            X_test: [N_samples,input_dim];  -> Tensor or np
+            y_test: [N_samples,];  -> Tensor or np
         '''
         best_valid_loss = float('inf')
 
@@ -97,8 +92,8 @@ class DNN_utility:
     def training(self, X_train, y_train):
         '''
         Args:
-            X_train: [N_samples,input_dim];  -> Tensor
-            y_train: [N_samples,];  -> Tensor
+            X_train: [N_samples,input_dim];  -> Tensor or np
+            y_train: [N_samples,];  -> Tensor or np
 
             output from _generate_batches:
                 local_batch:  [batch_size, input_dim] -> Tensor
@@ -106,6 +101,10 @@ class DNN_utility:
         '''
         self.model.train()
         epoch_loss = 0
+
+        if not torch.is_tensor(X_train):
+            X_train = torch.from_numpy(X_train).float()
+            y_train = torch.from_numpy(y_train).float()
 
         for local_batch, local_labels in self.batcher(X_train, y_train, self.other_param['batch_size']):
 
@@ -132,8 +131,8 @@ class DNN_utility:
     def evaluation(self, X_test, y_test):
         '''
         Args:
-            X_test: [estmples,input_dim];  -> Tensor
-            y_test: [N_samples,];  -> Tensor
+            X_test: [estmples,input_dim];  -> Tensor or np
+            y_test: [N_samples,];  -> Tensor or np
 
             output from _generate_batches:
                 local_batch:  [batch_size, input_dim] -> Tensor
@@ -141,6 +140,10 @@ class DNN_utility:
         '''
         self.model.eval()
         epoch_loss = 0
+
+        if not torch.is_tensor(X_test):
+            X_test = torch.from_numpy(X_test).float()
+            y_test = torch.from_numpy(y_test).float()
 
         for local_batch, local_labels in self.batcher(X_test, y_test, self.other_param['batch_size']):
 
