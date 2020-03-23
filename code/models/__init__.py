@@ -75,7 +75,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	models['ensemble'] = LogisticRegression()
 	models['ensemble'].fit(train_df, y_train)
 
-	featImportances = dict(sorted(zip(list(models.keys()),models['ensemble'].coef_),key=lambda k: k[1]))
+	featImportances = dict(sorted(zip(list(models.keys()),models['ensemble'].coef_[0]),key=lambda k: k[1]))
 	ax[2].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	print("ENSEMBLE")
