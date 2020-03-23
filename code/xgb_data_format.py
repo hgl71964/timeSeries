@@ -117,11 +117,12 @@ class xgboost_dataset:
                         [new_y, pred.reshape(1, -1)], axis=0)
                 except:  # residual
                     pass
+
         if print_info:
             print('number of samples:', new_x.shape[0])
 
-            new_x = pd.DataFrame(new_x, columns=self.feature_names)
-            new_y = pd.DataFrame(new_y, columns=[self.feature_names[-1]])
+        new_x = pd.DataFrame(new_x, columns=self.feature_names)
+        new_y = pd.DataFrame(new_y, columns=[self.feature_names[-1]])
 
         return new_x, new_y
 
