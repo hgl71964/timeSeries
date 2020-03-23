@@ -96,6 +96,8 @@ class seq2seq_dataset():
         self.y_test = copy.deepcopy(self.y)
         del self.X, self.y, self.full_data
 
+        return self
+
     def train_loader(self, batch_size):
         '''
         Args:
