@@ -25,7 +25,7 @@ class xgboost_dataset():
         '''
 
         self.feature_name = list(self.X_train.columns)
-        self.feature_name.append(self.y_train.columns)
+        self.feature_name.append(list(self.y_train.columns))
 
         if type(X_train) is pd.DataFrame:
             self.X_train = X_train.values
@@ -60,7 +60,7 @@ class xgboost_dataset():
                       pred_len: int,):
         '''
         Returns -> pd.DataFrame
-            X_train: features, excluding return, [N_sample,N_feature] 
+            X_train: features, including return, [N_sample,N_feature] 
             y_train: return, [N_sample,] 
         '''
 
@@ -116,6 +116,9 @@ class xgboost_dataset():
                     pass
         if print_info:
             print('number of samples:', new_x.shape[0])
+
+            new_x = pd.DataFrame(new_x, columns=self.feature_name)
+            new_y = pd.DataFrame(new_y, columns=[self.feature_name[-1]])
 
         return new_x, new_y
 
