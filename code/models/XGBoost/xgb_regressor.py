@@ -157,7 +157,7 @@ class gradient_boost_utility:
         return preserve_list
 
     def prediction(self, x):
-        return self.XGBoost.predict(x)
+        return self.XGBoost.predict(x), self.Catboost.predict(x)
 
     @staticmethod
     def show_param():
