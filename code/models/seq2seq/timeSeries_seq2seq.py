@@ -186,7 +186,9 @@ class seq2seq_utility():
 
         best_valid_loss = float('inf')
 
-        # data loader
+        '''
+        TODO: make dataloader compatible
+        '''
         training_Loader = seq2seq_format_input(X_train, y_train)
         training_Loader.walk_forward_split(
             self.grid['encode_len'], self.grid['pred_len'])
