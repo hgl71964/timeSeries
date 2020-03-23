@@ -2,6 +2,7 @@ import numpy as np
 import json
 import pandas as pd
 import requests
+import boto3
 
 from datetime import date, datetime
 
@@ -55,6 +56,15 @@ def cleanBitMex(funding_rate):
   funding_rate2.columns = ['Date','fundingRateClose','fundingRateDailyClose', 'fundingRateOpen','fundingRateDailyOpen','fundingRateMean','fundingRateDailyMean']
   return funding_rate2
 
-
-def bitmexDownload2(fullpath, write=True):
-  return
+def bitmexDownload2(fullpath,AWS_ACCESS_KEY,AWS_SECRET_ACCESS, write=True):
+  s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY,aws_secret_access_key=AWS_SECRET_ACCESS)
+  s3.download_file('256-ventures', 'data/Bitmex/OI_OV_XBT.csv', 'OI_OV_XBT.csv')
+  bitmex_oiov = pd.read_csv("OI_OV_XBT.csv")
+  bitmex_oiov['Date'] = pd.to_datetime(pd.to_datetime(bitmex_oiov['timestamp'],utc=True).dt.date)
+  bitmex_oiov2 = bitmex_oiov.groupby('Date')[['openInterest','openValue']].nth(-1).reset_index()
+  bitmex_oiov2 = pd.merge(bitmex_oiov2, bitmex_oiov.groupby('Date')[['openInterest','openValue']].nth(0).reset_index(),on='Date')
+  bitmex_oiov2 = pd.merge(bitmex_oiov2, bitmex_oiov.groupby('Date')[['openInterest','openValue']].mean().reset_index(),on='Date')
+  bitmex_oiov2.columns = ['Date','openInterestClose','openValueClose', 'openInterestOpen','openValueOpen','openInterestMean','openValueMean']
+  if write == True:
+    bitmex_oiov2.to_csv(f"{fullpath}/bitmex_oiov.csv",index=False)
+  return bitmex_oiov2
