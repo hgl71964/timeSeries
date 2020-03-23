@@ -4,6 +4,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 import copy
 import os
+import pandas as pd
+import numpy as np
 
 
 class DNN_utility:
@@ -95,8 +97,8 @@ class DNN_utility:
     def training(self, X_train, y_train):
         '''
         Args:
-            X_train: [N_samples,input_dim];  -> Tensor or np
-            y_train: [N_samples,];  -> Tensor or np
+            X_train: [N_samples,input_dim];  -> Tensor or np or pd
+            y_train: [N_samples,];  -> Tensor or np or pd
 
             output from _generate_batches:
                 local_batch:  [batch_size, input_dim] -> Tensor
@@ -105,9 +107,13 @@ class DNN_utility:
         self.model.train()
         epoch_loss = 0
 
-        if not torch.is_tensor(X_train):
+        if type(X_train) is np.darray:
             X_train = torch.from_numpy(X_train).float()
             y_train = torch.from_numpy(y_train).float()
+
+        elif type(X_train) is pd.DataFrame:
+            X_train = torch.from_numpy(X_train.values).float()
+            y_train = torch.from_numpy(y_train.values).float()
 
         for local_batch, local_labels in self.batcher(X_train, y_train, self.other_param['batch_size']):
 
@@ -144,9 +150,13 @@ class DNN_utility:
         self.model.eval()
         epoch_loss = 0
 
-        if not torch.is_tensor(X_test):
+        if type(X_test) is np.darray:
             X_test = torch.from_numpy(X_test).float()
             y_test = torch.from_numpy(y_test).float()
+
+        elif type(X_test) is pd.DataFrame:
+            X_test = torch.from_numpy(X_test.values).float()
+            y_test = torch.from_numpy(y_test.values).float()
 
         for local_batch, local_labels in self.batcher(X_test, y_test, self.other_param['batch_size']):
 
