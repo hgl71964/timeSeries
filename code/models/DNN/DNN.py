@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import copy
+import os
 
 
 class DNN_utility:
@@ -13,6 +14,8 @@ class DNN_utility:
 
             kwargs -> dict of all parameters
         '''
+
+        # set all parameters
         try:
             self.other_param = {'max_epochs': kwargs['max_epochs'],
                                 'learning_rate': kwargs['learning_rate'],
@@ -29,6 +32,7 @@ class DNN_utility:
             model uses default settings''')
             self.default_model_setting
 
+        # instantiate
         self.model = DNN(self.model_param['input_dim'],
                          self.model_param['first_hidden'], self.model_param['second_hidden'])
 
@@ -72,16 +76,16 @@ class DNN_utility:
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                self.m = copy.deepcopy(self.model)
+                self.best_model = copy.deepcopy(self.model)
             print(f'Epoch: {epoch+1}:')
             print(f'Train Loss: {train_loss:.3f}')
             print(f'Validation Loss: {valid_loss:.3f}')
 
-        return best_valid_loss, self.m
+        return best_valid_loss
 
     def prediction(self, x):
         try:
-            pred = self.m(x)
+            pred = self.best_model(x)
         except:
             raise NameError('have not trained model')
 
@@ -150,6 +154,39 @@ class DNN_utility:
         l = len(y)
         for batch in range(0, l, batch_size):
             yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
+
+    def save_model(self, path):
+        '''
+        Args:
+            path: root path
+        '''
+        try:
+            checkpoint = {'model_state_dict': self.best_model.state_dict(),
+                          'optimizer_state_dict': self.optimiser.state_dict(),
+                          }
+            torch.save(checkpoint, os.path.join(path, 'timeSeries_DNN.pt'))
+
+        except NameError:
+            checkpoint = {'model_state_dict': self.model.state_dict(),
+                          'optimizer_state_dict': self.optimiser.state_dict(),
+                          }
+            torch.save(checkpoint, os.path.join(path, 'timeSeries_DNN.pt'))
+
+            print('have not trained model yet')
+
+    def load_model(self, path):
+        '''
+        Args:
+            path: root path
+        '''
+        try:
+            checkpoint = torch.load(path)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimiser.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.model.eval()
+
+        except:
+            print('cannot load')
 
 
 class DNN(nn.Module):
