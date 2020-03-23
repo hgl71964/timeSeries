@@ -75,7 +75,7 @@ class DNN_utility:
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                self.best_model = copy.deepcopy(self.model)
+                self.best_model = copy.deepcopy(self.model).cpu()
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
@@ -83,6 +83,8 @@ class DNN_utility:
         return best_valid_loss
 
     def prediction(self, x):
+        if not torch.is_tensor(x):
+            x = torch.from_numpy(x).float()
         try:
             pred = self.best_model(x)
         except:
