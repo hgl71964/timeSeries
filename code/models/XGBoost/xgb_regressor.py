@@ -106,11 +106,11 @@ class xgboost_utility:
             -> list of str of feature names (which is going to preserve)
         '''
 
-        if k > len(self.ranking):
+        if k+1 > len(self.ranking):
             raise ValueError('you are selecting all features!')
 
         preserve_list = []
-        for i in range(k):
+        for i in range(k+1):  # add 1 because we have already included y
             preserve_list.append(self.ranking[i][0])
 
         return preserve_list
