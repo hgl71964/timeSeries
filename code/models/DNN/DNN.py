@@ -86,10 +86,10 @@ class DNN_utility:
 
     def prediction(self, x):
 
-       if type(X_train) is np.ndarray:
+        if type(x) is np.ndarray:
             x = torch.from_numpy(x).float()
 
-        elif type(X_train) is pd.DataFrame:
+        elif type(x) is pd.DataFrame:
             x = torch.from_numpy(x.values).float()
 
         try:
