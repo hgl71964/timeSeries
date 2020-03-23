@@ -114,8 +114,8 @@ class seq2seq_utility():
                      'DEC_HID_DIM': 24,
                      'ENC_DROPOUT': 0,
                      'DEC_DROPOUT': 0,
-                     'encode_len': 6,           # how many days we want the ecoder encode
-                     'pred_len': 2,              # how many days we hope to predict
+                     'encode_len': 1,           # how many days we want the ecoder encode
+                     'pred_len': 1,              # how many days we hope to predict
                      'batch_size': 10,         # your batch size is constrained by the chunk of seq length
                      'teacher_forcing_ratio': 1,
                      'device': 'cuda'}

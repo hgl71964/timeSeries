@@ -8,19 +8,19 @@ import copy
 class DNN_utility:
     def __init__(self, **kwargs):
 
-        self.grid = {'max_epochs': kwargs['max_epochs'],
-                     'learning_rate': kwargs['learning_rate'],
-                     'batch_size': kwargs['batch_size'],
-                     'device': kwargs['device']
-                     }
+        self.other_param = {'max_epochs': kwargs['max_epochs'],
+                            'learning_rate': kwargs['learning_rate'],
+                            'batch_size': kwargs['batch_size'],
+                            'device': kwargs['device']
+                            }
 
         self.model = DNN(kwargs['input_dim'],
                          kwargs['first_hidden'], kwargs['second_hidden'])
 
         self.optimiser = optim.Adam(
-            self.model.parameters(), lr=self.grid['learning_rate'])
+            self.model.parameters(), lr=self.other_param['learning_rate'])
 
-        self.lossfunction = nn.MSELoss().to(self.grid['device'])
+        self.lossfunction = nn.MSELoss().to(self.other_param['device'])
 
     def run_epoch(self, X_train, y_train, X_test, y_test):
         '''
@@ -33,7 +33,7 @@ class DNN_utility:
         '''
         best_valid_loss = float('inf')
 
-        for epoch in range(self.grid['max_epochs']):
+        for epoch in range(self.other_param['max_epochs']):
 
             train_loss = self.training(X_train, y_train)
             valid_loss = self.evaluation(X_test, y_test)
@@ -68,10 +68,10 @@ class DNN_utility:
         self.model.train()
         epoch_loss = 0
 
-        for local_batch, local_labels in self.batcher(X_train, y_train, self.grid['batch_size']):
+        for local_batch, local_labels in self.batcher(X_train, y_train, self.other_param['batch_size']):
 
             local_batch, local_labels = local_batch.to(
-                self.grid['device']), local_labels.flatten().to(self.grid['device'])
+                self.other_param['device']), local_labels.flatten().to(self.other_param['device'])
 
             # print('input are:')
             # print(local_batch.size())
@@ -103,10 +103,10 @@ class DNN_utility:
         self.model.eval()
         epoch_loss = 0
 
-        for local_batch, local_labels in self.batcher(X_test, y_test, self.grid['batch_size']):
+        for local_batch, local_labels in self.batcher(X_test, y_test, self.other_param['batch_size']):
 
             local_batch, local_labels = local_batch.to(
-                self.grid['device']), local_labels.flatten().to(self.grid['device'])
+                self.other_param['device']), local_labels.flatten().to(self.other_param['device'])
 
             local_output = self.model(local_batch)
 
