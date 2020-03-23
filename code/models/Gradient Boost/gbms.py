@@ -130,8 +130,10 @@ class gradient_boost_utility:
             if val > maximum2:
                 maximum2 = val
 
+        '''
+        combine & normalisation 
+        '''
         self.norm_ranking = {key: 0 for key in self.xgb_rank}
-
         for key in self.norm_ranking:
             self.norm_ranking[key] = (
                 self.cat_rank[key] / maximum2) + (self.xgb_rank[key] / maximum1)
