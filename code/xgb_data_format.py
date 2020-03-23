@@ -19,8 +19,12 @@ class xgboost_dataset():
         Args:
             input type ->  pandas
 
-            X_train: features, excluding return, [N_sample,N_feature] -> np.darray
-            y_train: return, [N_sample,] -> np.darray
+        Intermediate variables: X_train: features, excluding return, [N_sample,N_feature] -> np.darray
+        Intermediate variables: y_train: return, [N_sample,] -> np.darray
+
+        after calling split_dataset()
+
+        Returns -> pd.DataFrame
 
         '''
 
