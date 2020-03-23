@@ -195,6 +195,7 @@ class DNN_utility:
 class DNN(nn.Module):
 
     def __init__(self, input_dim, first_hidden, second_hidden):
+        super(DNN, self).__init__()
         self.layers = nn.Sequential(
             nn.Linear(input_dim, first_hidden),
             nn.Sigmoid(),
