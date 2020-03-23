@@ -10,6 +10,8 @@ class DNN_utility:
         '''
         Args:
             X_train, y_train, X_test, y_test -> np.darray
+
+            kwargs -> dict of all parameters
         '''
         try:
             self.other_param = {'max_epochs': kwargs['max_epochs'],
