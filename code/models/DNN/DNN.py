@@ -49,7 +49,7 @@ class DNN_utility:
         self.other_param = {'max_epochs': 256,
                             'learning_rate': 1e-3,
                             'batch_size': 8,
-                            'device': 'cuda',
+                            'device': 'cpu',
                             }
         self.model_param = {'input_dim': self.dim,
                             'first_hidden': 128,
@@ -199,6 +199,7 @@ class DNN(nn.Module):
 
     def __init__(self, input_dim, first_hidden, second_hidden):
         super(DNN, self).__init__()
+
         self.layers = nn.Sequential(
             nn.Linear(input_dim, first_hidden),
             nn.Sigmoid(),
@@ -207,12 +208,26 @@ class DNN(nn.Module):
             nn.Linear(second_hidden, 1),
         )
 
+        # self.fc1 = nn.Linear(input_dim, first_hidden)
+        # self.a1 = nn.Sigmoid()
+        # self.fc2 = nn.Linear(first_hidden, second_hidden)
+        # self.a2 = nn.Sigmoid()
+        # self.fc3 = nn.Linear(second_hidden, 1)
+
     def forward(self, x):
         '''
         Args:
-            x -> [N_samples,input_dim]; input_dim = meta feature
+            x -> [N_samples,input_dim];
 
         Outputs:
             x -> [N_samples,]
         '''
         return self.layers(x).view(-1)
+
+
+if __name__ == "__main__":
+    x = torch.rand(50, 10)
+    y = torch.ones(50,)
+    input_dim = 10
+    dnn = DNN_utility(input_dim)
+    dnn.run_epoch(x, y, x, y)
