@@ -9,9 +9,9 @@ from technical_indicators import *
 
 
 def getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, AWS_ACCESS_KEY,AWS_SECRET_ACCESS,FREQ, fullpath, fullpath2, write=True):
-	data = downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=True)
+	data = downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath, write=write)
 	data['date'] = pd.to_datetime(data['date'])
-	indicators = merge(QUANDL_API, GLASSNODE_API_KEY,AWS_ACCESS_KEY,AWS_SECRET_ACCESS, fullpath2)
+	indicators = merge(QUANDL_API, GLASSNODE_API_KEY,AWS_ACCESS_KEY,AWS_SECRET_ACCESS, fullpath2, write)
 	indicators['Date'] = pd.to_datetime(indicators['Date'])
 	merged_df = pd.merge(data,indicators,how='inner',left_on='date',right_on='Date')
 	print("MERGED INDICATORS WITH PRICE DATA")
