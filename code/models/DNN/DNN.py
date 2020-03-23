@@ -107,7 +107,7 @@ class DNN_utility:
         self.model.train()
         epoch_loss = 0
 
-        if type(X_train) is np.darray:
+        if type(X_train) is np.ndarray:
             X_train = torch.from_numpy(X_train).float()
             y_train = torch.from_numpy(y_train).float()
 
@@ -150,7 +150,7 @@ class DNN_utility:
         self.model.eval()
         epoch_loss = 0
 
-        if type(X_test) is np.darray:
+        if type(X_test) is np.ndarray:
             X_test = torch.from_numpy(X_test).float()
             y_test = torch.from_numpy(y_test).float()
 
