@@ -27,7 +27,7 @@ class xgboost_dataset:
         Returns -> pd.DataFrame
 
         '''
-        print(X_trian.columns)
+        print(X_train.columns)
         self.feature_names = list(X_train.columns)
         self.feature_names.append(y_train.columns)
 
