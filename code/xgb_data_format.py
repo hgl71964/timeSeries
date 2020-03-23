@@ -28,8 +28,8 @@ class xgboost_dataset:
 
         '''
 
-        self.feature_name = list(X_train.columns)
-        self.feature_name.append(list(y_train.columns))
+        self.feature_names = list(X_train.columns)
+        self.feature_names.append(y_train.columns)
 
         if type(X_train) is pd.DataFrame:
             self.X_train = X_train.values
@@ -121,15 +121,14 @@ class xgboost_dataset:
         if print_info:
             print('number of samples:', new_x.shape[0])
 
-            new_x = pd.DataFrame(new_x, columns=self.feature_name)
-            new_y = pd.DataFrame(new_y, columns=[self.feature_name[-1]])
+            new_x = pd.DataFrame(new_x, columns=self.feature_names)
+            new_y = pd.DataFrame(new_y, columns=[self.feature_names[-1]])
 
         return new_x, new_y
 
 
-# if __name__ == "__main__":
-#     x = np.random.rand(20, 4)
-#     y = np.random.rand(20)
-#     xgb_data = xgboost_dataset(x, y)
-#     xgb_data.xgb_walk_forward_split(1, 1)
-#     print(xgb_data.x.shape)
+if __name__ == "__main__":
+    x = pd.DataFrame(np.random.rand(20, 4))
+    y = pd.DataFrame(np.random.rand(20))
+    xgb_data = xgboost_dataset(x, y, x, y)
+    print(xgb_data.feature_names)
