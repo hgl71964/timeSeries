@@ -28,7 +28,7 @@ class DNN_utility:
             X_train: [N_samples,input_dim];  -> Tensor
             y_train: [N_samples,];  -> Tensor
 
-            X_test: [estmples,input_dim];  -> Tensor
+            X_test: [N_samples,input_dim];  -> Tensor
             y_test: [N_samples,];  -> Tensor
         '''
         best_valid_loss = float('inf')

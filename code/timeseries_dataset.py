@@ -103,23 +103,6 @@ class timeseries_Dataset:
         except NameError:
             print('timeSeries_Dataset has not processed')
 
-    @property
-    def to_seq2seq_data_format(self):
-
-        X_train = torch.from_numpy(self.X_train.values)
-        X_test = torch.from_numpy(self.X_test.values)
-        y_train = torch.from_numpy(self.y_train.values)
-        y_test = torch.from_numpy(self.y_test.values)
-
-        try:
-            self.seq2seq = seq2seq_data_format.seq2seq_dataset(
-                X_train, y_train, X_test, y_test)
-
-        except NameError:
-            print('timeSeries_Dataset has not processed')
-
-        return self
-
     def select_feature(self, preserve_list):
         '''
         this function to re-assign X_train and X_test after being selected by XGBoost
