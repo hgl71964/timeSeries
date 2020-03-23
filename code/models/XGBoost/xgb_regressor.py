@@ -14,7 +14,7 @@ import Pool
 
 class gradient_boost_utility:
 
-    def __init__(self, X_train, y_train, X_test, y_test, feature_map, **kwargs):
+    def __init__(self, X_train, y_train, X_test, y_test, **kwargs):
         '''
         param_grid sets hyper-parameter for the model
 
@@ -62,7 +62,6 @@ class gradient_boost_utility:
         self.y_train = y_train
         self.X_test = X_test
         self.y_test = y_test
-        self.feature_map = feature_map
 
         # instantiate model according to hyper-parameters
         self.XGBoost = xgboost.XGBRegressor(**self.xgb_param)
@@ -93,24 +92,36 @@ class gradient_boost_utility:
         }
 
     def training(self):
+        '''
+        train both GBM 
+        '''
         self.XGBoost.fit(self.X_train, self.y_train,
                          eval_set=[(self.X_train, self.y_train),
                                    (self.X_test, self.y_test)],
                          eval_metric='rmse',
                          verbose=self.xgb_param['verbosity'])
 
+        trainPool = Pool(self.X_train, self.y_train)
+        self.Catboost.fit(trainPool)
+
     @property
     def feature_scores(self):
         '''
-        self.ranking -> ranked feature importance list 
+        xgboost features score
         '''
-
         raw_ranking = sorted(self.XGBoost.get_booster().get_score(
         ).items(), key=lambda x: x[1], reverse=True)
 
-        self.ranking = {}
+        self.xgb_rank = {}
         for item in raw_ranking:
-            self.ranking[item[0]] = item[1]
+            self.xgb_rank[item[0]] = item[1]
+
+        '''
+        catboost features score
+        '''
+
+        self.cat_rank = dict(sorted(zip(self.X_train.columns,
+                                        cbr.get_feature_importance()), key=lambda k: k[1]))
 
         return self.ranking
 
