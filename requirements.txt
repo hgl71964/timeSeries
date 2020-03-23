@@ -11,3 +11,4 @@ scipy
 catboost
 xgboost
 shap
+boto3
