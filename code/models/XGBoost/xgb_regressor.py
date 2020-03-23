@@ -112,6 +112,9 @@ class gradient_boost_utility:
         raw_ranking = sorted(self.XGBoost.get_booster().get_score(
         ).items(), key=lambda x: x[1], reverse=True)
 
+        maximum1 = raw_ranking[0][1]
+
+        # normalisation & to dict
         self.xgb_rank = {}
         for item in raw_ranking:
             self.xgb_rank[item[0]] = item[1]
@@ -119,11 +122,21 @@ class gradient_boost_utility:
         '''
         catboost features score
         '''
-
         self.cat_rank = dict(sorted(zip(self.X_train.columns,
-                                        cbr.get_feature_importance()), key=lambda k: k[1]))
+                                        self.Catboost.get_feature_importance()), key=lambda k: k[1]))
+        # get largest
+        maximum2 = 0
+        for val in self.cat_rank.values():
+            if val > maximum2:
+                maximum2 = val
 
-        return self.ranking
+        self.norm_ranking = {key: 0 for key in self.xgb_rank}
+
+        for key in self.norm_ranking:
+            self.norm_ranking[key] = (
+                self.cat_rank[key] / maximum2) + (self.xgb_rank[key] / maximum1)
+
+        return self.norm_ranking
 
     def feature_selection(self, k: int):
         '''
@@ -134,12 +147,12 @@ class gradient_boost_utility:
             -> list of str of feature names (which is going to preserve)
         '''
 
-        if k+1 > len(self.ranking):
+        if k+1 > len(self.norm_ranking):
             raise ValueError('you are selecting all features!')
 
         preserve_list = []
         for i in range(k+1):  # add 1 because we have already included y
-            preserve_list.append(self.ranking[i][0])
+            preserve_list.append(self.norm_ranking[i][0])
 
         return preserve_list
 
