@@ -1,3 +1,4 @@
+import xgb_data_format
 import time
 import torch
 import copy
@@ -10,7 +11,7 @@ import seaborn as sns
 import os
 import sklearn
 import random
-import xgb_data_format
+
 
 '''
 This script formats the time series data
