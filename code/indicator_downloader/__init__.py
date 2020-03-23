@@ -23,25 +23,5 @@ def getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, A
 
 
 
-binanceFeats = ['BTC_volume', 'BTC_quote_asset_volume', 'BTC_number_of_trades','BTC_ taker_buy_base_asset_volume', 'BTC_taker_buy_quote_asset_volume','BTC_returns']
 
-rivalFeats = ['ETH_returns','snp_returns','LINK_returns','XTZ_returns','BNB_returns','EOS_returns']
-
-onchainFeats = ['DIFF', 'Hashrate_Price_Multiple', 'Mining Revenue', ]
-
-bitfinexFeats =  ['longs_mean','shorts_mean', 'longs_max', 'shorts_max', 'longs_min', 'shorts_min','longs_close', 'shorts_close', 'longs_open', 'shorts_open']
-
-bitmexFeats = [ 'fundingRateClose', 'fundingRateDailyClose', 'fundingRateOpen','fundingRateDailyOpen', 'fundingRateMean', 'fundingRateDailyMean','openInterestClose', 'openValueClose','openInterestOpen','openValueOpen','openInterestMean','openValueMean']
-
-glassnodeFeats =['exchange_outflow','exchange_inflow', 'stablecoin_supply_ratio', 'sopr','net_unrealized_profit_loss', 'mvrv']
-
-technicalFeats = ['BTC_ma_21_rate','BTC_ma_21_std_center', 'BTC_ma_21_std', 'BTC_EMA_Cross','BTC_mayer_multiple']
-
-feats = binanceFeats + rivalFeats + onchainFeats + bitfinexFeats + bitmexFeats + glassnodeFeats + technicalFeats
-
-def selectTrainingFeatures(data2,fullpath2,printFeats=False, write=True):
-	X = data2[feats]
-	if write == True:
-		X.to_csv(f"{fullpath2}/train.csv",index=False)
-	return X
 
