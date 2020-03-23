@@ -50,7 +50,7 @@ class gradient_boost_utility:
             }
             self.cat_param = {
                 'n_estimators': kwargs['n_estimators'],
-                'max_depth': kwargs['max_depth'],
+                'cat_max_depth': kwargs['cat_max_depth'],
                 'verbose': kwargs['verbose'],
             }
         except:
@@ -87,7 +87,7 @@ class gradient_boost_utility:
         }
         self.cat_param = {
             'n_estimators': 1000,
-            'max_depth': 5,
+            'cat_max_depth': 5,
             'verbose': 0,
         }
 
@@ -167,7 +167,7 @@ class gradient_boost_utility:
         Pass a dict contains all parameters, example is given in the following:
 
         all_param={
-            ##### model parameters:
+            ##### XGBoost model parameters:
 
             'num_estimators': 1000,    #  Number of gradient boosted trees. Equivalent to number of boosting rounds.
             'max_depth': 10,            #  Maximum tree depth for base learners.
@@ -177,10 +177,11 @@ class gradient_boost_utility:
             'min_child_weight': 10,  
             'lambda':1                      # L2 norm regularization, dafault 1
 
-            ##### others:
+            ##### Catboost model parameters:
 
-            None
-             
+            'n_estimators': 1000,
+            'cat_max_depth': 5,
+            'verbose': 0,
             }
 
         ''')
