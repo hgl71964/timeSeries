@@ -9,17 +9,26 @@ class DNN_utility:
     def __init__(self, X_train, y_train, X_test, y_test, **kwargs):
         '''
         Args:
-            X_train, y_train, X_test, y_test -> pd.DataFrame
+            X_train, y_train, X_test, y_test -> np.darray
         '''
+        try:
+            self.other_param = {'max_epochs': kwargs['max_epochs'],
+                                'learning_rate': kwargs['learning_rate'],
+                                'batch_size': kwargs['batch_size'],
+                                'device': kwargs['device']
+                                }
 
-        self.other_param = {'max_epochs': kwargs['max_epochs'],
-                            'learning_rate': kwargs['learning_rate'],
-                            'batch_size': kwargs['batch_size'],
-                            'device': kwargs['device']
-                            }
+            self.model_param = {'input_dim': kwargs['input_dim'],
+                                'first_hidden': kwargs['first_hidden'],
+                                'second_hidden': kwargs['second_hidden'],
+                                }
+        except:
+            print('''hyper-parameter setting fails, 
+            model uses default settings''')
+            self.default_model_setting
 
-        self.model = DNN(kwargs['input_dim'],
-                         kwargs['first_hidden'], kwargs['second_hidden'])
+        self.model = DNN(self.model_param['input_dim'],
+                         self.model_param['first_hidden'], self.model_param['second_hidden'])
 
         self.X_train = torch.from_numpy(X_train.values).float()
         self.y_train = torch.from_numpy(y_train.values).float()
@@ -30,6 +39,18 @@ class DNN_utility:
             self.model.parameters(), lr=self.other_param['learning_rate'])
 
         self.lossfunction = nn.MSELoss().to(self.other_param['device'])
+
+    @property
+    def default_model_setting(self):
+        self.other_param = {'max_epochs': 256,
+                            'learning_rate': 1e-3,
+                            'batch_size': 8,
+                            'device': 'cuda',
+                            }
+        self.model_param = {'input_dim': 10,
+                            'first_hidden': 128,
+                            'second_hidden': 32,
+                            }
 
     def run_epoch(self, X_train, y_train, X_test, y_test):
         '''

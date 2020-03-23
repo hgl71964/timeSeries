@@ -56,6 +56,7 @@ class xgboost_dataset():
             X_train: features, excluding return, [N_sample,N_feature] -> np.darray
             y_train: return, [N_sample,] -> np.darray
         '''
+
         self.X_train, self.y_train = self._xgb_walk_forward_split(
             self.X_train, self.y_train, self.full_data_train, encode_len, pred_len, print_info=True)
 

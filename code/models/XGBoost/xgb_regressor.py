@@ -19,7 +19,7 @@ class xgboost_utility:
         grid sets other parameter
 
         Args:
-            X_train, y_train, X_test, y_test -> pd.DataFrame
+            X_train, y_train, X_test, y_test -> np.darray
         '''
         try:
             self.model_param = {
