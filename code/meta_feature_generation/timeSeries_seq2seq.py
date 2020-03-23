@@ -8,7 +8,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import torch.optim as optim
 import random
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class seq2seq_utility():
@@ -23,7 +22,8 @@ class seq2seq_utility():
             RNN used is GRU
 
             default loss function is MSELoss()
-
+            
+            #####
             Instantiate:
             seq2seq_utility.instan_things(**kwargs),
                     in which you should define the following dictionary parameters
@@ -42,16 +42,17 @@ class seq2seq_utility():
                     'pred_len': 1,
                     'batch_size':1,
                     'device':device}
-
+            #####
             Training:
-            seq2seq_utility.seq2seq_running(self, X_train,
+            seq2seq_utility.run_epoch(self, X_train,
                             y_train, X_test, y_test, teacher_forcing_ratio)
-
+            #####
             Evaluation:
-            seq2seq_utility.seq2seq_evaluate(model, test_seg)
+            seq2seq_utility.seq2seq_evaluate(test_seg)
 
+            #####
             Prediction:
-            model(self, seq2seq_input, target, teacher_forcing_ratio = 0)
+            self.model(seq2seq_input, target, teacher_forcing_ratio = 0)
 
             Where:
                 seq2seq_input = [seq_len, batch size,Enc_emb_dim]
@@ -60,51 +61,61 @@ class seq2seq_utility():
             ''')
 
     def __init__(self, **kwargs):
-        self.grid = {'max_epochs': kwargs['max_epochs'],
-                     'learning_rate': kwargs['learning_rate'],
-                     # during training
-                     'clip': kwargs['clip'],
-                     'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
-                     'encode_len': kwargs['encode_len'],
-                     'pred_len': kwargs['pred_len'],
-                     'batch_size': kwargs['batch_size']
-                     }
-        OUTPUT_DIM = kwargs['OUTPUT_DIM']
-        ENC_EMB_DIM = kwargs['ENC_EMB_DIM']
-        # DEC_EMB_DIM = 1
-        ENC_HID_DIM = kwargs['ENC_HID_DIM']
-        DEC_HID_DIM = kwargs['DEC_HID_DIM']
-        ENC_DROPOUT = kwargs['ENC_DROPOUT']
-        DEC_DROPOUT = kwargs['DEC_DROPOUT']
-        device = kwargs['device']
+        try:
+            self.grid = {'max_epochs': kwargs['max_epochs'],
+                         'learning_rate': kwargs['learning_rate'],
+                         # during training
+                         'clip': kwargs['clip'],
+                         'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
+                         'encode_len': kwargs['encode_len'],
+                         'pred_len': kwargs['pred_len'],
+                         'batch_size': kwargs['batch_size'],
+                         }
+            OUTPUT_DIM = kwargs['OUTPUT_DIM']
+            ENC_EMB_DIM = kwargs['ENC_EMB_DIM']
+            # DEC_EMB_DIM = 1
+            ENC_HID_DIM = kwargs['ENC_HID_DIM']
+            DEC_HID_DIM = kwargs['DEC_HID_DIM']
+            ENC_DROPOUT = kwargs['ENC_DROPOUT']
+            DEC_DROPOUT = kwargs['DEC_DROPOUT']
+            self.device = kwargs['device']
+        except:
+            print('''hyper-parameter setting fails, 
+            model uses default settings''')
+            self.default_model_setting
 
+        '''
+        Instatiate Model
+        '''
         attn = _Attention(ENC_HID_DIM, DEC_HID_DIM)
         enc = _Encoder(ENC_EMB_DIM, ENC_HID_DIM, DEC_HID_DIM, ENC_DROPOUT)
         dec = _Decoder(output_dim=OUTPUT_DIM,  enc_hid_dim=ENC_HID_DIM,
                        dec_hid_dim=DEC_HID_DIM, dropout=DEC_DROPOUT, attention=attn)
-        self.model = _Seq2Seq(enc, dec, device).to(device)
+        self.model = _Seq2Seq(enc, dec, self.device).to(self.device)
 
-        # mse loss
+        '''
+        Loss function & optimiser 
+        '''
         self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.grid['learning_rate'])
-        self.lossfunction = nn.MSELoss().to(device)
+        self.lossfunction = nn.MSELoss().to(self.device)
 
     @property
     def default_model_setting(self):
-        self.all_grid = {'max_epochs': 1024,
-                         'learning_rate': 0.9,
-                         'clip': 1,
-                         'teacher_forcing_ratio': 0.5,  # during training
-                         'OUTPUT_DIM': 1,
-                         'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
-                         'ENC_HID_DIM': 24,
-                         'DEC_HID_DIM': 24,
-                         'ENC_DROPOUT': 0,
-                         'DEC_DROPOUT': 0,
-                         'encode_len': 6,           # how many days we want the ecoder encode
-                         'pred_len': 2,              # how many days we hope to predict
-                         'batch_size': 10,         # your batch size is constrained by the chunk of seq length
-                         'device': device}
+        self.grid = {'max_epochs': 1024,
+                     'learning_rate': 0.9,
+                     'clip': 1,
+                     'teacher_forcing_ratio': 0.5,  # during training
+                     'OUTPUT_DIM': 1,
+                     'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
+                     'ENC_HID_DIM': 24,
+                     'DEC_HID_DIM': 24,
+                     'ENC_DROPOUT': 0,
+                     'DEC_DROPOUT': 0,
+                     'encode_len': 6,           # how many days we want the ecoder encode
+                     'pred_len': 2,              # how many days we hope to predict
+                     'batch_size': 10,         # your batch size is constrained by the chunk of seq length
+                     'device': 'cuda'}
 
     def seq2seq_training(self, training_Loader, clip, teacher_forcing_ratio, batch_size):
         self.model.train()
@@ -116,7 +127,7 @@ class seq2seq_utility():
         for local_batch, local_labels in training_Loader.batcher(batch_size):
 
             local_batch, local_labels = local_batch.transpose(0, 1).to(
-                device), local_labels.transpose(0, 1).to(device)
+                self.device), local_labels.transpose(0, 1).to(self.device)
             local_labels = local_labels.unsqueeze(2)
             # print('input')
             # print(local_batch.size())
@@ -149,7 +160,7 @@ class seq2seq_utility():
             for local_batch, local_labels in test_Loader.batcher(batch_size):
 
                 local_batch, local_labels = local_batch.transpose(0, 1).to(
-                    device), local_labels.transpose(0, 1).to(device)
+                    self.device), local_labels.transpose(0, 1).to(self.device)
                 local_labels = local_labels.unsqueeze(2)
 
                 local_output = self.model(seq2seq_input=local_batch,
@@ -179,7 +190,7 @@ class seq2seq_utility():
             train_loss = self.seq2seq_training(training_Loader,
                                                self.grid['clip'], teacher_forcing_ratio, self.grid['batch_size'])
             valid_loss = self.seq2seq_evaluate(test_Loader,
-                                               , self.grid['batch_size'])
+                                               self.grid['batch_size'])
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
@@ -480,18 +491,14 @@ class _Seq2Seq(nn.Module):
         self.decoder = decoder
         self.device = device
 
-    def forward(self, seq2seq_input, target, teacher_forcing_ratio=0.5):
+    def forward(self, seq2seq_input, target, teacher_forcing_ratio: int = 0.5):
         """
         Args:
-            input:
-                # torch.Tensor
-                seq2seq_input: '[seq_len, batch size,Enc_emb_dim]'
-                # torch.Tensor
-                target: ' [trg_len, batch size,output_dim]'
-                teacher_forcing_ratio:                             #teacher_forcing_ratio during training
-
-            ->
-              [trg_len, batch_size, dec_output_size]
+            seq2seq_input: '[seq_len, batch size,Enc_emb_dim]' -> torch.Tensor
+            target: ' [trg_len, batch size,output_dim]'   -> torch.Tensor
+            teacher_forcing_ratio:  1 -> full teacher
+        Returns:
+              [trg_len, batch_size, dec_output_size] -> torch.Tensor
         """
         # if teacher_forcing_ratio is 0.75 we use teacher forcing 75% of the time
 
