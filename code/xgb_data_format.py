@@ -28,8 +28,8 @@ class xgboost_dataset():
 
         '''
 
-        self.feature_name = list(self.X_train.columns)
-        self.feature_name.append(list(self.y_train.columns))
+        self.feature_name = list(X_train.columns)
+        self.feature_name.append(list(y_train.columns))
 
         if type(X_train) is pd.DataFrame:
             self.X_train = X_train.values
