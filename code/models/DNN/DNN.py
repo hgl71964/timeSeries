@@ -30,10 +30,10 @@ class DNN_utility:
         self.model = DNN(self.model_param['input_dim'],
                          self.model_param['first_hidden'], self.model_param['second_hidden'])
 
-        self.X_train = torch.from_numpy(X_train.values).float()
-        self.y_train = torch.from_numpy(y_train.values).float()
-        self.X_test = torch.from_numpy(X_test.values).float()
-        self.y_test = torch.from_numpy(y_test.values).float()
+        self.X_train = torch.from_numpy(X_train).float()
+        self.y_train = torch.from_numpy(y_train).float()
+        self.X_test = torch.from_numpy(X_test).float()
+        self.y_test = torch.from_numpy(y_test).float()
 
         self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.other_param['learning_rate'])
