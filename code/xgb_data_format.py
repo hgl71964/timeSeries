@@ -14,23 +14,30 @@ class xgboost_dataset():
     def __init__(self, X_train, y_train, X_test, y_test):
         '''
         This class format data for xgboost
+
+
         Args:
-            input type = np.darray or pandas
+            input type ->  pandas
 
             X_train: features, excluding return, [N_sample,N_feature] -> np.darray
             y_train: return, [N_sample,] -> np.darray
+
         '''
+
+        self.feature_name = list(self.X_train.columns)
+        self.feature_name.append(self.y_train.columns)
+
         if type(X_train) is pd.DataFrame:
             self.X_train = X_train.values
             self.feature_map = {f'f{key}': X_train.columns[key]
                                 for key in range(len(X_train.columns))}
         else:
-            self.X_train = X_train
+            raise TypeError('input type must be pandas.DataFrame')
 
-        if type(y_train) is pd.Series or type(y_train) is pd.DataFrame:
+        if type(y_train) is pd.DataFrame:
             self.y_train = y_train.values
         else:
-            self.y_train = y_train
+            raise TypeError('input type must be pandas.DataFrame')
 
         self.full_data_train = np.hstack(
             [self.X_train, self.y_train.reshape(-1, 1)])
@@ -38,12 +45,12 @@ class xgboost_dataset():
         if type(X_test) is pd.DataFrame:
             self.X_test = X_test.values
         else:
-            self.X_test = X_test
+            raise TypeError('input type must be pandas.DataFrame')
 
-        if type(y_train) is pd.Series or type(y_train) is pd.DataFrame:
+        if type(y_train) is pd.DataFrame:
             self.y_test = y_test.values
         else:
-            self.y_test = y_test
+            raise TypeError('input type must be pandas.DataFrame')
 
         self.full_data_test = np.hstack(
             [self.X_test, self.y_test.reshape(-1, 1)])
@@ -52,9 +59,9 @@ class xgboost_dataset():
                       encode_len: int,
                       pred_len: int,):
         '''
-        Returns:
-            X_train: features, excluding return, [N_sample,N_feature] -> np.darray
-            y_train: return, [N_sample,] -> np.darray
+        Returns -> pd.DataFrame
+            X_train: features, excluding return, [N_sample,N_feature] 
+            y_train: return, [N_sample,] 
         '''
 
         self.X_train, self.y_train = self._xgb_walk_forward_split(
@@ -75,13 +82,15 @@ class xgboost_dataset():
 
         However, remember in XGBoost, data can only be formatted as X_train: [N_samples,N_features]
                                                                     y: [N_sampples,]
+
         It is therefore, we cannot make a batch, we can only use data in time t to predict time t+1
 
         Args:
 
-            output -> np.array
-                self.x [N_samples,N_features + return]
-                self.y [N_samples,]
+        Returns -> pd.DataFrame
+
+            self.x [N_samples,N_features + return]
+            self.y [N_samples,]
         '''
         N_samples = x.shape[0]
 
@@ -107,6 +116,7 @@ class xgboost_dataset():
                     pass
         if print_info:
             print('number of samples:', new_x.shape[0])
+
         return new_x, new_y
 
 
