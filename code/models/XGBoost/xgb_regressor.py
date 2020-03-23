@@ -91,16 +91,11 @@ class xgboost_utility:
         '''
         self.ranking -> ranked feature importance list 
         '''
-        raw_ranking = sorted(self.model.get_booster().get_score(
-        ).items(), key=lambda x: x[1], reverse=True)
-        # ranking = []
-        # for t in raw_ranking:
-        #     for key in self.feature_map:
-        #         if t[0] == key:
-        #             ranking.append((self.feature_map[key], t[1]))
-        self.ranking = raw_ranking
 
-        return raw_ranking
+        self.ranking = sorted(self.model.get_booster().get_score(
+        ).items(), key=lambda x: x[1], reverse=True)
+
+        return self.ranking
 
     def feature_selection(self, k: int):
         '''
