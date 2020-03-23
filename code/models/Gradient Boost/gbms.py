@@ -180,9 +180,9 @@ class gradient_boost_utility:
 
             ##### Catboost model parameters:
 
-            'n_estimators': 1000,
+            'cat_n_estimators': 1000,
             'cat_max_depth': 5,
-            'verbose': 0,
+            'cat_verbose': 0,
             }
 
         ''')
