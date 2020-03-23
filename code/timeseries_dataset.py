@@ -114,8 +114,11 @@ class timeseries_Dataset:
         Args:
             list of str of feature names (which is going to preserve)
         '''
-        self.X_train = self.X_train[preserve_list]
-        self.X_test = self.X_test[preserve_list]
+        y_name = [col for col in self.y_train.columns]
+        self.X_train = self.X_train[[
+            col for col in preserve_list if col not in y_name]]
+        self.X_test = self.X_test[[
+            col for col in preserve_list if col not in y_name]]
 
     @staticmethod
     def batcher(x, y, batch_size: int):

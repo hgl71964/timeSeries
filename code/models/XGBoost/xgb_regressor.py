@@ -91,16 +91,15 @@ class xgboost_utility:
         '''
         self.ranking -> ranked feature importance list 
         '''
+
         raw_ranking = sorted(self.model.get_booster().get_score(
         ).items(), key=lambda x: x[1], reverse=True)
-        ranking = []
-        for t in raw_ranking:
-            for key in self.feature_map:
-                if t[0] == key:
-                    ranking.append((self.feature_map[key], t[1]))
-        self.ranking = ranking
 
-        return ranking
+        self.ranking = {}
+        for item in raw_ranking:
+            self.ranking[item[0]] = item[1]
+
+        return self.ranking
 
     def feature_selection(self, k: int):
         '''
@@ -111,11 +110,11 @@ class xgboost_utility:
             -> list of str of feature names (which is going to preserve)
         '''
 
-        if k > len(self.ranking):
+        if k+1 > len(self.ranking):
             raise ValueError('you are selecting all features!')
 
         preserve_list = []
-        for i in range(k):
+        for i in range(k+1):  # add 1 because we have already included y
             preserve_list.append(self.ranking[i][0])
 
         return preserve_list
