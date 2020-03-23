@@ -16,6 +16,9 @@ class DNN_utility:
         '''
 
         # set all parameters
+
+        self.dim = X_train.shape[0]
+
         try:
             self.other_param = {'max_epochs': kwargs['max_epochs'],
                                 'learning_rate': kwargs['learning_rate'],
@@ -53,7 +56,7 @@ class DNN_utility:
                             'batch_size': 8,
                             'device': 'cuda',
                             }
-        self.model_param = {'input_dim': 20,
+        self.model_param = {'input_dim': self.dim,
                             'first_hidden': 128,
                             'second_hidden': 32,
                             }
