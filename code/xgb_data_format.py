@@ -10,7 +10,7 @@ import random
 import xgb_data_format as xgb_format
 
 
-class xgboost_dataset():
+class xgboost_dataset:
     def __init__(self, X_train, y_train, X_test, y_test):
         '''
         This class format data for xgboost
