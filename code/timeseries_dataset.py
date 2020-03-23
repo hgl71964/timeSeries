@@ -116,9 +116,9 @@ class timeseries_Dataset:
         '''
         y_name = [col for col in self.y_train.columns]
         self.X_train = self.X_train[[
-            col for col in preserve_list if col not in y_name]]
+            col for col in set(preserve_list) if col not in y_name]]
         self.X_test = self.X_test[[
-            col for col in preserve_list if col not in y_name]]
+            col for col in set(preserve_list) if col not in y_name]]
 
     @staticmethod
     def batcher(x, y, batch_size: int):
