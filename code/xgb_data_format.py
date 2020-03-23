@@ -17,8 +17,8 @@ class xgboost_dataset():
         Args:
             input type = np.darray or pandas
 
-            X_train: features, excluding return, [N_sample,N_feature]
-            y_train: return, [N_sample,]
+            X_train: features, excluding return, [N_sample,N_feature] -> np.darray
+            y_train: return, [N_sample,] -> np.darray
         '''
         if type(X_train) is pd.DataFrame:
             self.X_train = X_train.values
@@ -51,6 +51,11 @@ class xgboost_dataset():
     def split_dataset(self,
                       encode_len: int,
                       pred_len: int,):
+                      '''
+                      Returns:
+                            X_train: features, excluding return, [N_sample,N_feature] -> np.darray
+                            y_train: return, [N_sample,] -> np.darray
+                      '''
         self.X_train, self.y_train = self._xgb_walk_forward_split(
             self.X_train, self.y_train, self.full_data_train, encode_len, pred_len, print_info=True)
 

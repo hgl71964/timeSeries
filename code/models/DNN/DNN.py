@@ -6,7 +6,11 @@ import copy
 
 
 class DNN_utility:
-    def __init__(self, **kwargs):
+    def __init__(self, X_train, y_train, X_test, y_test, **kwargs):
+        '''
+        Args:
+            X_train, y_train, X_test, y_test -> pd.DataFrame
+        '''
 
         self.other_param = {'max_epochs': kwargs['max_epochs'],
                             'learning_rate': kwargs['learning_rate'],
@@ -16,6 +20,11 @@ class DNN_utility:
 
         self.model = DNN(kwargs['input_dim'],
                          kwargs['first_hidden'], kwargs['second_hidden'])
+
+        self.X_train = torch.from_numpy(X_train.values).float()
+        self.y_train = torch.from_numpy(y_train.values).float()
+        self.X_test = torch.from_numpy(X_test.values).float()
+        self.y_test = torch.from_numpy(y_test.values).float()
 
         self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.other_param['learning_rate'])

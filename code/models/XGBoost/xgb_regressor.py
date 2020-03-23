@@ -17,6 +17,9 @@ class xgboost_utility:
         param_grid sets hyper-parameter for the model
 
         grid sets other parameter
+
+        Args:
+            X_train, y_train, X_test, y_test -> pd.DataFrame
         '''
         try:
             self.model_param = {
