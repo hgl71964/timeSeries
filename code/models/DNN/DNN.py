@@ -46,10 +46,11 @@ class DNN_utility:
 
     @property
     def default_model_setting(self):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.other_param = {'max_epochs': 256,
                             'learning_rate': 1e-3,
                             'batch_size': 8,
-                            'device': 'cpu',
+                            'device': device,
                             }
         self.model_param = {'input_dim': self.dim,
                             'first_hidden': 128,
