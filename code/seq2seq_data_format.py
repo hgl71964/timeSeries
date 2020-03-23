@@ -6,7 +6,7 @@ to format the dataset such that seq2seq can run
 '''
 
 
-class seq2seq_format_input():
+class seq2seq_data_format():
     def __init__(self, X, y):
         """
         Args:
