@@ -195,12 +195,12 @@ class seq2seq_utility():
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                m = copy.deepcopy(self.model)
+                self.m = copy.deepcopy(self.model)
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
 
-        return best_valid_loss, m
+        return best_valid_loss
 
     def save_model(self, path):
         '''
@@ -219,6 +219,20 @@ class seq2seq_utility():
             torch.save(checkpoint, os.path.join(path, 'seq2seq.pt'))
 
             print('have not trained model yet')
+
+    def load_model(self, path):
+        '''
+        Args:
+            path: root path
+        '''
+        try:
+            checkpoint = torch.load(path)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            self.optimiser.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.model.eval()
+
+        except:
+            print('cannot load')
 
 
 class seq2seq_format_input():
