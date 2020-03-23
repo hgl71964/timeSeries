@@ -148,12 +148,15 @@ class gradient_boost_utility:
             -> list of str of feature names (which is going to preserve)
         '''
 
-        if k+1 > len(self.norm_ranking):
+        if k+1 > len(self.norm_ranking.keys()):
             raise ValueError('you are selecting all features!')
+
+        rank_list = sorted(
+            [(key, values) for key, values in self.norm_ranking.items()], key=lambda x: x[1])
 
         preserve_list = []
         for i in range(k+1):  # add 1 because we have already included y
-            preserve_list.append(self.norm_ranking[i][0])
+            preserve_list.append(rank_list[i][0])
 
         return preserve_list
 
