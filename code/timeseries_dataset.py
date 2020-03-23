@@ -100,12 +100,12 @@ class timeseries_Dataset:
             see xgb_data_format.py
         '''
 
-        try:
-            self.xgb = xgb_data_format.xgboost_dataset(
-                self.X_train, self.y_train, self.X_test, self.y_test)
+        # try:
+        self.xgb = xgb_data_format.xgboost_dataset(
+            self.X_train, self.y_train, self.X_test, self.y_test)
 
-        except NameError:
-            print('timeSeries_Dataset has not processed')
+        # except NameError:
+        #     print('timeSeries_Dataset has not processed')
 
     def select_feature(self, preserve_list):
         '''
