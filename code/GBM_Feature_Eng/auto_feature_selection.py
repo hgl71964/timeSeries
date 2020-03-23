@@ -45,7 +45,7 @@ class xgboost_utility:
             }
         except:
             print('''hyper-parameter setting fails, 
-                    model uses default settings''')
+                model uses default settings''')
             self.default_model_setting
 
         self.X_train = X_train

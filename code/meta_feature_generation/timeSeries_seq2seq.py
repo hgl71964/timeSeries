@@ -59,17 +59,17 @@ def show_parameter():
 
 
 class seq2seq_utility():
-    @staticmethod
-    def instan_things(**kwargs):
-        grid = {'max_epochs': kwargs['max_epochs'],
-                'learning_rate': kwargs['learning_rate'],
-                # during training
-                'clip': kwargs['clip'],
-                'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
-                'encode_len': kwargs['encode_len'],
-                'pred_len': kwargs['pred_len'],
-                'batch_size': kwargs['batch_size']
-                }
+
+    def __init__(self, **kwargs):
+        self.grid = {'max_epochs': kwargs['max_epochs'],
+                     'learning_rate': kwargs['learning_rate'],
+                     # during training
+                     'clip': kwargs['clip'],
+                     'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
+                     'encode_len': kwargs['encode_len'],
+                     'pred_len': kwargs['pred_len'],
+                     'batch_size': kwargs['batch_size']
+                     }
         OUTPUT_DIM = kwargs['OUTPUT_DIM']
         ENC_EMB_DIM = kwargs['ENC_EMB_DIM']
         # DEC_EMB_DIM = 1
@@ -83,13 +83,14 @@ class seq2seq_utility():
         enc = _Encoder(ENC_EMB_DIM, ENC_HID_DIM, DEC_HID_DIM, ENC_DROPOUT)
         dec = _Decoder(output_dim=OUTPUT_DIM,  enc_hid_dim=ENC_HID_DIM,
                        dec_hid_dim=DEC_HID_DIM, dropout=DEC_DROPOUT, attention=attn)
-        model = _Seq2Seq(enc, dec, device).to(device)
+        self.model = _Seq2Seq(enc, dec, device).to(device)
 
         # mse loss
-        optimiser = optim.Adam(model.parameters(), lr=grid['learning_rate'])
+        optimiser = optim.Adam(
+            self.model.parameters(), lr=self.grid['learning_rate'])
         lossfunction = nn.MSELoss().to(device)
 
-        return (grid, model, optimiser, lossfunction)
+        return (self.model, optimiser, lossfunction)
 
     @property
     def default_model_setting(self):
@@ -108,9 +109,8 @@ class seq2seq_utility():
                          'batch_size': 10,         # your batch size is constrained by the chunk of seq length
                          'device': device}
 
-    @staticmethod
-    def seq2seq_training(model, training_Loader, optimiser, lossfunction, clip, teacher_forcing_ratio, batch_size):
-        model.train()
+    def seq2seq_training(self, training_Loader, optimiser, lossfunction, clip, teacher_forcing_ratio, batch_size):
+        self.model.train()
         epoch_loss = 0
 
         # print('load')
@@ -128,8 +128,8 @@ class seq2seq_utility():
             # forward pass
             optimiser.zero_grad()
 
-            local_output = model(seq2seq_input=local_batch, target=local_labels,
-                                 teacher_forcing_ratio=teacher_forcing_ratio)
+            local_output = self.model(seq2seq_input=local_batch, target=local_labels,
+                                      teacher_forcing_ratio=teacher_forcing_ratio)
             local_output = local_output.squeeze(2)[1:]
             local_labels = local_labels.squeeze(2)[1:]
 
@@ -140,14 +140,13 @@ class seq2seq_utility():
 
             # backward pass
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), clip)
             optimiser.step()
             epoch_loss += loss.item()
         return epoch_loss
 
-    @staticmethod
-    def seq2seq_evaluate(model, test_Loader, lossfunction, batch_size):
-        model.eval()
+    def seq2seq_evaluate(self, test_Loader, lossfunction, batch_size):
+        self.model.eval()
         epoch_loss = 0
         with torch.no_grad():
             for local_batch, local_labels in test_Loader.batcher(batch_size):
@@ -156,39 +155,38 @@ class seq2seq_utility():
                     device), local_labels.transpose(0, 1).to(device)
                 local_labels = local_labels.unsqueeze(2)
 
-                local_output = model(seq2seq_input=local_batch,
-                                     target=local_labels, teacher_forcing_ratio=0)
+                local_output = self.model(seq2seq_input=local_batch,
+                                          target=local_labels, teacher_forcing_ratio=0)
                 local_output = local_output.squeeze(2)[1:]
                 local_labels = local_labels.squeeze(2)[1:]
                 loss = lossfunction(local_output, local_labels)
                 epoch_loss += loss.item()
         return epoch_loss
 
-    @staticmethod
-    def seq2seq_running(grid, model, optimiser, lossfunction, X_train, y_train, X_test, y_test,
-                        teacher_forcing_ratio):
+    def run_epoch(self, optimiser, lossfunction, X_train, y_train, X_test, y_test,
+                  teacher_forcing_ratio):
 
         best_valid_loss = float('inf')
 
         # data loader
         training_Loader = seq2seq_format_input(X_train, y_train)
         training_Loader.walk_forward_split(
-            grid['encode_len'], grid['pred_len'])
+            self.grid['encode_len'], self.grid['pred_len'])
 
         test_Loader = seq2seq_format_input(X_test, y_test)
         test_Loader.walk_forward_split(
-            grid['encode_len'], grid['pred_len'])
+            self.grid['encode_len'], self.grid['pred_len'])
 
-        for epoch in range(grid['max_epochs']):
+        for epoch in range(self.grid['max_epochs']):
 
-            train_loss = seq2seq_utility.seq2seq_training(model, training_Loader, optimiser, lossfunction,
-                                                          grid['clip'], teacher_forcing_ratio, grid['batch_size'])
-            valid_loss = seq2seq_utility.seq2seq_evaluate(model, test_Loader,
-                                                          lossfunction, grid['batch_size'])
+            train_loss = self.seq2seq_training(training_Loader, optimiser, lossfunction,
+                                               self.grid['clip'], teacher_forcing_ratio, self.grid['batch_size'])
+            valid_loss = self.seq2seq_evaluate(test_Loader,
+                                               lossfunction, self.grid['batch_size'])
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                m = copy.deepcopy(model)
+                m = copy.deepcopy(self.model)
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
@@ -538,29 +536,3 @@ class _Seq2Seq(nn.Module):
             dec_input = dec_input.unsqueeze(0).float()
             # print(dec_input.size())
         return dec_output
-
-
-if __name__ == "__main__":
-    x = torch.rand(100, 22)
-    y = torch.rand(100)
-    # show_parameter() callable
-    all_grid = {'max_epochs': 2,
-                'learning_rate': 0.9,
-                'clip': 1,
-                'teacher_forcing_ratio': 0.5,  # during training
-                'OUTPUT_DIM': 1,
-                'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
-                'ENC_HID_DIM': 24,
-                'DEC_HID_DIM': 24,
-                'ENC_DROPOUT': 0,
-                'DEC_DROPOUT': 0,
-                'encode_len': 5,           # how many days we want the ecoder encode?
-                'pred_len': 2,              # how many days we hope to predict
-                'batch_size': 10,         # your batch size is constrained by the chunk of seq length
-                'device': device}
-
-    grid, model, optimiser, lossfunction = seq2seq_utility.instan_things(
-        **all_grid)
-
-    best, m = seq2seq_utility.seq2seq_running(grid, model, optimiser, lossfunction, x, y, x, y,
-                                              grid['teacher_forcing_ratio'])
