@@ -33,7 +33,7 @@ class DNN_utility:
                                 'second_hidden': kwargs['second_hidden'],
                                 }
         except:
-            print('''hyper-parameter setting fails, 
+            print('''hyper-parameter setting fails,
             model uses default settings''')
             self.default_model_setting
 
@@ -85,8 +85,13 @@ class DNN_utility:
         return best_valid_loss
 
     def prediction(self, x):
-        if not torch.is_tensor(x):
+
+       if type(X_train) is np.ndarray:
             x = torch.from_numpy(x).float()
+
+        elif type(X_train) is pd.DataFrame:
+            x = torch.from_numpy(x.values).float()
+
         try:
             pred = self.best_model(x)
         except:
