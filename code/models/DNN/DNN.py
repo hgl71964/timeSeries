@@ -25,11 +25,11 @@ class DNN_utility:
     def run_epoch(self, X_train, y_train, X_test, y_test):
         '''
         Args:
-            X_train -> [N_samples,input_dim]; 
-            y_train -> [N_samples,]; 
+            X_train: [N_samples,input_dim];  -> Tensor
+            y_train: [N_samples,];  -> Tensor
 
-            X_test -> [estmples,input_dim]; 
-            y_test -> [N_samples,]; 
+            X_test: [estmples,input_dim];  -> Tensor
+            y_test: [N_samples,];  -> Tensor
         '''
         best_valid_loss = float('inf')
 
@@ -58,12 +58,12 @@ class DNN_utility:
     def training(self, X_train, y_train):
         '''
         Args:
-            X_train -> [N_samples,input_dim]; 
-            y_train -> [N_samples,]; 
+            X_train: [N_samples,input_dim];  -> Tensor
+            y_train: [N_samples,];  -> Tensor
 
             output from _generate_batches:
-                local_batch  -> [batch_size, input_dim]
-                local_labels -> [batch_size,]; 
+                local_batch:  [batch_size, input_dim] -> Tensor
+                local_labels: [batch_size,];  -> Tensor
         '''
         self.model.train()
         epoch_loss = 0
@@ -93,12 +93,12 @@ class DNN_utility:
     def evaluation(self, X_test, y_test):
         '''
         Args:
-            X_test -> [estmples,input_dim]; 
-            y_test -> [N_samples,]; 
+            X_test: [estmples,input_dim];  -> Tensor
+            y_test: [N_samples,];  -> Tensor
 
             output from _generate_batches:
-                local_batch  -> [batch_size, input_dim]
-                local_labels -> [batch_size,]; 
+                local_batch:  [batch_size, input_dim] -> Tensor
+                local_labels: [batch_size,];  -> Tensor
         '''
         self.model.eval()
         epoch_loss = 0
