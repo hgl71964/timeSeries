@@ -8,9 +8,11 @@ import os
 import sklearn
 import random
 import xgboost
+import catboost
+import Pool
 
 
-class xgboost_utility:
+class gradient_boost_utility:
 
     def __init__(self, X_train, y_train, X_test, y_test, feature_map, **kwargs):
         '''
@@ -22,7 +24,7 @@ class xgboost_utility:
             X_train, y_train, X_test, y_test -> np.darray
         '''
         try:
-            self.model_param = {
+            self.xgb_param = {
                 # Number of gradient boosted trees. Equivalent to number of boosting rounds.
                 'num_estimators': kwargs['num_estimators'],
 
@@ -46,6 +48,11 @@ class xgboost_utility:
                 # 'colsample_bytree': 0.6,
                 # 'reg_lambda':,                   # L2 regularization term on weights
             }
+            self.cat_param = {
+                'n_estimators': kwargs['n_estimators'],
+                'max_depth': kwargs['max_depth'],
+                'verbose': kwargs['verbose'],
+            }
         except:
             print('''hyper-parameter setting fails, 
                 model uses default settings''')
@@ -58,11 +65,12 @@ class xgboost_utility:
         self.feature_map = feature_map
 
         # instantiate model according to hyper-parameters
-        self.model = xgboost.XGBRegressor(**self.model_param)
+        self.XGBoost = xgboost.XGBRegressor(**self.xgb_param)
+        self.Catboost = catboost.CatBoostRegressor(**self.cat_param)
 
     @property
     def default_model_setting(self):
-        self.model_param = {
+        self.xgb_param = {
             # Number of gradient boosted trees. Equivalent to number of boosting rounds.
             'num_estimators': 1000,
             'max_depth': 10,  # Maximum tree depth for base learners.
@@ -78,13 +86,18 @@ class xgboost_utility:
             # 'colsample_bytree': 0.6,
             # 'reg_lambda':,                   # L2 regularization term on weights
         }
+        self.cat_param = {
+            'n_estimators': 1000,
+            'max_depth': 5,
+            'verbose': 0,
+        }
 
     def training(self):
-        self.model.fit(self.X_train, self.y_train,
-                       eval_set=[(self.X_train, self.y_train),
-                                 (self.X_test, self.y_test)],
-                       eval_metric='rmse',
-                       verbose=self.model_param['verbosity'])
+        self.XGBoost.fit(self.X_train, self.y_train,
+                         eval_set=[(self.X_train, self.y_train),
+                                   (self.X_test, self.y_test)],
+                         eval_metric='rmse',
+                         verbose=self.xgb_param['verbosity'])
 
     @property
     def feature_scores(self):
@@ -92,7 +105,7 @@ class xgboost_utility:
         self.ranking -> ranked feature importance list 
         '''
 
-        raw_ranking = sorted(self.model.get_booster().get_score(
+        raw_ranking = sorted(self.XGBoost.get_booster().get_score(
         ).items(), key=lambda x: x[1], reverse=True)
 
         self.ranking = {}
@@ -120,7 +133,7 @@ class xgboost_utility:
         return preserve_list
 
     def prediction(self, x):
-        return self.model.predict(x)
+        return self.XGBoost.predict(x)
 
     @staticmethod
     def show_param():
