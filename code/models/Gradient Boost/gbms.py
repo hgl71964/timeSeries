@@ -9,7 +9,6 @@ import sklearn
 import random
 import xgboost
 import catboost
-import Pool
 
 
 class gradient_boost_utility:
@@ -101,7 +100,7 @@ class gradient_boost_utility:
                          eval_metric='rmse',
                          verbose=self.xgb_param['verbosity'])
 
-        trainPool = Pool(self.X_train, self.y_train)
+        trainPool = catboost.Pool(self.X_train, self.y_train)
         self.Catboost.fit(trainPool)
 
     @property
