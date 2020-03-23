@@ -152,7 +152,7 @@ class gradient_boost_utility:
             raise ValueError('you are selecting all features!')
 
         rank_list = sorted(
-            [(key, values) for key, values in self.norm_ranking.items()], key=lambda x: x[1])
+            [(key, values) for key, values in self.norm_ranking.items()], key=lambda x: x[1], reverse=True)
 
         preserve_list = []
         for i in range(k+1):  # add 1 because we have already included y
