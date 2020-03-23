@@ -1,3 +1,4 @@
+import xgb_data_format
 import time
 import torch
 import copy
@@ -11,6 +12,8 @@ import os
 import sklearn
 import random
 import xgb_data_format
+import seq2seq_data_format
+
 
 '''
 This script formats the time series data
@@ -92,6 +95,10 @@ class timeseries_Dataset:
 
     @property
     def to_xgb_data_format(self):
+        '''
+        Composition object:
+            see xgb_data_format.py
+        '''
 
         try:
             self.xgb = xgb_data_format.xgboost_dataset(
@@ -102,7 +109,7 @@ class timeseries_Dataset:
 
     def select_feature(self, preserve_list):
         '''
-        this function to re-assign X_train and X_test after being selected by XGBoost
+        this function to select good features
 
         Args:
             list of str of feature names (which is going to preserve)
