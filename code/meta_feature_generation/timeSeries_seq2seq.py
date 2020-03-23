@@ -16,49 +16,48 @@ class seq2seq_utility():
     @staticmethod
     def show_parameter():
 
-    print(
-        '''
-    This is a seq2seq model, embedding should be done before input into this model
+        print(
+            '''
+            This is a seq2seq model, embedding should be done before input into this model
 
-    RNN used is GRU
+            RNN used is GRU
 
-    default loss function is MSELoss()
+            default loss function is MSELoss()
 
-    Instantiate:
-    seq2seq_utility.instan_things(**kwargs),
-            in which you should define the following dictionary parameters
-    e.g.
-    param = {'max_epochs':64,
-            'learning_rate':1e-3,
-            'clip':1,                  # clip grad norm
-            'teacher_forcing_ratio':1, # during training
-            'OUTPUT_DIM':1,            # intented output dimension
-            'ENC_EMB_DIM':21,          # embedding space of your input
-            'ENC_HID_DIM':32,
-            'DEC_HID_DIM':32,          # hidden dimension should be the same
-            'ENC_DROPOUT':0,
-            'DEC_DROPOUT':0,
-            'encode_len': 10,
-            'pred_len': 1,
-            'batch_size':1,
-            'device':device}
+            Instantiate:
+            seq2seq_utility.instan_things(**kwargs),
+                    in which you should define the following dictionary parameters
+            e.g.
+            param = {'max_epochs':64,
+                    'learning_rate':1e-3,
+                    'clip':1,                  # clip grad norm
+                    'teacher_forcing_ratio':1, # during training
+                    'OUTPUT_DIM':1,            # intented output dimension
+                    'ENC_EMB_DIM':21,          # embedding space of your input
+                    'ENC_HID_DIM':32,
+                    'DEC_HID_DIM':32,          # hidden dimension should be the same
+                    'ENC_DROPOUT':0,
+                    'DEC_DROPOUT':0,
+                    'encode_len': 10,
+                    'pred_len': 1,
+                    'batch_size':1,
+                    'device':device}
 
-    Training:
-    seq2seq_utility.seq2seq_running(self, X_train,
-                    y_train, X_test, y_test, teacher_forcing_ratio)
+            Training:
+            seq2seq_utility.seq2seq_running(self, X_train,
+                            y_train, X_test, y_test, teacher_forcing_ratio)
 
-    Evaluation:
-    seq2seq_utility.seq2seq_evaluate(model, test_seg)
+            Evaluation:
+            seq2seq_utility.seq2seq_evaluate(model, test_seg)
 
-    Prediction:
-    model(self, seq2seq_input, target, teacher_forcing_ratio = 0)
+            Prediction:
+            model(self, seq2seq_input, target, teacher_forcing_ratio = 0)
 
-    Where:
-        seq2seq_input = [seq_len, batch size,Enc_emb_dim]
-        target = [trg_len, batch size,output_dim], trg_len is prediction len
+            Where:
+                seq2seq_input = [seq_len, batch size,Enc_emb_dim]
+                target = [trg_len, batch size,output_dim], trg_len is prediction len
 
-    '''
-    )
+            ''')
 
     def __init__(self, **kwargs):
         self.grid = {'max_epochs': kwargs['max_epochs'],
