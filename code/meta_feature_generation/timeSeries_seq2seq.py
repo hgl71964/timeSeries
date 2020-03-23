@@ -11,7 +11,10 @@ import random
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def show_parameter():
+class seq2seq_utility():
+
+    @staticmethod
+    def show_parameter():
 
     print(
         '''
@@ -41,11 +44,11 @@ def show_parameter():
             'device':device}
 
     Training:
-    seq2seq_utility.seq2seq_running(grid, model, optimiser, lossfunction, X_train,
+    seq2seq_utility.seq2seq_running(self, X_train,
                     y_train, X_test, y_test, teacher_forcing_ratio)
 
     Evaluation:
-    seq2seq_utility.seq2seq_evaluate(model, test_seg, lossfunction)
+    seq2seq_utility.seq2seq_evaluate(model, test_seg)
 
     Prediction:
     model(self, seq2seq_input, target, teacher_forcing_ratio = 0)
@@ -56,9 +59,6 @@ def show_parameter():
 
     '''
     )
-
-
-class seq2seq_utility():
 
     def __init__(self, **kwargs):
         self.grid = {'max_epochs': kwargs['max_epochs'],
@@ -86,11 +86,9 @@ class seq2seq_utility():
         self.model = _Seq2Seq(enc, dec, device).to(device)
 
         # mse loss
-        optimiser = optim.Adam(
+        self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.grid['learning_rate'])
-        lossfunction = nn.MSELoss().to(device)
-
-        return (self.model, optimiser, lossfunction)
+        self.lossfunction = nn.MSELoss().to(device)
 
     @property
     def default_model_setting(self):
@@ -109,7 +107,7 @@ class seq2seq_utility():
                          'batch_size': 10,         # your batch size is constrained by the chunk of seq length
                          'device': device}
 
-    def seq2seq_training(self, training_Loader, optimiser, lossfunction, clip, teacher_forcing_ratio, batch_size):
+    def seq2seq_training(self, training_Loader, clip, teacher_forcing_ratio, batch_size):
         self.model.train()
         epoch_loss = 0
 
@@ -126,7 +124,7 @@ class seq2seq_utility():
             # print(local_labels.size())
 
             # forward pass
-            optimiser.zero_grad()
+            self.optimiser.zero_grad()
 
             local_output = self.model(seq2seq_input=local_batch, target=local_labels,
                                       teacher_forcing_ratio=teacher_forcing_ratio)
@@ -136,16 +134,16 @@ class seq2seq_utility():
             # print('output:')
             # print(local_output.size())
             # print(local_labels.size())
-            loss = lossfunction(local_output, local_labels)
+            loss = self.lossfunction(local_output, local_labels)
 
             # backward pass
             loss.backward()
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), clip)
-            optimiser.step()
+            self.optimiser.step()
             epoch_loss += loss.item()
         return epoch_loss
 
-    def seq2seq_evaluate(self, test_Loader, lossfunction, batch_size):
+    def seq2seq_evaluate(self, test_Loader, batch_size):
         self.model.eval()
         epoch_loss = 0
         with torch.no_grad():
@@ -159,11 +157,11 @@ class seq2seq_utility():
                                           target=local_labels, teacher_forcing_ratio=0)
                 local_output = local_output.squeeze(2)[1:]
                 local_labels = local_labels.squeeze(2)[1:]
-                loss = lossfunction(local_output, local_labels)
+                loss = self.lossfunction(local_output, local_labels)
                 epoch_loss += loss.item()
         return epoch_loss
 
-    def run_epoch(self, optimiser, lossfunction, X_train, y_train, X_test, y_test,
+    def run_epoch(self, X_train, y_train, X_test, y_test,
                   teacher_forcing_ratio):
 
         best_valid_loss = float('inf')
@@ -179,10 +177,10 @@ class seq2seq_utility():
 
         for epoch in range(self.grid['max_epochs']):
 
-            train_loss = self.seq2seq_training(training_Loader, optimiser, lossfunction,
+            train_loss = self.seq2seq_training(training_Loader,
                                                self.grid['clip'], teacher_forcing_ratio, self.grid['batch_size'])
             valid_loss = self.seq2seq_evaluate(test_Loader,
-                                               lossfunction, self.grid['batch_size'])
+                                               , self.grid['batch_size'])
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
