@@ -53,7 +53,7 @@ class DNN_utility:
                             'batch_size': 8,
                             'device': 'cuda',
                             }
-        self.model_param = {'input_dim': 10,
+        self.model_param = {'input_dim': 20,
                             'first_hidden': 128,
                             'second_hidden': 32,
                             }
