@@ -27,7 +27,6 @@ class xgboost_dataset:
         Returns -> pd.DataFrame
 
         '''
-        print(X_train.columns)
         self.feature_names = list(X_train.columns)
         self.feature_names.append(y_train.columns)
 
@@ -131,4 +130,4 @@ if __name__ == "__main__":
     x = pd.DataFrame(np.random.rand(20, 4))
     y = pd.DataFrame(np.random.rand(20))
     xgb_data = xgboost_dataset(x, y, x, y)
-    print(xgb_data.feature_names)
+    print(xgb_data.X_train)
