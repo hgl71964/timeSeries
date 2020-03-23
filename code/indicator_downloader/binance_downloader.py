@@ -42,7 +42,6 @@ def downloadWrapper(tickers, API_SECRET, API_KEY, FREQ, fullpath,write=False):
       print(f"DONE - {x}")
       if x == "BTC":
         downloadData(x, API_KEY, API_SECRET, "HOUR", fullpath, write)
-        downloadData(x, API_KEY, API_SECRET, "MINUTE", fullpath, write)
 
   #Columns to take; drop open_time, close_time
   cols = ['open', 'high', 'low', 'close', 'volume','quote_asset_volume', 'number_of_trades',
