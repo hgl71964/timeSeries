@@ -58,7 +58,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 
 	featImportances = dict(sorted(zip(X_train.columns,models['cbc'].get_feature_importance()),key=lambda k: k[1]))
 
-	fig, ax = plt.subplots(figsize=(10,20),nrows=3)
+	fig, ax = plt.subplots(figsize=(10,30),nrows=3)
 	ax[0].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	xgb.plot_importance(models['xgbc'],ax=ax[1])
@@ -75,7 +75,7 @@ def autofit(X_train, X_test, y_train, y_test, c):
 	models['ensemble'] = LogisticRegression()
 	models['ensemble'].fit(train_df, y_train)
 
-	featImportances = dict(sorted(zip(list(models.keys()),models['ensemble'].coef_),key=lambda k: k[1]))
+	featImportances = dict(sorted(zip(list(models.keys()),models['ensemble'].coef_[0]),key=lambda k: k[1]))
 	ax[2].barh(list(featImportances.keys()), list(featImportances.values()),)
 
 	print("ENSEMBLE")

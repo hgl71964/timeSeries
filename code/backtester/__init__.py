@@ -24,27 +24,41 @@ def backtest(X_test,models, data2, transaction_costs,starting_cap = 10000,  conf
     positions.iloc[i+1,0:2] = positions.iloc[i,0:2]
     p = positions.iloc[i+1,6]
     if ls == False:
-        targetValue = positions.iloc[i,3] * p
-        if abs(signals[i] - 0.5) * 2 >  confidence:
-          if targetValue > positions.iloc[i+1,1] * entry_price:
+        targetValue = positions.iloc[i,3] * min(p, longLimit)
+        if signals[i] >  confidence: #e.g. 0.8 > 0.6
+          if targetValue > positions.iloc[i+1,1] * entry_price: # if not enough in position, expand it
             positions.iloc[i+1,1] = targetValue / (entry_price * (1 + transaction_costs))
             positions.iloc[i+1,0] -= (positions.iloc[i+1,1]- positions.iloc[i,1]) * entry_price * (1 + transaction_costs)
             positions.iloc[i+1,2] = 1
-          else:
+          else: # else reduce position
             positions.iloc[i+1,1] = targetValue / (entry_price - (1 - transaction_costs))
             positions.iloc[i+1,0] -= (positions.iloc[i+1,1] - positions.iloc[i,1]) * entry_price * (1 - transaction_costs)
             positions.iloc[i+1,2] = -1
+        else: # go to cash if not confident enough
+            positions.iloc[i+1, 1] = 0
+            positions.iloc[i+1, 0] += positions.iloc[i,1] * entry_price * (1 - transaction_costs)
+            if positions.iloc[i, 1] != 0:
+              positions.iloc[i+1, 2] = -1
+
+
     if ls == True:
-        if signals[i] > 0.5 + float(confidence) / 2:
+        if signals[i] >= (0.5 + (float(confidence) / 2)): #long signal
           targetValue = positions.iloc[i,3] * min((2 * p - 1), longLimit)
           positions.iloc[i+1,1] = targetValue / (entry_price * (1 + transaction_costs))
           positions.iloc[i+1,0] -= (positions.iloc[i+1,1]- positions.iloc[i,1]) * entry_price * (1 + transaction_costs)
           positions.iloc[i+1,2] = 1
-        elif signals[i] <= 0.5 - float(confidence) / 2:
+        elif signals[i] <= (0.5 - (float(confidence) / 2)): # short signal
           targetValue = positions.iloc[i,3] * max((2 * p - 1), shortLimit)
           positions.iloc[i+1,1] = targetValue / (entry_price - (1 - transaction_costs))
           positions.iloc[i+1,0] -= (positions.iloc[i+1,1] - positions.iloc[i,1]) * entry_price * (1 - transaction_costs)
           positions.iloc[i+1,2] = -1
+        else: #go to cash if not confident enough
+          btcUnits = positions.iloc[i+1,1]
+          positions.iloc[i+1,1] = 0
+          if btcUnits < 0:
+            positions.iloc[i+1, 0] += btcUnits * entry_price * (1 + transaction_costs)
+          else:
+            positions.iloc[i+1, 0]  += btcUnits * entry_price * (1 - transaction_costs)
     value = entry_price * positions.iloc[i+1,1] + positions.iloc[i+1,0]
     positions.iloc[i+1,3] = value
 
