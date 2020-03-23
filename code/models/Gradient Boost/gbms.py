@@ -48,9 +48,9 @@ class gradient_boost_utility:
                 # 'reg_lambda':,                   # L2 regularization term on weights
             }
             self.cat_param = {
-                'n_estimators': kwargs['n_estimators'],
-                'cat_max_depth': kwargs['cat_max_depth'],
-                'verbose': kwargs['verbose'],
+                'n_estimators': kwargs['cat_n_estimators'],
+                'max_depth': kwargs['cat_max_depth'],
+                'verbose': kwargs['cat_verbose'],
             }
         except:
             print('''hyper-parameter setting fails, 
@@ -86,7 +86,7 @@ class gradient_boost_utility:
         }
         self.cat_param = {
             'n_estimators': 1000,
-            'cat_max_depth': 5,
+            'max_depth': 5,
             'verbose': 0,
         }
 
