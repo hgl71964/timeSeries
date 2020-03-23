@@ -225,9 +225,9 @@ class DNN(nn.Module):
         return self.layers(x).view(-1)
 
 
-if __name__ == "__main__":
-    x = torch.rand(50, 10)
-    y = torch.ones(50,)
-    input_dim = 10
-    dnn = DNN_utility(input_dim)
-    dnn.run_epoch(x, y, x, y)
+# if __name__ == "__main__":
+#     x = torch.rand(50, 10)
+#     y = torch.ones(50,)
+#     input_dim = 10
+#     dnn = DNN_utility(input_dim)
+#     dnn.run_epoch(x, y, x, y)
