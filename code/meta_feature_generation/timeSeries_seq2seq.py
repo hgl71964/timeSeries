@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import torch.optim as optim
 import random
+import os
 
 
 class seq2seq_utility():
@@ -200,6 +201,24 @@ class seq2seq_utility():
                 print(f'Validation Loss: {valid_loss:.3f}')
 
         return best_valid_loss, m
+
+    def save_model(self, path):
+        '''
+        Args:
+            path: root path
+        '''
+        try:
+            checkpoint = {'model_state_dict': self.m.state_dict(),
+                          'optimizer_state_dict': self.optimiser.state_dict(),
+                          }
+            torch.save(checkpoint, os.path.join(path, 'seq2seq.pt'))
+        except NameError:
+            checkpoint = {'model_state_dict': self.model.state_dict(),
+                          'optimizer_state_dict': self.optimiser.state_dict(),
+                          }
+            torch.save(checkpoint, os.path.join(path, 'seq2seq.pt'))
+
+            print('have not trained model yet')
 
 
 class seq2seq_format_input():
