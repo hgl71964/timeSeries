@@ -25,16 +25,17 @@ class seq2seq_dataset():
                            encode_len: int,
                            pred_len: int):
         '''
+        See desirable split: https://github.com/guol1nag/datagrasp/blob/master/README.md
+
+        For seq2seq this should be able to encode arbitrary sequence and prediction arbitrary sequence
+
         Args:
-            see desirable split: https://github.com/guol1nag/datagrasp/blob/master/README.md
+            X: [N_samples,N-features] -> Tensor N_samples have sequential properties
+            y: [N_samples,]  -> labels Tensor    N_samples have sequential properties
 
-          input:
-              X: [N_samples,N-features] Tensor N_samples have sequential properties
-              y: [N_samples,]  labels Tensor    N_samples have sequential properties
-
-          output -> class attributes:
-              self.X  [N_sample, encode_len, N_feature] N_feature excludes price
-              self.y  [N_sample, pred_len]
+        Returns:
+              self.X  [N_sample, encode_len, N_feature] -> Tensor; N_feature excludes price
+              self.y  [N_sample, pred_len] -> Tensor;
         '''
 
         # [N_samples,N-features + return]
