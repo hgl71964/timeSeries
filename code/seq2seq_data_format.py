@@ -1,13 +1,15 @@
 
 import torch
 import copy
+import numpy as np
+import pandas as pd
 
 '''
 to format the dataset such that seq2seq can run
 '''
 
 
-class seq2seq_dataset():
+class seq2seq_dataset:
     def __init__(self, X_train, y_train, X_test, y_test):
         """
         Args:
@@ -18,7 +20,7 @@ class seq2seq_dataset():
             y_test: [N_samples]  labels -> pd.DataFrame
         """
 
-        N_sample = X_train.shape[1]
+        N_sample = X_train.shape[0]
         self.X_train = torch.from_numpy(X_train).float()
         self.X_test = torch.from_numpy(X_test).float()
 
@@ -69,7 +71,10 @@ class seq2seq_dataset():
             [x, y.unsqueeze(1)], dim=1)
 
         N_samples = x.shape[0]
+        print(N_samples)
+        print(pred_len)
         for i in range(0, N_samples, pred_len):
+
             encode = full_data[i:min(
                 i+encode_len, N_samples)]
 
@@ -77,12 +82,13 @@ class seq2seq_dataset():
                 i+encode_len+pred_len, N_samples)]
 
             # prevent from empty list
-            if pred.shape[0] != pred_len:
+            if pred.shape[0] != pred_len+1:
                 break
 
             if i == 0:
                 new_X = encode.unsqueeze(0)
                 new_y = pred.unsqueeze(0)
+
             else:
                 try:
                     new_X = torch.cat([new_X, encode.unsqueeze(0)], dim=0)
@@ -97,3 +103,13 @@ class seq2seq_dataset():
         n = tensor.size(0)
         rand = torch.randperm(n)
         tensor = tensor[rand]
+
+
+# if __name__ == "__main__":
+#     x = np.random.rand(100, 5)
+#     y = pd.DataFrame(np.random.rand(100,))
+
+#     a = seq2seq_dataset(x, y, x, y)
+#     a.split_dataset(encode_len=3, pred_len=2)
+#     print(a.X_train.size())
+#     print(a.y_train.size())
