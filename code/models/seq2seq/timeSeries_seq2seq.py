@@ -202,6 +202,7 @@ class seq2seq_utility:
         '''
         Args:
 
+        TODO: format to make inference
         '''
         pass
 

@@ -11,15 +11,21 @@ class seq2seq_dataset():
     def __init__(self, X_train, y_train, X_test, y_test):
         """
         Args:
-            X_train: [N_samples,N-features] -> Tensor
-            X_test: [N_samples,N-features] -> Tensor
-            y_train: [N_samples]  labels -> Tensor
-            y_test: [N_samples]  labels -> Tensor
+            X_train: [N_samples,N-features] -> np.ndarray
+            X_test: [N_samples,N-features] -> np.ndarray
+
+            y_train: [N_samples]  labels -> pd.DataFrame
+            y_test: [N_samples]  labels -> pd.DataFrame
         """
-        self.X_train = X_train
-        self.X_test = X_test
-        self.y_train = y_train
-        self.y_test = y_test
+
+        N_sample = X_train.shape[1]
+        self.X_train = torch.from_numpy(X_train).float()
+        self.X_test = torch.from_numpy(X_test).float()
+
+        self.y_train = torch.from_numpy(
+            X_train.values[:N_sample]).ravel().float()
+        self.y_test = torch.from_numpy(
+            X_test.values[:N_sample]).ravel().float()
 
     def split_dataset(self,
                       encode_len: int,

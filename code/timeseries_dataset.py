@@ -107,16 +107,6 @@ class timeseries_Dataset:
         # except NameError:
         #     print('timeSeries_Dataset has not processed')
 
-    @property
-    def to_seq2seq_data_format(self):
-        '''
-        Composition object:
-            see xgb_data_format.py
-        '''
-
-        self.seq2seq_format = seq2seq_data_format.seq2seq_dataset(
-            self.X_train, self.y_train, self.X_test, self.y_test)
-
     def select_feature(self, preserve_list):
         '''
         this function to select good features
@@ -130,23 +120,16 @@ class timeseries_Dataset:
         self.X_test = self.X_test[[
             col for col in set(preserve_list) if col not in y_name]]
 
-    @staticmethod
-    def batcher(x, y, batch_size: int):
+    def ensemble_meta_feat(self, X_train, X_test):
         '''
-        make batch along first dimension
+        Composition: see seq2seq_data_format.py
 
         Args:
-            x: iterable
-            y: iterable
-
-        Return:
-            x  [batch_size, encode_len, N_feature]
-            y  [batch_size, encode_len+pred_len]
+            X_train, X_test: [N_samples, N meta_features]
+                -> np.ndarray
         '''
-
-        l = len(x)
-        for batch in range(0, l, batch_size):
-            yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
+        self.seq2seq_format = seq2seq_data_format.seq2seq_dataset(
+            X_train, self.y_train, X_test, self.y_test)
 
     @staticmethod
     def estimated_autocorrelation(x):
