@@ -272,7 +272,7 @@ class _Encoder(nn.Module):
             enc_input -> Tensor: [enc_input_len, batch size,emb_dim]
 
         Returns:
-            outputs -> Tensor: [src len, batch size, enc hid dim * 2]
+            outputs -> Tensor: [enc_seq_len, batch size, enc hid dim * 2]
             hidden -> Tensor: [batch size, dec hid dim]
 
         '''
@@ -296,7 +296,7 @@ class _Encoder(nn.Module):
         hidden = torch.tanh(
             self.fc(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)))
 
-        # outputs = [src len, batch size, enc hid dim * 2]
+        # outputs = [enc_seq_len, batch size, enc hid dim * 2]
         # hidden = [batch size, dec hid dim]
         return outputs, hidden
 
@@ -372,7 +372,8 @@ class _Decoder(nn.Module):
         # weighted = [1, batch size, enc hid dim * 2]
         weighted = weighted.permute(1, 0, 2)
 
-        # print('embedded',embedded.size())
+        # embedded = [1, batch size, dec_emb dim]
+
         # rnn_input = [1, batch size, (enc hid dim * 2) + dec_emb dim]
         rnn_input = torch.cat((embedded, weighted), dim=2)
 

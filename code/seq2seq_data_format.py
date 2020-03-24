@@ -52,6 +52,9 @@ class seq2seq_dataset():
 
         For seq2seq this should be able to encode arbitrary sequence and prediction arbitrary sequence
 
+        e.g. encode_len = 3, pred_len = 2 --->
+                        x = (x1,y1),...,(x3,y3); y = (y3,y4,y5) <- y[0] = X_train[-1][1]...
+
         Args:
             X: [N_samples,N-features] -> Tensor N_samples have sequential properties
             y: [N_samples,]  -> labels Tensor    N_samples have sequential properties
@@ -70,8 +73,10 @@ class seq2seq_dataset():
             encode = full_data[i:min(
                 i+encode_len, N_samples)]
 
-            pred = y[i+encode_len:min(
+            pred = y[i+encode_len-1:min(
                 i+encode_len+pred_len, N_samples)]
+
+            # prevent from empty list
             if pred.shape[0] != pred_len:
                 break
 
