@@ -77,7 +77,7 @@ class DNN_utility:
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                self.best_model = copy.deepcopy(self.model).cpu()
+                self.best_model = copy.deepcopy(self.model).detach().cpu()
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
@@ -136,7 +136,7 @@ class DNN_utility:
             # print(local_output.size())
             # print(local_labels.size())
 
-            loss = -self.lossfunction(local_output, local_labels)
+            loss = self.lossfunction(local_output, local_labels)
             loss.backward()
             self.optimiser.step()
             epoch_loss += loss.item()
