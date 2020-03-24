@@ -15,7 +15,7 @@ def backtest(X_test,models, data2, transaction_costs,starting_cap = 10000,  conf
   positions = pd.DataFrame(positions)
   positions.columns=["cash", "btc_units","traded","value", 'btc_open','date', 'signal']
   positions.loc[1:,'btc_open'] = data2.loc[X_test.index[0]:,'BTC_open'].reset_index(drop=True)
-  positions.loc[2:,'date'] = data2.loc[X_test.index[0]:,'date'].values
+  positions.loc[1:,'date'] = data2.loc[X_test.index[0]:,'date'].values[:-1]
 
   positions.loc[1:,'signal'] = signals
 
