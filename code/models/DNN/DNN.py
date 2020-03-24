@@ -77,7 +77,7 @@ class DNN_utility:
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                self.best_model = copy.deepcopy(self.model).cpu().detach()
+                self.best_model = copy.deepcopy(self.model.cpu())
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
@@ -93,7 +93,7 @@ class DNN_utility:
             x = torch.from_numpy(x.values).float()
 
         try:
-            pred = self.best_model(x)
+            pred = self.best_model(x).detach()
         except:
             raise NameError('have not trained model')
 
@@ -249,3 +249,4 @@ class DNN(nn.Module):
 #     input_dim = 10
 #     dnn = DNN_utility(input_dim)
 #     dnn.run_epoch(x, y, x, y)
+#     dnn.prediction(x)
