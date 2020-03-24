@@ -267,8 +267,15 @@ class _Encoder(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, enc_input):
+        '''
+        Args: 
+            enc_input -> Tensor: [enc_input_len, batch size,emb_dim]
 
-        # enc_input = [enc_input_len, batch size,emb_dim]
+        Returns:
+            outputs -> Tensor: [src len, batch size, enc hid dim * 2]
+            hidden -> Tensor: [batch size, dec hid dim]
+
+        '''
 
         # embedded = [enc_input_len, batch size, emb_dim]
         embedded = self.dropout(enc_input)
@@ -340,10 +347,12 @@ class _Decoder(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, dec_input, hidden, encoder_outputs):
-
-        # dec_input = [1,batch size,dec_emb dim]
-        # hidden = [batch size, dec hid dim]
-        # encoder_outputs = [enc_seq_len, batch size, enc hid dim * 2]
+        '''
+        Args:
+            dec_input -> Tensor: [1,batch size,dec_emb dim]
+            hidden -> Tensor: [batch size, dec hid dim]
+            encoder_outputs -> Tensor: [enc_seq_len, batch size, enc hid dim * 2]
+        '''
 
         # embedded = [1, batch size, dec_emb dim]
         embedded = self.dropout(dec_input)

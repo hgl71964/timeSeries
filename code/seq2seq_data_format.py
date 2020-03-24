@@ -88,32 +88,6 @@ class seq2seq_dataset():
                     pass
         return new_X, new_y
 
-    def train_loader(self, batch_size):
-        '''
-        Args:
-          -> output results attributes:
-              x  [batch_size, encode_len, N_feature]
-              y  [batch_size, encode_len+pred_len]
-        '''
-        l = len(self.X_train)
-        # l_res = len(self.X_res)
-        # RNN has restriction for batch size
-        for batch in range(0, l, batch_size):
-            yield (self.X_train[batch:min(batch + batch_size, l)], self.y_train[batch:min(batch + batch_size, l)])
-
-    def test_loader(self, batch_size):
-        '''
-        Args:
-          -> output results attributes:
-              x  [batch_size, encode_len, N_feature]
-              y  [batch_size, encode_len+pred_len]
-        '''
-        l = len(self.X_test)
-        # l_res = len(self.X_res)
-        # RNN has restriction for batch size
-        for batch in range(0, l, batch_size):
-            yield (self.X_test[batch:min(batch + batch_size, l)], self.y_test[batch:min(batch + batch_size, l)])
-
     def shuffler(self, tensor):
         n = tensor.size(0)
         rand = torch.randperm(n)
