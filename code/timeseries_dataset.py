@@ -120,7 +120,7 @@ class timeseries_Dataset:
         self.X_test = self.X_test[[
             col for col in set(preserve_list) if col not in y_name]]
 
-    def ensemble_meta_feat(self, X_train, X_test):
+    def ensemble_meta_feat(self, meta_X_train, meta_X_test):
         '''
         Composition: see seq2seq_data_format.py
 
@@ -129,7 +129,7 @@ class timeseries_Dataset:
                 -> np.ndarray
         '''
         self.seq2seq_format = seq2seq_data_format.seq2seq_dataset(
-            X_train, self.y_train, X_test, self.y_test)
+            meta_X_train, self.y_train, meta_X_test, self.y_test)
 
     @staticmethod
     def estimated_autocorrelation(x):
