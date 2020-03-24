@@ -170,7 +170,7 @@ class seq2seq_utility:
 
         return best_valid_loss
 
-    def prediction(self, x, trg):
+    def seq2seq_prediction(self, x, trg):
         '''
         Args:
 
@@ -258,22 +258,18 @@ class seq2seq_utility:
                     'batch_size':1,
                     'teacher_forcing_ratio': 1,  # teacher forcing during training
                     'device':device}
+
             #####
             Training:
-            seq2seq_utility.run_epoch(self, X_train,
-                            y_train, X_test, y_test, teacher_forcing_ratio)
+            run_epoch(X_train,y_train, X_test, y_test)
+
             #####
             Evaluation:
-            seq2seq_utility.seq2seq_evaluate(test_seg)
+            seq2seq_evaluate(X_test, y_test)
 
             #####
             Prediction:
-            self.model(seq2seq_input, target, teacher_forcing_ratio = 0)
-
-            Where:
-                seq2seq_input = [seq_len, batch size,Enc_emb_dim]
-                target = [trg_len, batch size,output_dim], trg_len is prediction len
-
+            seq2seq_prediction(x,trg)
             ''')
 
 
