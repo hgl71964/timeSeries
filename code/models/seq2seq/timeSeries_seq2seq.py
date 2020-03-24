@@ -186,7 +186,7 @@ class seq2seq_utility:
         Returns:
               [pred_len, dec_output_size] -> torch.Tensor
         '''
-        for i, (local_batch, local_labels) in enumerate(seq2seq_utility.batcher(X_test, y_test, batch_size=1)):
+        for i, (local_batch, local_labels) in enumerate(seq2seq_utility.batcher(x, y, batch_size=1)):
 
             '''
             pred -> Tensor [pred_len, dec_output_size]; first dec_input/ last enc_input problem
