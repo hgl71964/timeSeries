@@ -118,13 +118,19 @@ class seq2seq_utility:
                      'device': 'cuda'}
 
     def seq2seq_training(self, X_train, y_train):
+        '''
+        Args:
+            X_train: [N_sample, encode_len, N_feature] -> Tensor; N_feature excludes price
+            y_train: [N_sample, pred_len] -> Tensor;
+        '''
         self.model.train()
         epoch_loss = 0
 
-        # print('load')
-        # print(X_local.size())
-        # print(y_local.size())
         for local_batch, local_labels in seq2seq_utility.batcher(X_train, y_train, self.grid['batch_size']):
+            '''
+            local_batch: [batch_size, encode_len, N_feature] -> Tensor; N_feature excludes price
+            local_labels: [batch_size, pred_len] -> Tensor;
+            '''
 
             local_batch, local_labels = local_batch.transpose(0, 1).to(
                 self.device), local_labels.transpose(0, 1).to(self.device)
@@ -155,6 +161,9 @@ class seq2seq_utility:
         return epoch_loss
 
     def seq2seq_evaluate(self, X_test, y_test):
+        '''
+        see function: seq2seq_training
+        '''
         self.model.eval()
         epoch_loss = 0
         with torch.no_grad():
@@ -175,10 +184,8 @@ class seq2seq_utility:
     def run_epoch(self, X_train, y_train, X_test, y_test):
         '''
         Args:
-            X_train: [N_samples,N-features] -> Tensor
-            X_test: [N_samples,N-features] -> Tensor
-            y_train: [N_samples]  labels -> Tensor
-            y_test: [N_samples]  labels -> Tensor
+            X_train, X_test: [N_sample, encode_len, N_feature] -> Tensor
+            y_train,y_test: [N_sample, pred_len] -> Tensor;
 
         '''
 
@@ -410,6 +417,8 @@ class _Seq2Seq(nn.Module):
 
     def forward(self, seq2seq_input, target, teacher_forcing_ratio: int = 0.5):
         """
+        this function for time series forecasting
+
         Args:
             seq2seq_input: '[seq_len, batch size,Enc_emb_dim]' -> torch.Tensor
             target: ' [trg_len, batch size,output_dim]'   -> torch.Tensor
