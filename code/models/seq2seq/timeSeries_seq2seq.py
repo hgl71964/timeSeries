@@ -5,7 +5,6 @@ import torch.nn.functional as F
 import copy
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import torch.optim as optim
 import random
 import os
@@ -22,15 +21,15 @@ class seq2seq_utility:
                          'clip': kwargs['clip'],
                          'batch_size': kwargs['batch_size'],
                          'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
-                         }
-            OUTPUT_DIM = kwargs['OUTPUT_DIM']
-            ENC_EMB_DIM = input_dim
-            # DEC_EMB_DIM = 1
-            ENC_HID_DIM = kwargs['ENC_HID_DIM']
-            DEC_HID_DIM = kwargs['DEC_HID_DIM']
-            ENC_DROPOUT = kwargs['ENC_DROPOUT']
-            DEC_DROPOUT = kwargs['DEC_DROPOUT']
-            self.device = kwargs['device']
+
+                         'OUTPUT_DIM': kwargs['OUTPUT_DIM'],
+                         'ENC_EMB_DIM': input_dim,
+                         # DEC_EMB_DIM: 1,
+                         'ENC_HID_DIM': kwargs['ENC_HID_DIM'],
+                         'DEC_HID_DIM': kwargs['DEC_HID_DIM'],
+                         'ENC_DROPOUT': kwargs['ENC_DROPOUT'],
+                         'DEC_DROPOUT': kwargs['DEC_DROPOUT'],
+                         'device': kwargs['device']},
         except:
             print('''hyper-parameter setting fails, 
             model uses default settings''')
@@ -39,18 +38,20 @@ class seq2seq_utility:
         '''
         Instatiate Model
         '''
-        attn = _Attention(ENC_HID_DIM, DEC_HID_DIM)
-        enc = _Encoder(ENC_EMB_DIM, ENC_HID_DIM, DEC_HID_DIM, ENC_DROPOUT)
-        dec = _Decoder(output_dim=OUTPUT_DIM,  enc_hid_dim=ENC_HID_DIM,
-                       dec_hid_dim=DEC_HID_DIM, dropout=DEC_DROPOUT, attention=attn)
-        self.model = _Seq2Seq(enc, dec, self.device).to(self.device)
+        attn = _Attention(self.grid['ENC_HID_DIM'], self.grid['DEC_HID_DIM'])
+        enc = _Encoder(
+            self.grid['ENC_EMB_DIM'], self.grid['ENC_HID_DIM'], self.grid['DEC_HID_DIM'], self.grid['ENC_DROPOUT'])
+        dec = _Decoder(output_dim=self.grid['OUTPUT_DIM'],  enc_hid_dim=self.grid['ENC_HID_DIM'],
+                       dec_hid_dim=self.grid['DEC_HID_DIM'], dropout=self.grid['DEC_DROPOUT'], attention=attn)
+        self.model = _Seq2Seq(enc, dec, self.grid['device']).to(
+            self.grid['device'])
 
         '''
         Loss function & optimiser 
         '''
         self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.grid['learning_rate'])
-        self.lossfunction = nn.MSELoss().to(self.device)
+        self.lossfunction = nn.MSELoss().to(self.grid['device'])
 
     @property
     def default_model_setting(self):
@@ -86,7 +87,7 @@ class seq2seq_utility:
             '''
 
             local_batch, local_labels = local_batch.transpose(0, 1).to(
-                self.device), local_labels.transpose(0, 1).to(self.device)
+                self.grid['device']), local_labels.transpose(0, 1).to(self.grid['device'])
             local_labels = local_labels.unsqueeze(2)
 
             '''
@@ -134,7 +135,7 @@ class seq2seq_utility:
             for local_batch, local_labels in seq2seq_utility.batcher(X_test, y_test, self.grid['batch_size']):
 
                 local_batch, local_labels = local_batch.transpose(0, 1).to(
-                    self.device), local_labels.transpose(0, 1).to(self.device)
+                    self.grid['device']), local_labels.transpose(0, 1).to(self.grid['device'])
                 local_labels = local_labels.unsqueeze(2)
 
                 local_output = self.model(seq2seq_input=local_batch,

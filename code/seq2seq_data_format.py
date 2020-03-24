@@ -73,8 +73,7 @@ class seq2seq_dataset:
             [x, y.unsqueeze(1)], dim=1)
 
         N_samples = x.shape[0]
-        print(N_samples)
-        print(pred_len)
+
         for i in range(0, N_samples, pred_len):
 
             encode = full_data[i:min(
