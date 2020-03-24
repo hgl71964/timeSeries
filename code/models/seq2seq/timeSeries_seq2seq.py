@@ -135,6 +135,13 @@ class seq2seq_utility:
             local_batch, local_labels = local_batch.transpose(0, 1).to(
                 self.device), local_labels.transpose(0, 1).to(self.device)
             local_labels = local_labels.unsqueeze(2)
+
+            '''
+            After to device:
+                local_batch:  [encode_len, batch_size, N_feature] -> Tensor; N_feature excludes price
+                local_labels:  [pred_len, batch_size,1] -> Tensor;
+            '''
+
             # print('input')
             # print(local_batch.size())
             # print(local_labels.size())
@@ -185,7 +192,7 @@ class seq2seq_utility:
         '''
         Args:
             X_train, X_test: [N_sample, encode_len, N_feature] -> Tensor
-            y_train,y_test: [N_sample, pred_len] -> Tensor;
+            y_train, y_test: [N_sample, pred_len] -> Tensor;
 
         '''
 
@@ -420,30 +427,35 @@ class _Seq2Seq(nn.Module):
         this function for time series forecasting
 
         Args:
-            seq2seq_input: '[seq_len, batch size,Enc_emb_dim]' -> torch.Tensor
-            target: ' [trg_len, batch size,output_dim]'   -> torch.Tensor
+            seq2seq_input: '[enc_seq_len, batch size,Enc_emb_dim]' -> torch.Tensor
+            target: ' [1 + pred_len, batch size,output_dim]'  -> torch.Tensor
             teacher_forcing_ratio:  1 -> full teacher
         Returns:
-              [trg_len, batch_size, dec_output_size] -> torch.Tensor
+              [pred_len, batch_size, dec_output_size] -> torch.Tensor
         """
         # if teacher_forcing_ratio is 0.75 we use teacher forcing 75% of the time
 
         batch_size = seq2seq_input.shape[1]
-        trg_len = target.shape[0]
+
         dec_output_size = self.decoder.output_dim
+
+        '''
+        the first input to decoder = last y input to encoder
+        '''
+
+        pred_len = target.shape[0] - 1
         dec_output = torch.zeros(
-            trg_len, batch_size, dec_output_size).to(self.device)
+            pred_len + 1, batch_size, dec_output_size).to(self.device)
 
         # encoder_outputs is all hidden states of the input sequence, back and forwards
         # hidden is the final forward and backward hidden states, passed through a linear layer
         encoder_outputs, hidden = self.encoder(seq2seq_input)
 
-        # check: make dimension consistent
+        # dec_input -> Tensor [1, batch size, output_dim]
         dec_input = target[0]
         dec_input = dec_input.unsqueeze(0)
-        # print('dec_input dim:',dec_input.size())
 
-        for t in range(1, trg_len):
+        for t in range(1, pred_len + 1):
             # insert dec_input token embedding, previous hidden state and all encoder hidden states
             # receive output tensor (predictions) and new hidden state
             # print('in dec')
