@@ -23,9 +23,9 @@ class seq2seq_dataset():
         self.X_test = torch.from_numpy(X_test).float()
 
         self.y_train = torch.from_numpy(
-            y_train.values[:N_sample]).ravel().float()
+            y_train.values.ravel()[:N_sample]).float()
         self.y_test = torch.from_numpy(
-            y_test.values[:N_sample]).ravel().float()
+            y_test.values.ravel()[:N_sample]).float()
 
     def split_dataset(self,
                       encode_len: int,
