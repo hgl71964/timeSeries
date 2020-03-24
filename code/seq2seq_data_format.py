@@ -109,6 +109,10 @@ class seq2seq_dataset:
         '''
         w.r.t current dataset, let's get the future
 
+        1. this assume test set is un-shuffled and is located in the end of the time series sequence 
+
+        2. encode_len, pred_len should be consistent with X_train
+
         Returns:
             self.lstX  [1, encode_len, N_feature] -> Tensor; N_feature excludes price
             self.lsty  [1, pred_len] -> Tensor;
@@ -116,11 +120,8 @@ class seq2seq_dataset:
         full_data = torch.cat(
             [self.raw_X_test, self.raw_y_test.unsqueeze(1)], dim=1)
 
-        encode = full_data[-encode_len:]
-
-        pred = y[-1]
-        self.lst_X =
-        self.lst_y
+        self.lst_X = full_data[-encode_len:].unsqueeze(0)
+        self.lst_y = self.raw_y_test[-1].unsqueeze(0).repeat(1, pred_len)
 
     def shuffler(self, tensor):
         n = tensor.size(0)
