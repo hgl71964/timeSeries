@@ -286,7 +286,7 @@ class seq2seq_utility:
 
             #####
             Prediction:
-            seq2seq_prediction(x,trg)
+            seq2seq_prediction(x,y)
             ''')
 
 
