@@ -107,6 +107,16 @@ class timeseries_Dataset:
         # except NameError:
         #     print('timeSeries_Dataset has not processed')
 
+    @property
+    def to_seq2seq_data_format(self):
+        '''
+        Composition object:
+            see xgb_data_format.py
+        '''
+
+        self.seq2seq_format = seq2seq_data_format.seq2seq_dataset(
+            self.X_train, self.y_train, self.X_test, self.y_test)
+
     def select_feature(self, preserve_list):
         '''
         this function to select good features

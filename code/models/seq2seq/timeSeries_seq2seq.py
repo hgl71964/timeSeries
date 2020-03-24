@@ -11,7 +11,7 @@ import random
 import os
 
 
-class seq2seq_utility():
+class seq2seq_utility:
 
     @staticmethod
     def show_parameter():
@@ -39,8 +39,6 @@ class seq2seq_utility():
                     'DEC_HID_DIM':32,          # hidden dimension should be the same
                     'ENC_DROPOUT':0,
                     'DEC_DROPOUT':0,
-                    'encode_len': 10,
-                    'pred_len': 1,
                     'batch_size':1,
                     'teacher_forcing_ratio': 1,  # teacher forcing during training
                     'device':device}
@@ -68,9 +66,6 @@ class seq2seq_utility():
                          'learning_rate': kwargs['learning_rate'],
                          # during training
                          'clip': kwargs['clip'],
-                         'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
-                         'encode_len': kwargs['encode_len'],
-                         'pred_len': kwargs['pred_len'],
                          'batch_size': kwargs['batch_size'],
                          'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
                          }
@@ -114,20 +109,18 @@ class seq2seq_utility():
                      'DEC_HID_DIM': 24,
                      'ENC_DROPOUT': 0,
                      'DEC_DROPOUT': 0,
-                     'encode_len': 1,           # how many days we want the ecoder encode
-                     'pred_len': 1,              # how many days we hope to predict
                      'batch_size': 10,         # your batch size is constrained by the chunk of seq length
                      'teacher_forcing_ratio': 1,
                      'device': 'cuda'}
 
-    def seq2seq_training(self, training_Loader, clip, teacher_forcing_ratio, batch_size):
+    def seq2seq_training(self, X_train, y_train):
         self.model.train()
         epoch_loss = 0
 
         # print('load')
         # print(X_local.size())
         # print(y_local.size())
-        for local_batch, local_labels in training_Loader.batcher(batch_size):
+        for local_batch, local_labels in seq2seq_utility.batcher(X_train, y_train, self.grid['batch_size']):
 
             local_batch, local_labels = local_batch.transpose(0, 1).to(
                 self.device), local_labels.transpose(0, 1).to(self.device)
@@ -140,7 +133,7 @@ class seq2seq_utility():
             self.optimiser.zero_grad()
 
             local_output = self.model(seq2seq_input=local_batch, target=local_labels,
-                                      teacher_forcing_ratio=teacher_forcing_ratio)
+                                      teacher_forcing_ratio=self.grid['teacher_forcing_ratio'])
             local_output = local_output.squeeze(2)[1:]
             local_labels = local_labels.squeeze(2)[1:]
 
@@ -151,16 +144,17 @@ class seq2seq_utility():
 
             # backward pass
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), clip)
+            torch.nn.utils.clip_grad_norm_(
+                self.model.parameters(), self.grid['clip'])
             self.optimiser.step()
             epoch_loss += loss.item()
         return epoch_loss
 
-    def seq2seq_evaluate(self, test_Loader, batch_size):
+    def seq2seq_evaluate(self, X_test, y_test):
         self.model.eval()
         epoch_loss = 0
         with torch.no_grad():
-            for local_batch, local_labels in test_Loader.batcher(batch_size):
+            for local_batch, local_labels in seq2seq_utility.batcher(X_test, y_test, self.grid['batch_size']):
 
                 local_batch, local_labels = local_batch.transpose(0, 1).to(
                     self.device), local_labels.transpose(0, 1).to(self.device)
@@ -186,22 +180,11 @@ class seq2seq_utility():
 
         best_valid_loss = float('inf')
 
-        '''
-        TODO: make dataloader compatible
-        '''
-        training_Loader = seq2seq_format_input(X_train, y_train)
-        training_Loader.walk_forward_split(
-            self.grid['encode_len'], self.grid['pred_len'])
-
-        test_Loader = seq2seq_format_input(X_test, y_test)
-        test_Loader.walk_forward_split(
-            self.grid['encode_len'], self.grid['pred_len'])
-
         for epoch in range(self.grid['max_epochs']):
 
-            train_loss = self.seq2seq_training(training_Loader,
+            train_loss = self.seq2seq_training(X_train, y_train,
                                                self.grid['clip'], self.grid['teacher_forcing_ratio'], self.grid['batch_size'])
-            valid_loss = self.seq2seq_evaluate(test_Loader,
+            valid_loss = self.seq2seq_evaluate(X_test, y_test,
                                                self.grid['batch_size'])
 
             if valid_loss < best_valid_loss:
@@ -212,6 +195,24 @@ class seq2seq_utility():
                 print(f'Validation Loss: {valid_loss:.3f}')
 
         return best_valid_loss
+
+    @staticmethod
+    def batcher(x, y, batch_size: int):
+        '''
+        make batch along first dimension
+
+        Args:
+            x: iterable
+            y: iterable
+
+        Return:
+            x  [batch_size, encode_len, N_feature]
+            y  [batch_size, encode_len+pred_len]
+        '''
+
+        l = len(x)
+        for batch in range(0, l, batch_size):
+            yield (x[batch:min(batch + batch_size, l)], y[batch:min(batch + batch_size, l)])
 
     def save_model(self, path):
         '''
