@@ -9,6 +9,7 @@ import numpy as np
 
 
 class DNN_utility:
+
     def __init__(self, input_dim, **kwargs):
         '''
         Args:
@@ -18,7 +19,6 @@ class DNN_utility:
         '''
 
         # set all parameters
-
         self.dim = input_dim
 
         try:
@@ -27,7 +27,6 @@ class DNN_utility:
                                 'batch_size': kwargs['batch_size'],
                                 'device': kwargs['device']
                                 }
-
             self.model_param = {'input_dim': input_dim,
                                 'first_hidden': kwargs['first_hidden'],
                                 'second_hidden': kwargs['second_hidden'],
@@ -49,7 +48,7 @@ class DNN_utility:
     @property
     def default_model_setting(self):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.other_param = {'max_epochs': 256,
+        self.other_param = {'max_epochs': 128,
                             'learning_rate': 1e-3,
                             'batch_size': 8,
                             'device': device,
@@ -237,7 +236,7 @@ class DNN(nn.Module):
         Args:
             x -> [N_samples,input_dim];
 
-        Outputs:
+        Returns:
             x -> [N_samples,]
         '''
         return self.layers(x).view(-1)

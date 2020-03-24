@@ -58,14 +58,14 @@ class seq2seq_utility:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         self.grid = {'max_epochs': 1024,
-                     'learning_rate': 0.9,
+                     'learning_rate': 1e-3,
                      'clip': 1,
                      'OUTPUT_DIM': 1,
 
                      # dim that input to encoder  == number of your feature!
                      'ENC_EMB_DIM': self.input_dim,
-                     'ENC_HID_DIM': 24,
-                     'DEC_HID_DIM': 24,
+                     'ENC_HID_DIM': 16,
+                     'DEC_HID_DIM': 16,
                      'ENC_DROPOUT': 0,
                      'DEC_DROPOUT': 0,
                      'batch_size': 10,         # your batch size is constrained by the chunk of seq length
@@ -164,7 +164,7 @@ class seq2seq_utility:
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                self.m = copy.deepcopy(self.model).cpu()
+                self.best_model = copy.deepcopy(self.model).cpu()
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
@@ -203,7 +203,7 @@ class seq2seq_utility:
             path: root path
         '''
         try:
-            checkpoint = {'model_state_dict': self.m.state_dict(),
+            checkpoint = {'model_state_dict': self.best_model.state_dict(),
                           'optimizer_state_dict': self.optimiser.state_dict(),
                           }
             torch.save(checkpoint, os.path.join(path, 'seq2seq.pt'))
