@@ -178,22 +178,29 @@ class seq2seq_utility:
         for larger sequence of time series, breaks down to bag of chunks!
 
         Args:
-            x: '[enc_seq_len, 1 ,Enc_emb_dim]' -> torch.Tensor
-            y: '[1 + pred_len, 1 ,output_dim]' -> torch.Tensor
-            (batch_size = 1)
+            x: [N_sample, encode_len, N_feature] -> Tensor; N_feature excludes price
+            y: [N_sample, pred_len] -> Tensor;
 
             enc_seq_len and pred_len should be the same as the data for training
 
         Returns:
               [pred_len, dec_output_size] -> torch.Tensor
         '''
-        pred = self.best_model(seq2seq_input=x,
-                               target=y, teacher_forcing_ratio=0)
+        for i, (local_batch, local_labels) in enumerate(seq2seq_utility.batcher(X_test, y_test, batch_size=1)):
 
-        '''
-        first dec_input/ last enc_input problem
-        '''
-        return pred[1:].squeeze(1)
+            '''
+            pred -> Tensor [pred_len, dec_output_size]; first dec_input/ last enc_input problem
+            '''
+            local_output = self.best_model(seq2seq_input=local_batch,
+                                           target=local_labels, teacher_forcing_ratio=0)
+            pred = local_output[1:].squeeze(1)
+
+            if i == 0:
+                predictions = pred
+            else:
+                predictions = torch.cat([predictions, pred], dim=0)
+
+        return predictions
 
     @staticmethod
     def batcher(x, y, batch_size: int):
