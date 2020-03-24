@@ -191,6 +191,10 @@ class seq2seq_utility:
             '''
             pred -> Tensor [pred_len, dec_output_size]; first dec_input/ last enc_input problem
             '''
+
+            local_batch, local_labels = local_batch.transpose(
+                0, 1), local_labels.transpose(0, 1)
+
             local_output = self.best_model(seq2seq_input=local_batch,
                                            target=local_labels, teacher_forcing_ratio=0)
             pred = local_output[1:].squeeze(1)
