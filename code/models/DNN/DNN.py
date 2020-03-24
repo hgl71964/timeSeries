@@ -136,7 +136,7 @@ class DNN_utility:
             # print(local_output.size())
             # print(local_labels.size())
 
-            loss = self.lossfunction(local_output, local_labels)
+            loss = -self.lossfunction(local_output, local_labels)
             loss.backward()
             self.optimiser.step()
             epoch_loss += loss.item()
