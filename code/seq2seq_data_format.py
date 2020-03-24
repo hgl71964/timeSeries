@@ -14,21 +14,26 @@ class seq2seq_dataset:
     def __init__(self, X_train, y_train, X_test, y_test):
         """
         Args:
-            X_train: [N_samples,N-features] -> np.ndarray
-            X_test: [N_samples,N-features] -> np.ndarray
+            X_train, X_test: [N_samples,N_features] -> np.ndarray
 
-            y_train: [N_samples]  labels -> pd.DataFrame
-            y_test: [N_samples]  labels -> pd.DataFrame
+            y_train, y_test: [N_samples]  labels -> pd.DataFrame
+
+        Attributes:
+            raw_X_train: [N_samples,N-features] -> Tensor
+            raw_X_test: [N_samples,N-features] -> Tensor
+            raw_y_train: [N_samples]  labels -> Tensor
+            raw_y_test: [N_samples]  labels -> Tensor
+
         """
 
         train_sample = X_train.shape[0]
         test_sample = X_test.shape[0]
-        self.X_train = torch.from_numpy(X_train).float()
-        self.X_test = torch.from_numpy(X_test).float()
+        self.raw_X_train = torch.from_numpy(X_train).float()
+        self.raw_X_test = torch.from_numpy(X_test).float()
 
-        self.y_train = torch.from_numpy(
+        self.raw_y_train = torch.from_numpy(
             y_train.values.ravel()[:train_sample]).float()
-        self.y_test = torch.from_numpy(
+        self.raw_y_test = torch.from_numpy(
             y_test.values.ravel()[:test_sample]).float()
 
     def split_dataset(self,
@@ -41,10 +46,10 @@ class seq2seq_dataset:
         '''
 
         self.X_train, self.y_train = self._walk_forward_split(
-            self.X_train, self.y_train, encode_len, pred_len)
+            self.raw_X_train, self.raw_y_train, encode_len, pred_len)
 
         self.X_test, self.y_test = self._walk_forward_split(
-            self.X_test, self.y_test, encode_len, pred_len)
+            self.raw_X_test, self.raw_y_test, encode_len, pred_len)
 
     def _walk_forward_split(self,
                             x,
@@ -99,6 +104,23 @@ class seq2seq_dataset:
                 except:  # residual
                     pass
         return new_X, new_y
+
+    def further_prediction(self, encode_len: int, pred_len: int):
+        '''
+        w.r.t current dataset, let's get the future
+
+        Returns:
+            self.lstX  [1, encode_len, N_feature] -> Tensor; N_feature excludes price
+            self.lsty  [1, pred_len] -> Tensor;
+        '''
+        full_data = torch.cat(
+            [self.raw_X_test, self.raw_y_test.unsqueeze(1)], dim=1)
+
+        encode = full_data[-encode_len:]
+
+        pred = y[-1]
+        self.lst_X =
+        self.lst_y
 
     def shuffler(self, tensor):
         n = tensor.size(0)
