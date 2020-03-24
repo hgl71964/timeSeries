@@ -64,7 +64,6 @@ class seq2seq_utility:
 
                      # dim that input to encoder  == number of your feature!
                      'ENC_EMB_DIM': self.input_dim,
-
                      'ENC_HID_DIM': 24,
                      'DEC_HID_DIM': 24,
                      'ENC_DROPOUT': 0,
