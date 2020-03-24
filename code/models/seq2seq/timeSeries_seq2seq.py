@@ -151,6 +151,10 @@ class seq2seq_utility:
 
             local_output = self.model(seq2seq_input=local_batch, target=local_labels,
                                       teacher_forcing_ratio=self.grid['teacher_forcing_ratio'])
+            '''
+            resolve the first dec_input / last enc_input issues
+            '''
+
             local_output = local_output.squeeze(2)[1:]
             local_labels = local_labels.squeeze(2)[1:]
 
@@ -423,7 +427,7 @@ class _Seq2Seq(nn.Module):
         self.device = device
 
     def forward(self, seq2seq_input, target, teacher_forcing_ratio: int = 0.5):
-        """
+        '''
         this function for time series forecasting
 
         Args:
@@ -432,7 +436,7 @@ class _Seq2Seq(nn.Module):
             teacher_forcing_ratio:  1 -> full teacher
         Returns:
               [pred_len, batch_size, dec_output_size] -> torch.Tensor
-        """
+        '''
         # if teacher_forcing_ratio is 0.75 we use teacher forcing 75% of the time
 
         batch_size = seq2seq_input.shape[1]
@@ -441,10 +445,12 @@ class _Seq2Seq(nn.Module):
 
         '''
         the first input to decoder = last y input to encoder
+
+        decoutputs[0] = all zeros, this will be resolved in loss function
         '''
 
         pred_len = target.shape[0] - 1
-        dec_output = torch.zeros(
+        dec_outputs = torch.zeros(
             pred_len + 1, batch_size, dec_output_size).to(self.device)
 
         # encoder_outputs is all hidden states of the input sequence, back and forwards
@@ -456,15 +462,11 @@ class _Seq2Seq(nn.Module):
         dec_input = dec_input.unsqueeze(0)
 
         for t in range(1, pred_len + 1):
-            # insert dec_input token embedding, previous hidden state and all encoder hidden states
-            # receive output tensor (predictions) and new hidden state
-            # print('in dec')
-            # print(dec_input.size())
 
             output, hidden = self.decoder(dec_input, hidden, encoder_outputs)
 
             # place predictions in a tensor holding predictions for each token
-            dec_output[t] = output
+            dec_outputs[t] = output
 
             # decide if we are going to use teacher forcing or not
             teacher_force = random.random() < teacher_forcing_ratio
@@ -477,4 +479,4 @@ class _Seq2Seq(nn.Module):
             dec_input = target[t] if teacher_force else top1
             dec_input = dec_input.unsqueeze(0).float()
             # print(dec_input.size())
-        return dec_output
+        return dec_outputs
