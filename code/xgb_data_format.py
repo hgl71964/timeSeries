@@ -17,7 +17,7 @@ class xgboost_dataset:
 
 
         Args:
-            input type ->  pandas
+            X_train, y_train, X_test, y_test ->  pandas
 
         Intermediate variables: X_train: features, excluding return, [N_sample,N_feature] -> np.darray
         Intermediate variables: y_train: return, [N_sample,] -> np.darray
