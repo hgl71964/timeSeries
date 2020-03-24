@@ -171,13 +171,29 @@ class seq2seq_utility:
 
         return best_valid_loss
 
-    def seq2seq_prediction(self, x, trg):
+    def seq2seq_prediction(self, x, y):
         '''
-        Args:
+        this function uses trained model to make prediction!
 
-        TODO: format to make inference
+        for larger sequence of time series, breaks down to bag of chunks!
+
+        Args:
+            x: '[enc_seq_len, 1 ,Enc_emb_dim]' -> torch.Tensor
+            y: '[1 + pred_len, 1 ,output_dim]' -> torch.Tensor
+            (batch_size = 1)
+
+            enc_seq_len and pred_len should be the same as the data for training
+
+        Returns:
+              [pred_len, dec_output_size] -> torch.Tensor
         '''
-        pass
+        pred = self.best_model(seq2seq_input=x,
+                               target=y, teacher_forcing_ratio=0)
+
+        '''
+        first dec_input/ last enc_input problem
+        '''
+        return pred[1:].squeeze(1)
 
     @staticmethod
     def batcher(x, y, batch_size: int):
