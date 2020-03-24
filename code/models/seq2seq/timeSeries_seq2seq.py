@@ -55,6 +55,8 @@ class seq2seq_utility:
 
     @property
     def default_model_setting(self):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         self.grid = {'max_epochs': 1024,
                      'learning_rate': 0.9,
                      'clip': 1,
@@ -69,7 +71,7 @@ class seq2seq_utility:
                      'DEC_DROPOUT': 0,
                      'batch_size': 10,         # your batch size is constrained by the chunk of seq length
                      'teacher_forcing_ratio': 1,
-                     'device': 'cuda'}
+                     'device': device}
 
     def seq2seq_training(self, X_train, y_train):
         '''
