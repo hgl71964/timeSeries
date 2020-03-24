@@ -13,53 +13,6 @@ import os
 
 class seq2seq_utility:
 
-    @staticmethod
-    def show_parameter():
-
-        print(
-            '''
-            This is a seq2seq model, embedding should be done before input into this model
-
-            RNN used is GRU
-
-            default loss function is MSELoss()
-            
-            #####
-            Instantiate:
-            seq2seq_utility.instan_things(**kwargs),
-                    in which you should define the following dictionary parameters
-            e.g.
-            param = {'max_epochs':64,
-                    'learning_rate':1e-3,
-                    'clip':1,                  # clip grad norm
-                    'teacher_forcing_ratio':1, # during training
-                    'OUTPUT_DIM':1,            # intented output dimension
-                    'ENC_EMB_DIM':21,          # embedding space of your input
-                    'ENC_HID_DIM':32,
-                    'DEC_HID_DIM':32,          # hidden dimension should be the same
-                    'ENC_DROPOUT':0,
-                    'DEC_DROPOUT':0,
-                    'batch_size':1,
-                    'teacher_forcing_ratio': 1,  # teacher forcing during training
-                    'device':device}
-            #####
-            Training:
-            seq2seq_utility.run_epoch(self, X_train,
-                            y_train, X_test, y_test, teacher_forcing_ratio)
-            #####
-            Evaluation:
-            seq2seq_utility.seq2seq_evaluate(test_seg)
-
-            #####
-            Prediction:
-            self.model(seq2seq_input, target, teacher_forcing_ratio = 0)
-
-            Where:
-                seq2seq_input = [seq_len, batch size,Enc_emb_dim]
-                target = [trg_len, batch size,output_dim], trg_len is prediction len
-
-            ''')
-
     def __init__(self, input_dim, **kwargs):
         self.input_dim = input_dim
         try:
@@ -274,6 +227,53 @@ class seq2seq_utility:
 
         except:
             print('cannot load')
+
+    @staticmethod
+    def show_parameter():
+
+        print(
+            '''
+            This is a seq2seq model, embedding should be done before input into this model
+
+            RNN used is GRU
+
+            default loss function is MSELoss()
+            
+            #####
+            Instantiate:
+            seq2seq_utility.instan_things(**kwargs),
+                    in which you should define the following dictionary parameters
+            e.g.
+            param = {'max_epochs':64,
+                    'learning_rate':1e-3,
+                    'clip':1,                  # clip grad norm
+                    'teacher_forcing_ratio':1, # during training
+                    'OUTPUT_DIM':1,            # intented output dimension
+                    'ENC_EMB_DIM':21,          # embedding space of your input
+                    'ENC_HID_DIM':32,
+                    'DEC_HID_DIM':32,          # hidden dimension should be the same
+                    'ENC_DROPOUT':0,
+                    'DEC_DROPOUT':0,
+                    'batch_size':1,
+                    'teacher_forcing_ratio': 1,  # teacher forcing during training
+                    'device':device}
+            #####
+            Training:
+            seq2seq_utility.run_epoch(self, X_train,
+                            y_train, X_test, y_test, teacher_forcing_ratio)
+            #####
+            Evaluation:
+            seq2seq_utility.seq2seq_evaluate(test_seg)
+
+            #####
+            Prediction:
+            self.model(seq2seq_input, target, teacher_forcing_ratio = 0)
+
+            Where:
+                seq2seq_input = [seq_len, batch size,Enc_emb_dim]
+                target = [trg_len, batch size,output_dim], trg_len is prediction len
+
+            ''')
 
 
 class _Encoder(nn.Module):

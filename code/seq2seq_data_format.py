@@ -10,6 +10,7 @@ to format the dataset such that seq2seq can run
 
 
 class seq2seq_dataset:
+
     def __init__(self, X_train, y_train, X_test, y_test):
         """
         Args:
