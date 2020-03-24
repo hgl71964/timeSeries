@@ -21,9 +21,26 @@ class seq2seq_dataset():
         self.y_train = y_train
         self.y_test = y_test
 
-    def walk_forward_split(self,
-                           encode_len: int,
-                           pred_len: int):
+    def split_dataset(self,
+                      encode_len: int,
+                      pred_len: int,):
+        '''
+        Returns -> pd.DataFrame
+            X_train: features, including return, [N_sample,N_feature] 
+            y_train: return, [N_sample,] 
+        '''
+
+        self.X_train, self.y_train = self._walk_forward_split(
+            self.X_train, self.y_train, encode_len, pred_len)
+
+        self.X_test, self.y_test = self._walk_forward_split(
+            self.X_test, self.y_test, encode_len, pred_len)
+
+    def _walk_forward_split(self,
+                            x,
+                            y,
+                            encode_len: int,
+                            pred_len: int):
         '''
         See desirable split: https://github.com/guol1nag/datagrasp/blob/master/README.md
 
@@ -39,63 +56,31 @@ class seq2seq_dataset():
         '''
 
         # [N_samples,N-features + return]
-        self.full_data = torch.cat(
-            [self.X_train, self.y_train.unsqueeze(1)], dim=1)
+        full_data = torch.cat(
+            [x, y.unsqueeze(1)], dim=1)
 
-        N_samples = self.X_train.shape[0]
+        N_samples = x.shape[0]
         for i in range(0, N_samples, pred_len):
-            encode = self.full_data[i:min(
+            encode = full_data[i:min(
                 i+encode_len, N_samples)]
 
-            pred = self.y_train[i+encode_len:min(
+            pred = y[i+encode_len:min(
                 i+encode_len+pred_len, N_samples)]
             if pred.shape[0] != pred_len:
                 break
 
             if i == 0:
-                self.X = encode.unsqueeze(0)
-                self.y = pred.unsqueeze(0)
+                new_X = encode.unsqueeze(0)
+                new_y = pred.unsqueeze(0)
             else:
                 try:
-                    self.X = torch.cat([self.X, encode.unsqueeze(0)], dim=0)
-                    self.y = torch.cat([self.y, pred.unsqueeze(0)], dim=0)
+                    new_X = torch.cat([new_X, encode.unsqueeze(0)], dim=0)
+                    new_y = torch.cat([new_y, pred.unsqueeze(0)], dim=0)
                     # print(encode.unsqueeze(0).size())
                     # print(pred.unsqueeze(0).size())
                 except:  # residual
                     pass
-        self.X_train = copy.deepcopy(self.X)
-        self.y_train = copy.deepcopy(self.y)
-        del self.X, self.y, self.full_data
-
-        # [N_samples,N-features + return]
-        self.full_data = torch.cat(
-            [self.X_test, self.y_test.unsqueeze(1)], dim=1)
-
-        N_samples = self.X_test.shape[0]
-        for i in range(0, N_samples, pred_len):
-            encode = self.full_data[i:min(
-                i+encode_len, N_samples)]
-
-            pred = self.y_test[i+encode_len:min(
-                i+encode_len+pred_len, N_samples)]
-            if pred.shape[0] != pred_len:
-                break
-
-            if i == 0:
-                self.X = encode.unsqueeze(0)
-                self.y = pred.unsqueeze(0)
-            else:
-                try:
-                    self.X = torch.cat([self.X, encode.unsqueeze(0)], dim=0)
-                    self.y = torch.cat([self.y, pred.unsqueeze(0)], dim=0)
-                    # print(encode.unsqueeze(0).size())
-                    # print(pred.unsqueeze(0).size())
-                except:  # residual
-                    pass
-
-        self.X_test = copy.deepcopy(self.X)
-        self.y_test = copy.deepcopy(self.y)
-        del self.X, self.y, self.full_data
+        return new_X, new_y
 
     def train_loader(self, batch_size):
         '''
