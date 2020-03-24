@@ -21,14 +21,15 @@ class seq2seq_dataset:
             y_test: [N_samples]  labels -> pd.DataFrame
         """
 
-        N_sample = X_train.shape[0]
+        train_sample = X_train.shape[0]
+        test_sample = X_test.shape[0]
         self.X_train = torch.from_numpy(X_train).float()
         self.X_test = torch.from_numpy(X_test).float()
 
         self.y_train = torch.from_numpy(
-            y_train.values.ravel()[:N_sample]).float()
+            y_train.values.ravel()[:train_sample]).float()
         self.y_test = torch.from_numpy(
-            y_test.values.ravel()[:N_sample]).float()
+            y_test.values.ravel()[:test_sample]).float()
 
     def split_dataset(self,
                       encode_len: int,
