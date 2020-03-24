@@ -57,7 +57,7 @@ class seq2seq_utility:
     def default_model_setting(self):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.grid = {'max_epochs': 1024,
+        self.grid = {'max_epochs': 256,
                      'learning_rate': 1e-3,
                      'clip': 1,
                      'OUTPUT_DIM': 1,
