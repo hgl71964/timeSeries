@@ -60,7 +60,8 @@ class seq2seq_utility:
 
             ''')
 
-    def __init__(self, **kwargs):
+    def __init__(self, input_dim, **kwargs):
+        self.input_dim = input_dim
         try:
             self.grid = {'max_epochs': kwargs['max_epochs'],
                          'learning_rate': kwargs['learning_rate'],
@@ -70,7 +71,7 @@ class seq2seq_utility:
                          'teacher_forcing_ratio': kwargs['teacher_forcing_ratio'],
                          }
             OUTPUT_DIM = kwargs['OUTPUT_DIM']
-            ENC_EMB_DIM = kwargs['ENC_EMB_DIM']
+            ENC_EMB_DIM = input_dim
             # DEC_EMB_DIM = 1
             ENC_HID_DIM = kwargs['ENC_HID_DIM']
             DEC_HID_DIM = kwargs['DEC_HID_DIM']
@@ -104,7 +105,10 @@ class seq2seq_utility:
                      'learning_rate': 0.9,
                      'clip': 1,
                      'OUTPUT_DIM': 1,
-                     'ENC_EMB_DIM': 23,           # dim that input to encoder  == number of your feature!
+
+                     # dim that input to encoder  == number of your feature!
+                     'ENC_EMB_DIM': self.input_dim,
+
                      'ENC_HID_DIM': 24,
                      'DEC_HID_DIM': 24,
                      'ENC_DROPOUT': 0,
@@ -182,19 +186,24 @@ class seq2seq_utility:
 
         for epoch in range(self.grid['max_epochs']):
 
-            train_loss = self.seq2seq_training(X_train, y_train,
-                                               self.grid['clip'], self.grid['teacher_forcing_ratio'], self.grid['batch_size'])
-            valid_loss = self.seq2seq_evaluate(X_test, y_test,
-                                               self.grid['batch_size'])
+            train_loss = self.seq2seq_training(X_train, y_train)
+            valid_loss = self.seq2seq_evaluate(X_test, y_test)
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                self.m = copy.deepcopy(self.model)
+                self.m = copy.deepcopy(self.model).cpu()
                 print(f'Epoch: {epoch+1}:')
                 print(f'Train Loss: {train_loss:.3f}')
                 print(f'Validation Loss: {valid_loss:.3f}')
 
         return best_valid_loss
+
+    def prediction(self, x, trg):
+        '''
+        Args:
+
+        '''
+        pass
 
     @staticmethod
     def batcher(x, y, batch_size: int):
