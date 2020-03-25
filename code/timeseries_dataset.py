@@ -142,7 +142,10 @@ class timeseries_Dataset:
         Args:
             x, type pandas.Series, 1-d series
         """
-        x = x.values  # to 1-d array
+
+        if type(x) is pd.DataFrame:
+            x = x.values  # to 1-d array
+        x = x.flatten()
         n = len(x)
         variance = x.var()
         x = x-x.mean()
