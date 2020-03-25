@@ -193,7 +193,7 @@ class seq2seq_utility:
             '''
 
             local_batch, local_labels = local_batch.transpose(
-                0, 1), local_labels.transpose(0, 1)
+                0, 1), local_labels.transpose(0, 1).unsqueeze(2)
 
             local_output = self.best_model(seq2seq_input=local_batch,
                                            target=local_labels, teacher_forcing_ratio=0)
