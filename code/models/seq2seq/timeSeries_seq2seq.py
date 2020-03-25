@@ -204,7 +204,7 @@ class seq2seq_utility:
             else:
                 predictions = torch.cat([predictions, pred], dim=0)
 
-        return predictions
+        return predictions.view(-1)
 
     @staticmethod
     def batcher(x, y, batch_size: int):
