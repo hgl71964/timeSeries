@@ -96,7 +96,7 @@ class DNN_utility:
         except:
             raise NameError('have not trained model')
 
-        return pred
+        return pred.numpy()
 
     def training(self, X_train, y_train):
         '''
