@@ -28,7 +28,7 @@ def getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, A
     return merged_df
 
 
-def auto_getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, AWS_ACCESS_KEY, AWS_SECRET_ACCESS, FREQ, path, write=True):
+def auto_getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_KEY, AWS_ACCESS_KEY, AWS_SECRET_ACCESS, FREQ, path="drive/My Drive", write=True):
     '''
     this function automatically download data in the root path provided
     '''
@@ -64,4 +64,9 @@ def auto_getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_K
     if write == True:
         merged_df.to_csv(
             f"{fullpath}/BTCUSDT_Daily_WITH_INDICATORS.csv", index=False)
+
+        merged_df = merged_df.drop_duplicates('date', keep='last')
+
+        merged_df = merged_df.reset_index(drop=True)
+
     return merged_df
