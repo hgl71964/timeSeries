@@ -41,3 +41,6 @@ Description: due to its inherent sequential property, we can easily encode a seq
 
 - Seq2seq: standard seq2seq model with attention; attention mechanism may be helpful for periodicity.
 
+![](https://miro.medium.com/max/1400/1*CkeGXClZ5Xs0MhBc7xFqSA.png)
+
+
