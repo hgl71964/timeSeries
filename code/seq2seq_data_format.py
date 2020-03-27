@@ -121,7 +121,7 @@ class seq2seq_dataset:
             [self.raw_X_test, self.raw_y_test.unsqueeze(1)], dim=1)
 
         self.lst_X = full_data[-encode_len:].unsqueeze(0)
-        self.lst_y = self.raw_y_test[-1].unsqueeze(0).repeat(1, pred_len)
+        self.lst_y = self.raw_y_test[-1].unsqueeze(0).repeat(1, pred_len+1)
 
     def shuffler(self, tensor):
         n = tensor.size(0)
