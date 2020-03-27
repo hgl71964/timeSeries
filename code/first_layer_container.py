@@ -13,17 +13,17 @@ class first_layer_container:
     def append(self, meta_train, meta_test):
 
         if self.counter == 0:
-            self.meta_train = meta_train.reshape(1, -1)
-            self.meta_test = meta_test.reshape(1, -1)
+            self.meta_train = meta_train.reshape(-1, 1)
+            self.meta_test = meta_test.reshape(-1, 1)
 
         else:
             self.meta_train = np.concatenate(
-                [self.meta_train, meta_train.reshape(1, -1)], axis=0)
+                [self.meta_train, meta_train.reshape(-1, 1)], axis=1)
             self.meta_test = np.concatenate(
-                [self.meta_test, meta_test.reshape(1, -1)], axis=0)
+                [self.meta_test, meta_test.reshape(-1, 1)], axis=1)
 
         self.counter += 1
 
     def ensemble_results(self):
 
-        return self.meta_train.mean(axis=0), self.meta_test.mean(axis=0)
+        return self.meta_train.mean(axis=1), self.meta_test.mean(axis=1)
