@@ -204,7 +204,7 @@ class seq2seq_utility:
             else:
                 predictions = torch.cat([predictions, pred], dim=0)
 
-        return predictions.view(-1)
+        return predictions.detach().cpu().numpy().ravel()
 
     @staticmethod
     def batcher(x, y, batch_size: int):
