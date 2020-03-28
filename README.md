@@ -1,7 +1,7 @@
 # DataGrasp
 -----
 ### Collaborators:
-- Guoliang HE (guoliang.he.19@.ucl.ac.uk)
+- Guoliang HE (guolianghe1996@gmail.com)
 - Chris Chia 
 -----
 
