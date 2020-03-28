@@ -9,6 +9,8 @@ import sklearn
 import random
 import xgboost
 import catboost
+from sklearn.model_selection import ParameterGrid
+from sklearn.metrics import mean_squared_error
 
 
 class gradient_boost_utility:
@@ -49,7 +51,7 @@ class gradient_boost_utility:
             }
             self.cat_param = {
                 'n_estimators': kwargs['cat_n_estimators'],
-                'max_depth': kwargs['cat_max_depth'],
+                'cat_max_depth': kwargs['cat_max_depth'],
                 'verbose': kwargs['cat_verbose'],
             }
         except:
@@ -86,9 +88,57 @@ class gradient_boost_utility:
         }
         self.cat_param = {
             'n_estimators': 1000,
-            'max_depth': 5,
+            'cat_max_depth': 5,
             'verbose': 0,
         }
+
+    def grid_search(self,  search):
+        '''
+        Args:
+            X_train: [N_samples,input_dim];  -> Tensor or np
+            y_train: [N_samples,];  -> Tensor or np
+
+            X_test: [N_samples,input_dim];  -> Tensor or np
+            y_test: [N_samples,];  -> Tensor or np
+
+            search -> boolean
+        '''
+        if search:
+            param_grid = {'num_estimators': [500, 1000, 2000],
+                          'max_depth': [5, 10, 15, 20],
+                          'learning_rate': [1e-3, 1e-1, 0.3, 0.5],
+                          'min_child_weight': [5, 10, 15, 20],
+                          'lambda': [1, 10, 1e-1],
+                          'n_estimators': [500, 1000, 2000],
+                          'cat_max_depth': [5, 10, 20],
+                          }
+            best_loss = float('inf')
+            best_grid = {}
+
+            for one_search in list(ParameterGrid(param_grid)):
+                for key in one_search:
+                    if key in self.xgb_param:
+                        self.xgb_param[key] = one_search[key]
+                    elif key in self.cat_param:
+                        self.cat_param[key] = one_search[key]
+
+                self.training()
+
+                y_pred = self.XGBoost.predict(self.X_test)
+                loss = mean_squared_error(self.y_test, y_pred)
+
+                y_pred = self.Catboost.predict(self.X_test)
+                loss += mean_squared_error(self.y_test, y_pred)
+
+                if loss < best_loss:
+                    best_loss = loss
+                    best_grid = one_search
+
+            for key in best_grid:
+                if key in self.xgb_param:
+                    self.xgb_param[key] = best_grid[key]
+                elif key in self.cat_param:
+                    self.cat_param[key] = best_grid[key]
 
     def training(self):
         '''
