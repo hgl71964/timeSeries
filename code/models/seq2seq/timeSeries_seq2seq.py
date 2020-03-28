@@ -108,8 +108,8 @@ class seq2seq_utility:
                     X_train, y_train, X_test, y_test, verbo=False)
 
                 if loss < best_loss:
-                    best_loss = loss
-                    best_grid = one_search
+                    best_loss = copy.deepcopy(loss)
+                    best_grid = copy.deepcopy(one_search)
 
             for key in best_grid:
                 if key in self.grid:
