@@ -39,7 +39,7 @@ Description: these models does not have sequential properties (or weak sequentia
 
 Description: due to its inherent sequential property, we can easily encode a sequence with arbitrary length and produce another sequence with arbitrary length. 
 
-- Seq2seq: standard seq2seq model with attention; attention mechanism may be helpful for periodicity.
+- Seq2seq: seq2seq model modified for time series forecasting with attention; attention mechanism may be helpful for periodicity. Example of seq2seq model:
 
 ![](https://miro.medium.com/max/1400/1*CkeGXClZ5Xs0MhBc7xFqSA.png)
 
