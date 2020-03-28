@@ -89,7 +89,7 @@ def backtester2(predictions, original_df, X_test, starting_cap = 10000,  longLim
   positions.columns=["cash", "btc_units","traded","value", 'btc_open','date', 'signal']
   #start counting prices, date from the start of testing period
   positions.loc[1:,'btc_open'] = original_df.loc[original_df.shape[0]-X_test.shape[0]-1:,'BTC_open'].reset_index(drop=True)
-  positions.loc[1:,'date'] = original_df.loc[original_df.shape[0]-X_test.shape[0]-1:,'date'].values[:-1]
+  positions.loc[1:,'date'] = pd.to_datetime(original_df.loc[original_df.shape[0]-X_test.shape[0]-1:,'date'].values[:-1])
   positions.loc[1:,'signal'] = signals
   
   #loop through and backtest
