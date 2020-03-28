@@ -58,6 +58,7 @@ class DNN_utility:
             search -> boolean
         '''
         if search:
+            print('Auto search for hyper-parameters')
             param_grid = {'batch_size': [8, 32, 256],
                           'max_epochs': [128, 512],
                           'first_hidden': [8, 32, 64],

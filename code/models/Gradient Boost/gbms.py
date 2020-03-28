@@ -98,6 +98,7 @@ class gradient_boost_utility:
             search -> boolean
         '''
         if search:
+            print('Auto search for hyper-parameters')
             param_grid = {'num_estimators': [500, 1000, 2000],
                           'max_depth': [5, 10, 20],
                           'learning_rate': [1e-3, 1e-1, 0.3],
