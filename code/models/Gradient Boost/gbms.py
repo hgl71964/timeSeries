@@ -51,7 +51,7 @@ class gradient_boost_utility:
             }
             self.cat_param = {
                 'n_estimators': kwargs['cat_n_estimators'],
-                'cat_max_depth': kwargs['cat_max_depth'],
+                'max_depth': kwargs['cat_max_depth'],
                 'verbose': kwargs['cat_verbose'],
             }
         except:
@@ -88,7 +88,7 @@ class gradient_boost_utility:
         }
         self.cat_param = {
             'n_estimators': 1000,
-            'cat_max_depth': 5,
+            'max_depth': 5,
             'verbose': 0,
         }
 
@@ -121,6 +121,7 @@ class gradient_boost_utility:
                         self.xgb_param[key] = one_search[key]
                     elif key in self.cat_param:
                         self.cat_param[key] = one_search[key]
+                    self.cat_param['max_depth'] = one_search['cat_max_depth']
 
                 self.training()
 
