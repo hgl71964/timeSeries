@@ -32,7 +32,7 @@ class seq2seq_utility:
                          'DEC_DROPOUT': kwargs['DEC_DROPOUT'],
                          'device': kwargs['device']},
         except:
-            print('''hyper-parameter setting fails, 
+            print('''hyper-parameter setting fails,
             model uses default settings''')
             self.default_model_setting
 
@@ -48,7 +48,7 @@ class seq2seq_utility:
             self.grid['device'])
 
         '''
-        Loss function & optimiser 
+        Loss function & optimiser
         '''
         self.optimiser = optim.Adam(
             self.model.parameters(), lr=self.grid['learning_rate'])
@@ -76,11 +76,11 @@ class seq2seq_utility:
     def grid_search(self, X_train, y_train, X_test, y_test, search):
         '''
         Args:
-            X_train: [N_samples,input_dim];  -> Tensor 
-            y_train: [N_samples,];  -> Tensor 
+            X_train: [N_samples,input_dim];  -> Tensor
+            y_train: [N_samples,];  -> Tensor
 
-            X_test: [N_samples,input_dim];  -> Tensor 
-            y_test: [N_samples,];  -> Tensor 
+            X_test: [N_samples,input_dim];  -> Tensor
+            y_test: [N_samples,];  -> Tensor
 
             search -> boolean
         '''
@@ -101,8 +101,18 @@ class seq2seq_utility:
                     if key in self.grid:
                         self.grid[key] = one_search[key]
 
+                attn = _Attention(
+                    self.grid['ENC_HID_DIM'], self.grid['DEC_HID_DIM'])
+                enc = _Encoder(
+                    self.grid['ENC_EMB_DIM'], self.grid['ENC_HID_DIM'], self.grid['DEC_HID_DIM'], self.grid['ENC_DROPOUT'])
+                dec = _Decoder(output_dim=self.grid['OUTPUT_DIM'],  enc_hid_dim=self.grid['ENC_HID_DIM'],
+                               dec_hid_dim=self.grid['DEC_HID_DIM'], dropout=self.grid['DEC_DROPOUT'], attention=attn)
+                self.model = _Seq2Seq(enc, dec, self.grid['device']).to(
+                    self.grid['device'])
+
                 self.optimiser = optim.Adam(
                     self.model.parameters(), lr=self.grid['learning_rate'])
+                self.lossfunction = nn.MSELoss().to(self.grid['device'])
 
                 loss = self.run_epoch(
                     X_train, y_train, X_test, y_test, verbo=False)

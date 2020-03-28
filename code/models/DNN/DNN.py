@@ -73,6 +73,16 @@ class DNN_utility:
                         self.other_param[key] = one_search[key]
                     elif key in self.model_param:
                         self.model_param[key] = one_search[key]
+
+                # instantiate
+                self.model = DNN(self.model_param['input_dim'], self.model_param['first_hidden'],
+                                 self.model_param['second_hidden']).to(self.other_param['device'])
+
+                self.optimiser = optim.Adam(
+                    self.model.parameters(), lr=self.other_param['learning_rate'])
+
+                self.lossfunction = nn.MSELoss().to(self.other_param['device'])
+
                 loss = self.run_epoch(
                     X_train, y_train, X_test, y_test, verbo=False)
 
