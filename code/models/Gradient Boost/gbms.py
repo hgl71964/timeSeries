@@ -121,8 +121,8 @@ class gradient_boost_utility:
                         self.xgb_param[key] = one_search[key]
                     elif key in self.cat_param:
                         self.cat_param[key] = one_search[key]
-                    self.cat_param['max_depth'] = one_search['cat_max_depth']
 
+                self.cat_param['max_depth'] = one_search['cat_max_depth']
                 self.training()
 
                 y_pred = self.XGBoost.predict(self.X_test)
@@ -134,12 +134,14 @@ class gradient_boost_utility:
                 if loss < best_loss:
                     best_loss = loss
                     best_grid = one_search
+                    max_depth = one_search['cat_max_depth']
 
             for key in best_grid:
                 if key in self.xgb_param:
                     self.xgb_param[key] = best_grid[key]
                 elif key in self.cat_param:
                     self.cat_param[key] = best_grid[key]
+            self.cat_param['max_depth'] = max_depth
 
     def training(self):
         '''
