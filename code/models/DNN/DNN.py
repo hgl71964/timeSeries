@@ -65,13 +65,15 @@ class DNN_utility:
                           }
             best_loss = float('inf')
             best_grid = {}
+
             for one_search in list(ParameterGrid(param_grid)):
                 for key in one_search:
                     if key in self.other_param:
                         self.other_param[key] = one_search[key]
                     elif key in self.model_param:
                         self.model_param[key] = one_search[key]
-                loss = self.run_epoch(X_train, y_train, X_test, y_test)
+                loss = self.run_epoch(
+                    X_train, y_train, X_test, y_test, verbo=False)
 
                 if loss < best_loss:
                     best_loss = loss
@@ -96,7 +98,7 @@ class DNN_utility:
                             'second_hidden': 32,
                             }
 
-    def run_epoch(self, X_train, y_train, X_test, y_test):
+    def run_epoch(self, X_train, y_train, X_test, y_test, verbo=True):
         '''
         Args:
             X_train: [N_samples,input_dim];  -> Tensor or np
@@ -115,9 +117,10 @@ class DNN_utility:
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
                 self.best_model = copy.deepcopy(self.model).cpu()
-                print(f'Epoch: {epoch+1}:')
-                print(f'Train Loss: {train_loss:.3f}')
-                print(f'Validation Loss: {valid_loss:.3f}')
+                if verbo:
+                    print(f'Epoch: {epoch+1}:')
+                    print(f'Train Loss: {train_loss:.3f}')
+                    print(f'Validation Loss: {valid_loss:.3f}')
 
         return best_valid_loss
 
