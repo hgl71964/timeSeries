@@ -60,8 +60,8 @@ class DNN_utility:
         if search:
             param_grid = {'batch_size': [8, 32, 256],
                           'max_epochs': [128, 512],
-                          'first_hidden': [8, 16, 32, 64],
-                          'second_hidden': [8, 16, 32, 64],
+                          'first_hidden': [8, 32, 64],
+                          'second_hidden': [8, 16, 32],
                           }
             best_loss = float('inf')
             best_grid = {}

@@ -99,10 +99,9 @@ class gradient_boost_utility:
         '''
         if search:
             param_grid = {'num_estimators': [500, 1000, 2000],
-                          'max_depth': [5, 10, 15, 20],
-                          'learning_rate': [1e-3, 1e-1, 0.3, 0.5],
-                          'min_child_weight': [5, 10, 15, 20],
-                          'lambda': [1, 10, 1e-1],
+                          'max_depth': [5, 10, 20],
+                          'learning_rate': [1e-3, 1e-1, 0.3],
+                          'min_child_weight': [5, 10, 15],
                           'n_estimators': [500, 1000, 2000],
                           'cat_max_depth': [5, 10, 20],
                           }
