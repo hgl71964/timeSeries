@@ -95,7 +95,7 @@ class DNN_utility:
                             'device': device,
                             }
         self.model_param = {'input_dim': self.dim,
-                            'first_hidden': 128,
+                            'first_hidden': 12vds8,
                             'second_hidden': 32,
                             }
 

@@ -86,9 +86,9 @@ class seq2seq_utility:
         '''
         if search:
             print('Auto search for hyper-parameters')
-            param_grid = {'batch_size': [8, 32],
+            param_grid = {'batch_size': [8, 256],
                           'max_epochs': [128, 1024],
-                          'learning_rate': [1e-3, 1e-1, 0.3, 0.7],
+                          'learning_rate': [1e-3, 1e-1, 0.3],
                           'ENC_HID_DIM': [16, 32],
                           'DEC_HID_DIM': [8, 16],
                           'DEC_DROPOUT': [0, 0.5],
