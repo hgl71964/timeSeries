@@ -27,7 +27,7 @@ Description: these models does not have sequential properties (or weak sequentia
 
 - DNN: Deep Neural Network is a kind of function approximation.
 
-- ARMA(0,1): is applied to the return such that prediction is made on every time step. The order (0,1) is choosen since it gives the lowest BIC and thus is considered to be the optimal model hyper-parameters.
+- ARMA(2,2): ARMA is a classical time series model, which is essentially a Markov Chain with lieanr transformation matrix.
 
 - XGBoost: XGBoost can score the importance of features, and it can also be applied to regression.
 
