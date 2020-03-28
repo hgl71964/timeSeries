@@ -6,6 +6,7 @@ import copy
 import os
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import ParameterGrid
 
 
 class DNN_utility:
@@ -44,6 +45,43 @@ class DNN_utility:
             self.model.parameters(), lr=self.other_param['learning_rate'])
 
         self.lossfunction = nn.MSELoss().to(self.other_param['device'])
+
+    def grid_search(self, X_train, y_train, X_test, y_test, search):
+        '''
+        Args:
+            X_train: [N_samples,input_dim];  -> Tensor or np
+            y_train: [N_samples,];  -> Tensor or np
+
+            X_test: [N_samples,input_dim];  -> Tensor or np
+            y_test: [N_samples,];  -> Tensor or np
+
+            search -> boolean
+        '''
+        if search:
+            param_grid = {'batch_size': [2e3, 2e5, 2e8],
+                          'max_epochs': [128, 512],
+                          'first_hidden': [2e3, 2e4, 2e5, 2e6],
+                          'second_hidden': [2e3, 2e4, 2e5, 2e6],
+                          }
+            best_loss = float('inf')
+            best_grid = {}
+            for one_search in list(ParameterGrid(param_grid)):
+                for key in one_search:
+                    if key in self.other_param:
+                        self.other_param[key] = one_search[key]
+                    elif key in self.model_param:
+                        self.model_param[key] = one_search[key]
+                loss = self.run_epoch(X_train, y_train, X_test, y_test)
+
+                if loss < best_loss:
+                    best_loss = loss
+                    best_grid = one_search
+
+            for key in best_grid:
+                if key in self.other_param:
+                    self.other_param[key] = best_grid[key]
+                elif key in self.model_param:
+                    self.model_param[key] = best_grid[key]
 
     @property
     def default_model_setting(self):
