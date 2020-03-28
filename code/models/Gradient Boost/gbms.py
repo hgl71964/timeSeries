@@ -117,6 +117,8 @@ class gradient_boost_utility:
                         self.cat_param[key] = one_search[key]
 
                 self.cat_param['max_depth'] = one_search['cat_max_depth']
+
+                # instantiate
                 self.XGBoost = xgboost.XGBRegressor(**self.xgb_param)
                 self.Catboost = catboost.CatBoostRegressor(**self.cat_param)
 

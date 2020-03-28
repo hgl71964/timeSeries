@@ -101,6 +101,9 @@ class seq2seq_utility:
                     if key in self.grid:
                         self.grid[key] = one_search[key]
 
+                '''
+                instantiate
+                '''
                 attn = _Attention(
                     self.grid['ENC_HID_DIM'], self.grid['DEC_HID_DIM'])
                 enc = _Encoder(
@@ -113,6 +116,9 @@ class seq2seq_utility:
                 self.optimiser = optim.Adam(
                     self.model.parameters(), lr=self.grid['learning_rate'])
                 self.lossfunction = nn.MSELoss().to(self.grid['device'])
+                '''
+                finish instantiate
+                '''
 
                 loss = self.run_epoch(
                     X_train, y_train, X_test, y_test, verbo=False)
