@@ -95,12 +95,6 @@ class gradient_boost_utility:
     def grid_search(self,  search):
         '''
         Args:
-            X_train: [N_samples,input_dim];  -> Tensor or np
-            y_train: [N_samples,];  -> Tensor or np
-
-            X_test: [N_samples,input_dim];  -> Tensor or np
-            y_test: [N_samples,];  -> Tensor or np
-
             search -> boolean
         '''
         if search:

@@ -8,6 +8,7 @@ import pandas as pd
 import torch.optim as optim
 import random
 import os
+from sklearn.model_selection import ParameterGrid
 
 
 class seq2seq_utility:
@@ -71,6 +72,44 @@ class seq2seq_utility:
                      'batch_size': 10,         # your batch size is constrained by the chunk of seq length
                      'teacher_forcing_ratio': 1,
                      'device': device}
+
+    def grid_search(self, X_train, y_train, X_test, y_test, search):
+        '''
+        Args:
+            X_train: [N_samples,input_dim];  -> Tensor or np
+            y_train: [N_samples,];  -> Tensor or np
+
+            X_test: [N_samples,input_dim];  -> Tensor or np
+            y_test: [N_samples,];  -> Tensor or np
+
+            search -> boolean
+        '''
+        if search:
+            param_grid = {'batch_size': [8, 32],
+                          'max_epochs': [128, 1024],
+                          'learning_rate': [1e-3, 1e-1, 0.3, 0.7],
+                          'ENC_HID_DIM': [8, 16, 32],
+                          'DEC_HID_DIM': [8, 16, 32],
+                          'DEC_DROPOUT': [0, 0.5, 0.8],
+                          }
+            best_loss = float('inf')
+            best_grid = {}
+
+            for one_search in list(ParameterGrid(param_grid)):
+                for key in one_search:
+                    if key in self.grid:
+                        self.grid[key] = one_search[key]
+
+                loss = self.run_epoch(
+                    X_train, y_train, X_test, y_test, verbo=False)
+
+                if loss < best_loss:
+                    best_loss = loss
+                    best_grid = one_search
+
+            for key in best_grid:
+                if key in self.grid:
+                    self.grid[key] = best_grid[key]
 
     def seq2seq_training(self, X_train, y_train):
         '''
@@ -147,7 +186,7 @@ class seq2seq_utility:
                 epoch_loss += loss.item()
         return epoch_loss
 
-    def run_epoch(self, X_train, y_train, X_test, y_test):
+    def run_epoch(self, X_train, y_train, X_test, y_test, verbo=True):
         '''
         Args:
             X_train, X_test: [N_sample, encode_len, N_feature] -> Tensor
@@ -165,9 +204,10 @@ class seq2seq_utility:
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
                 self.best_model = copy.deepcopy(self.model).cpu()
-                print(f'Epoch: {epoch+1}:')
-                print(f'Train Loss: {train_loss:.3f}')
-                print(f'Validation Loss: {valid_loss:.3f}')
+                if verbo:
+                    print(f'Epoch: {epoch+1}:')
+                    print(f'Train Loss: {train_loss:.3f}')
+                    print(f'Validation Loss: {valid_loss:.3f}')
 
         return best_valid_loss
 

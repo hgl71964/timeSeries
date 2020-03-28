@@ -58,10 +58,10 @@ class DNN_utility:
             search -> boolean
         '''
         if search:
-            param_grid = {'batch_size': [2e3, 2e5, 2e8],
+            param_grid = {'batch_size': [8, 32, 256],
                           'max_epochs': [128, 512],
-                          'first_hidden': [2e3, 2e4, 2e5, 2e6],
-                          'second_hidden': [2e3, 2e4, 2e5, 2e6],
+                          'first_hidden': [8, 16, 32, 64],
+                          'second_hidden': [8, 16, 32, 64],
                           }
             best_loss = float('inf')
             best_grid = {}
