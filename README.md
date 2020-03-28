@@ -1,7 +1,7 @@
 # DataGrasp
 -----
 ### Collaborators:
-- Guoliang HE (guoliang.he.19@.ucl.ac.uk)
+- Guoliang HE (guolianghe1996@gmail.com)
 - Chris Chia 
 -----
 
@@ -27,13 +27,12 @@ Description: these models does not have sequential properties (or weak sequentia
 
 - DNN: Deep Neural Network is a kind of function approximation.
 
-- ARMA(0,1): is applied to the return such that prediction is made on every time step. The order (0,1) is choosen since it gives the lowest BIC and thus is considered to be the optimal model hyper-parameters.
+- ARMA(2,2): ARMA is a classical time series model, which is essentially a Markov Chain with lieanr transformation matrix.
 
 - XGBoost: XGBoost can score the importance of features, and it can also be applied to regression.
 
 - Catboost: same as XGBoost, being a variant of gradient boost models. 
 
-- 1-d convolutional neural network: CNN is good at representation learning, and thus it is applicable for time series classification. 
 
 ##### In the *second* layer, we implement a DNN based on the meta features from the first layer to predict the reture of the price.
 
