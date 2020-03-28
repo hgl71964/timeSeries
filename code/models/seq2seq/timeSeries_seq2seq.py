@@ -76,11 +76,11 @@ class seq2seq_utility:
     def grid_search(self, X_train, y_train, X_test, y_test, search):
         '''
         Args:
-            X_train: [N_samples,input_dim];  -> Tensor or np
-            y_train: [N_samples,];  -> Tensor or np
+            X_train: [N_samples,input_dim];  -> Tensor 
+            y_train: [N_samples,];  -> Tensor 
 
-            X_test: [N_samples,input_dim];  -> Tensor or np
-            y_test: [N_samples,];  -> Tensor or np
+            X_test: [N_samples,input_dim];  -> Tensor 
+            y_test: [N_samples,];  -> Tensor 
 
             search -> boolean
         '''
@@ -91,6 +91,7 @@ class seq2seq_utility:
                           'ENC_HID_DIM': [8, 16, 32],
                           'DEC_HID_DIM': [8, 16, 32],
                           'DEC_DROPOUT': [0, 0.5, 0.8],
+                          'teacher_forcing_ratio': [0.5, 1]
                           }
             best_loss = float('inf')
             best_grid = {}
