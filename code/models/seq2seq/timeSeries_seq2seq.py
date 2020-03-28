@@ -100,6 +100,9 @@ class seq2seq_utility:
                     if key in self.grid:
                         self.grid[key] = one_search[key]
 
+                self.optimiser = optim.Adam(
+                    self.model.parameters(), lr=self.grid['learning_rate'])
+
                 loss = self.run_epoch(
                     X_train, y_train, X_test, y_test, verbo=False)
 
