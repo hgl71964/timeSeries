@@ -88,10 +88,9 @@ class seq2seq_utility:
             param_grid = {'batch_size': [8, 32],
                           'max_epochs': [128, 1024],
                           'learning_rate': [1e-3, 1e-1, 0.3, 0.7],
-                          'ENC_HID_DIM': [8, 16, 32],
-                          'DEC_HID_DIM': [8, 16, 32],
-                          'DEC_DROPOUT': [0, 0.5, 0.8],
-                          'teacher_forcing_ratio': [0.5, 1]
+                          'ENC_HID_DIM': [16, 32],
+                          'DEC_HID_DIM': [8, 16],
+                          'DEC_DROPOUT': [0, 0.5],
                           }
             best_loss = float('inf')
             best_grid = {}
