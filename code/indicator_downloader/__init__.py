@@ -115,7 +115,7 @@ def auto_getLatestData(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_K
 
         merged_df = merged_df.reset_index(drop=True)
 
-        x = selectTrainingFeatures(
+        x = selectTrainingFeatures2(
             merged_df, fullpath2, printFeats=False, write=True)
 
     return x

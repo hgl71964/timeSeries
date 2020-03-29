@@ -104,12 +104,18 @@ def backtester2(predictions, original_df, X_test, starting_cap = 10000,  longLim
   positions['returns'] = positions['value'] / positions['value'].shift(1) #calculate returns at end
   positions = positions.iloc[1:]
   y1 = np.exp(np.log(positions.iloc[1:]['returns']).cumsum()) #cumulative returns
-  y2 = np.exp(np.log(data2.loc[original_df.shape[0]-X_test.shape[0]:,'BTC_returns']).cumsum()) #cumulative strategy returns
+  y2 = np.exp(np.log(original_df.loc[original_df.shape[0]-X_test.shape[0]:,'BTC_returns']).cumsum()) #cumulative strategy returns
   #plot
   fig = go.Figure(go.Scatter(x=positions.loc[1:,'date'],y=y1,marker_color=positions['traded'], mode='markers+lines', name='Strategy returns (%)'))
   fig.add_trace(go.Scatter(x=positions.loc[1:,'date'], y=y2, name='Buy and Hold Returns (%)'))
   fig.update_layout(title='Backtest Performance')
   layout = go.Layout(yaxis=dict(tickformat=".2%"))
+
+  actual_rets = (original_df['BTC_close'].shift(-1) / original_df['BTC_close']).loc[original_df.shape[0]-X_test.shape[0]-1:]
+  fig2 = go.Figure(go.Scatter(x=positions.loc[1:,'date'],y=actual_rets.iloc[:-1], name='Actual Returns'))
+  fig2.add_trace(go.Scatter(x=positions.loc[2:,'date'],y=signals,name='Predicted Returns'))
+  fig2.update_layout(title='Predicted vs Actual')
+
   #summary statistics
   sharpe = empyrical.sharpe_ratio(positions.loc[1:,'returns']-1,risk_free=0) # sharpe ratio
   md = empyrical.max_drawdown(positions.loc[1:,'returns']-1) #maximum drawdown
@@ -121,8 +127,8 @@ def backtester2(predictions, original_df, X_test, starting_cap = 10000,  longLim
   print("--------------------------")
   print(f"Sharpe: {sharpe}\nSortino: {sortino}")
   print(f"Max Drawdown: {100*md:.5f}%")
-  print(f"Win Rate: WinRate:{100*winRate:.5f}%")
+  print(f"Win Rate: {100*winRate:.5f}%")
   print(f"expected gain on winning trade: {100*(expectedGain-1):.5f} %")
   print(f"expected loss on losing trade: {100*(expectedLoss-1):.5f} %")
   
-  return positions, fig
+  return positions, fig, fig2
