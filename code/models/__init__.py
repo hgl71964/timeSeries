@@ -39,7 +39,7 @@ feats = binanceFeats + rivalFeats + onchainFeats + \
     bitfinexFeats + bitmexFeats + glassnodeFeats + technicalFeats
 
 
-def selectTrainingFeatures(data2, fullpath2, TRANSACTION_COSTS=0,param='direction',printFeats=False, write=True):
+def selectTrainingFeatures(data2, fullpath2, TEST_SIZE, TRANSACTION_COSTS=0,param='direction',printFeats=False, write=True):
     X = data2[feats]
     if write == True:
         X.to_csv(f"{fullpath2}/train.csv", index=False)
@@ -141,7 +141,7 @@ def plotPredictions(models, data2, X_test):
 
 def recommendTrade(data2, X, models):
     date = data2.iloc[-1]['Date']
-    print(f"{date}\n--------------------------")
+    print(f"Trade Recommendation: {date}\n--------------------------")
     X2 = pd.DataFrame(models['cbc'].predict_proba(X)[:, 1])
     print(f"Catboost Prediction p: {X2.iloc[:,0].values[0]}")
     X2['xgbc'] = models['xgbc'].predict_proba(X)[:, 1]
@@ -157,3 +157,5 @@ def recommendTrade(data2, X, models):
     else:
         print(
             f"The model recommends a long : {abs(proportion[0]):.3f}% of capital")
+    print("--------------------------")
+    return
