@@ -24,7 +24,7 @@ def backtest(X_test,models, data2, transaction_costs,starting_cap = 10000,  conf
     positions.iloc[i+1,0:2] = positions.iloc[i,0:2]
     p = positions.iloc[i+1,6]
   
-    if signals[i] >= (0.5 + (float(confidence) / 2)): #long signal
+    if signals[i] >= (0.5 + (float(confidence) / 2)): #long signals
       targetValue = positions.iloc[i,3] * min((2 * p - 1), longLimit)
       positions.iloc[i+1,1] = targetValue / (entry_price * (1 + transaction_costs))
       positions.iloc[i+1,0] -= (positions.iloc[i+1,1]- positions.iloc[i,1]) * entry_price * (1 + transaction_costs)
@@ -56,7 +56,15 @@ def backtest(X_test,models, data2, transaction_costs,starting_cap = 10000,  conf
   sharpe = empyrical.sharpe_ratio(positions.loc[1:,'returns']-1,risk_free=0)
   md = empyrical.max_drawdown(positions.loc[1:,'returns']-1)
   sortino = empyrical.sortino_ratio(positions.loc[1:,'returns']-1,required_return=1.07**(1/365)-1)
-  print(f"Sharpe: {sharpe}\nMax Drawdown: {md}\nSortino: {sortino}")
+  expectedGain = positions.loc[(positions['returns'] > 1,'returns')].mean()
+  expectedLoss = positions.loc[(positions['returns'] <= 1,'returns')].mean()
+  winRate = (positions['returns'] > 1).mean()
+  print(f"Sharpe: {sharpe}")
+  print(f"Max Drawdown: {md}")
+  print(f"Sortino: {sortino}")
+  print(f"Win Rate: WinRate:{100*winRate:.5f}%")
+  print(f"expected gain on winning trade: {100*(expectedGain-1):.5f} %")
+  print(f"expected loss on losing trade: {100*(expectedLoss-1):.5f} %")
   
   return positions, fig
 
@@ -105,7 +113,6 @@ def backtester2(predictions, original_df, X_test, starting_cap = 10000,  longLim
   sharpe = empyrical.sharpe_ratio(positions.loc[1:,'returns']-1,risk_free=0) # sharpe ratio
   md = empyrical.max_drawdown(positions.loc[1:,'returns']-1) #maximum drawdown
   sortino = empyrical.sortino_ratio(positions.loc[1:,'returns']-1,required_return=1.07**(1/365)-1) #sortino ratio
-  winRate = (positions['returns'] > 1).mean()
   expectedGain = positions.loc[(positions['returns'] > 1,'returns')].mean()
   expectedLoss = positions.loc[(positions['returns'] <= 1,'returns')].mean()
   winRate = (positions['returns'] > 1).mean()
