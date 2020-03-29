@@ -33,7 +33,7 @@ def merge(quandl_api_key, GLASSNODE_API_KEY, AWS_ACCESS_KEY,AWS_SECRET_ACCESS, f
   print("DONE - SP500")
   sp500_data['Date'] = pd.to_datetime(sp500_data['Date'])
   merged_feats = pd.merge(merged_feats,sp500_data, how='left',on='Date')
-  glassnode = glassnodeDownloader(GLASSNODE_API_KEY, fullpath)
+  glassnode = glassnodeDownloader(GLASSNODE_API_KEY, fullpath,write=write)
   glassnode['Date'] = pd.to_datetime(glassnode['Date'])
   merged_feats = pd.merge(merged_feats,glassnode, how='left',on='Date')
   print("DONE -GLASSNODE")
