@@ -138,7 +138,7 @@ def plotPredictions(models, data2, X_test):
                              marker_symbol=ys*3,
                              marker_line_width=1,
                              marker={"size": 12, "colorscale": "Bluered"}))
-    fig.update_layout("Model Predictive Performance for Backtest Period")
+    fig.update_layout(title="Model Predictive Performance for Backtest Period")
     return fig
 
 
