@@ -108,6 +108,7 @@ def backtester2(predictions, original_df, X_test, starting_cap = 10000,  longLim
   #plot
   fig = go.Figure(go.Scatter(x=positions.loc[1:,'date'],y=y1,marker_color=positions['traded'], mode='markers+lines', name='Strategy returns (%)'))
   fig.add_trace(go.Scatter(x=positions.loc[1:,'date'], y=y2, name='Buy and Hold Returns (%)'))
+  fig.update_layout(title='Backtest Performance')
   layout = go.Layout(yaxis=dict(tickformat=".2%"))
   #summary statistics
   sharpe = empyrical.sharpe_ratio(positions.loc[1:,'returns']-1,risk_free=0) # sharpe ratio
@@ -116,6 +117,8 @@ def backtester2(predictions, original_df, X_test, starting_cap = 10000,  longLim
   expectedGain = positions.loc[(positions['returns'] > 1,'returns')].mean()
   expectedLoss = positions.loc[(positions['returns'] <= 1,'returns')].mean()
   winRate = (positions['returns'] > 1).mean()
+  print("BACKTEST RESULTS")
+  print("--------------------------")
   print(f"Sharpe: {sharpe}\nSortino: {sortino}")
   print(f"Max Drawdown: {100*md:.5f}%")
   print(f"Win Rate: WinRate:{100*winRate:.5f}%")
