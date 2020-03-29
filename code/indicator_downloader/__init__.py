@@ -34,15 +34,17 @@ def auto_getLatestData2(tickers, API_SECRET, API_KEY, QUANDL_API, GLASSNODE_API_
 
     if not os.path.exists(os.path.join(path, "datagrasp")):
         os.mkdir(os.path.join(path, "datagrasp"))
+    if not os.path.exists(os.path.join(path, "datagrasp","datasets")):
+        os.mkdir(os.path.join(path, "datagrasp","datasets"))
 
-    if not os.path.exists(os.path.join(path, "datagrasp", "CoinPrice")):
-        os.mkdir(os.path.join(path, "datagrasp", "CoinPrice"))
+    if not os.path.exists(os.path.join(path, "datagrasp","datasets", "CoinPrice")):
+        os.mkdir(os.path.join(path, "datagrasp","datasets", "CoinPrice"))
 
-    if not os.path.exists(os.path.join(path, "datagrasp", "Indicator")):
-        os.mkdir(os.path.join(path, "datagrasp", "Indicator"))
+    if not os.path.exists(os.path.join(path, "datagrasp", "datasets", "Indicator")):
+        os.mkdir(os.path.join(path, "datagrasp","datasets", "Indicator"))
 
-    fullpath = os.path.join(path, "datagrasp", "CoinPrice")
-    fullpath2 = os.path.join(path, "datagrasp", "Indicator")
+    fullpath = os.path.join(path, "datagrasp","datasets", "CoinPrice")
+    fullpath2 = os.path.join(path, "datagrasp","datasets", "Indicator")
 
     data = downloadWrapper(tickers, API_SECRET, API_KEY,
                            FREQ, fullpath, write=write)

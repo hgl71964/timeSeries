@@ -71,6 +71,8 @@ def autofit(X_train, X_test, y_train, y_test, c):
                          max_depth=5,
                          objective='binary:logistic')
     xgbc.fit(X_train, y_train)
+    print("Model Predictive Performance on Backtest Period")
+    print("--------------------------")
     print("XGBOOST:")
     diagnosis(y_test.values * 1, xgbc.predict_proba(X_test)[:, 1])
     print("Catboost")
@@ -136,6 +138,7 @@ def plotPredictions(models, data2, X_test):
                              marker_symbol=ys*3,
                              marker_line_width=1,
                              marker={"size": 12, "colorscale": "Bluered"}))
+    fig.update_layout("Model Predictive Performance for Backtest Period")
     return fig
 
 
