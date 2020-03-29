@@ -39,11 +39,16 @@ feats = binanceFeats + rivalFeats + onchainFeats + \
     bitfinexFeats + bitmexFeats + glassnodeFeats + technicalFeats
 
 
-def selectTrainingFeatures(data2, fullpath2, printFeats=False, write=True):
+def selectTrainingFeatures(data2, fullpath2, TRANSACTION_COSTS=0,param='direction',printFeats=False, write=True):
     X = data2[feats]
     if write == True:
         X.to_csv(f"{fullpath2}/train.csv", index=False)
-    return X
+    if printFeats == True:
+        print(feats)
+    # if param == 'direction'
+    y = X['BTC_returns'].shift(-1) > (1 + TRANSACTION_COSTS)
+    X_train, X_test, y_train, y_test =  train_test_split(X.iloc[:-1], y.iloc[:-1], test_size=TEST_SIZE,shuffle=False)        
+    return X_train, X_test, y_train, y_test
 
 
 def diagnosis(y_actual, y_pred_proba):
