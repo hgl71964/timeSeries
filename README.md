@@ -1,8 +1,4 @@
-# DataGrasp
------
-### Collaborators:
-- Guoliang HE (guolianghe1996@gmail.com)
-- Chris Chia 
+# TimeSeries Project
 -----
 
 ### Project Description
