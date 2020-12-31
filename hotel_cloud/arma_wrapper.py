@@ -73,12 +73,22 @@ class arma_wrapper:
     
     @property
     def forecast(self):
+        """
+        forecast -> out-of-sample forecasting, 
+        prediction -> in-sample prediction,
+
+        in statsmodel:
+            forecast(10) == predict(start = len(fit_arr), end = len(fit_arr) + 10)
+        """
+
         return self.res.forecast(steps=self.forecast_len) if self.res is not None else None
 
     def plot_forecast(self, stay_date="0"):
-        pred = self.forecast; n = len(self.arr)
+        fore = self.forecast; n = len(self.arr)
 
-        if pred is None:
+        pred = self.res.predict(start=len(self.fit_arr)-11, end=len(self.fit_arr)-1)
+
+        if fore is None:
             print("haven't fit model")
             return None
 
@@ -86,12 +96,16 @@ class arma_wrapper:
 
         ax.plot([i for i in range(n)], np.flip(self.arr), color="black", label = "time series")
 
-        # temp = [n - self.forecast_len + i for i in range(self.forecast_len)]
-        ax.plot([i for i in range(self.forecast_len)], np.flip(pred), color="red", label="forecasting")
+        ax.plot([i for i in range(self.forecast_len)], np.flip(fore), color="red", label="forecasting")
+
+        ax.plot([self.forecast_len + i for i in range(pred)], np.flip(pred), color="blue", label="prediction") 
+        
+
+
 
         ax.axvline(x = self.forecast_len-1)
 
-        ax.set_xlim(n, 0); ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
+        ax.set_xlim(n-1, 0); ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
         plt.show()
 
         return None
