@@ -66,16 +66,16 @@ class gp_model:
 
         with tr.no_grad():
 
-            test_x = tr.arange(len(self.train_y), len(self.arr))
+            test_x = tr.arange(0, len(self.arr))
             y_preds = self.likelihood(self.model(test_x))
             lower, upper = y_preds.confidence_region()
 
             fig, ax = plt.subplots()
-
             # ax.plot(self.train_x.numpy(), self.train_y.numpy(), 'k*')
             ax.plot([i for i in range(len(self.arr))] , self.arr, color="black")
             ax.plot(test_x.numpy(), y_preds.mean.numpy(), 'blue')
             ax.fill_between(test_x.numpy(), lower.numpy(), upper.numpy(), alpha=0.5)
+            ax.grid(True)
 
             ax.legend(["objective", "Mean", "Confidence"])
             plt.show()
