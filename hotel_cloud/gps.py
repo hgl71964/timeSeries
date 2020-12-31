@@ -9,7 +9,7 @@ class gp_model:
     def __init__(self,
                 arr,  # 1d-array_like
                 history: int,  # total lenght of history 
-                forcast_len: int, # length that need to forecast
+                forecast_len: int, # length that need to forecast
                 device = tr.device("cpu"), 
                 ):
         
@@ -26,13 +26,13 @@ class gp_model:
             self.arr = self.arr[n-history:]
             n=len(self.arr)
 
-        if forcast_len >= n:  # check forcast_len
+        if forecast_len >= n:  # check forecast_len
             raise ValueError("history too short")
 
         self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
         # TODO figure out train test
-        self.train_y = self.arr[:n - forcast_len]
+        self.train_y = self.arr[:n - forecast_len]
         self.train_x = tr.arange(0, len(self.train_y))
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
