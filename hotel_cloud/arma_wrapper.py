@@ -89,8 +89,7 @@ class arma_wrapper:
 
         ax.axvline(x = n - self.forecast_len)
 
-        # ax.set_xlim(n, -1); 
-        ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
+        ax.set_xlim(n, 0); ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
         plt.show()
 
         return None
