@@ -40,7 +40,7 @@ class gp_model:
         if model is None:
             self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
         else:
-            self.model = model
+            self.model = model(self.train_x, self.train_y, self.likelihood)
 
     def train(self, verbose=True, **kwargs):
         lr = kwargs.get("lr", 1e-1)
