@@ -32,7 +32,6 @@ class gp_model:
 
         self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
-        # TODO figure out train test
         self.train_y = self.arr[:n - forecast_len]
         self.train_x = tr.arange(0, len(self.train_y))
 
@@ -73,11 +72,12 @@ class gp_model:
 
             fig, ax = plt.subplots()
 
-            ax.plot(self.train_x.numpy(), self.train_y.numpy(), 'k*')
-            ax.plot(test_x.numpy(), y_preds.mean.numpy(), 'b')
+            # ax.plot(self.train_x.numpy(), self.train_y.numpy(), 'k*')
+            ax.plot([i for i in range(len(self.arr))] , self.arr, color="black")
+            ax.plot(test_x.numpy(), y_preds.mean.numpy(), 'blue')
             ax.fill_between(test_x.numpy(), lower.numpy(), upper.numpy(), alpha=0.5)
 
-            ax.legend(['Observed Data', 'Mean', 'Confidence'])
+            ax.legend(["objective", "Mean", "Confidence"])
             plt.show()
 
         return None
