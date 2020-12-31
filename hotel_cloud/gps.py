@@ -44,7 +44,7 @@ class gp_model:
 
         self.model.train()
         self.likelihood.train()
-        optimizer = torch.optim.Adam(model.parameters(), lr=lr)  
+        optimizer = tr.optim.Adam(self.model.parameters(), lr=lr)  
 
         mll = gpytorch.mlls.ExactMarginalLogLikelihood(self.likelihood, self.model)
 
@@ -56,8 +56,8 @@ class gp_model:
             loss.backward()
             print('Iter %d/%d - Loss: %.3f   lengthscale: %.3f   noise: %.3f' % (
                 i + 1, training_iter, loss.item(),
-                model.covar_module.base_kernel.lengthscale.item(),
-                model.likelihood.noise.item()
+                self.model.covar_module.base_kernel.lengthscale.item(),
+                self.model.likelihood.noise.item()
             ))
             optimizer.step()
 
