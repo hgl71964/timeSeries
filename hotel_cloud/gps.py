@@ -2,6 +2,7 @@ import torch as tr
 import gpytorch
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt 
 
 
 class gp_model:
@@ -38,7 +39,7 @@ class gp_model:
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
 
-    def train(self, **kwargs):
+    def train(self, verbose=True, **kwargs):
         lr = kwargs.get("lr", 1e-1)
         epochs = kwargs.get("epoch", 128)
 
@@ -54,8 +55,9 @@ class gp_model:
             output = self.model(self.train_x)
             loss = -mll(output, self.train_y)
             loss.backward()
-
-            print(f"Iter {i+1}/{epochs} - Loss {loss.item():.3f} - Noise {self.model.likelihood.noise.item():.3f}")
+            
+            if verbose:
+                print(f"Iter {i+1}/{epochs} - Loss {loss.item():.3f} - Noise {self.model.likelihood.noise.item():.3f}")
             optimizer.step()
 
     @property
