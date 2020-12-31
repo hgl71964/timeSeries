@@ -52,7 +52,7 @@ class gp_model:
 
             optimizer.zero_grad()
             output = self.model(self.train_x)
-            loss = -mll(output, self.test_x)
+            loss = -mll(output, self.train_y)
             loss.backward()
             print('Iter %d/%d - Loss: %.3f   lengthscale: %.3f   noise: %.3f' % (
                 i + 1, training_iter, loss.item(),
