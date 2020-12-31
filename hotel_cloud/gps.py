@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 class gp_model2:
     """
-    this gp is noise-less observation and have end guidance 
+    this gp is noise-less observation and have end-point guidance 
     """
     def __init__(self,
                 arr,  # 1d-array_like
