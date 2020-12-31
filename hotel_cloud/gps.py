@@ -32,7 +32,7 @@ class gp_model2:
 
         self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
-        self.train_y = tr.cat([self.arr[:n - forecast_len], self.arr[-1]]).float()
+        self.train_y = tr.cat([self.arr[:n - forecast_len], tr.tensor([self.arr[-1]])]).float()
         self.train_x = tr.cat([tr.arange(0, len(self.train_y)), tr.tensor([len(self.arr)-1])]).float()
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
