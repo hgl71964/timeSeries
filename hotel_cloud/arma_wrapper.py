@@ -87,11 +87,12 @@ class arma_wrapper:
 
     @property
     def stats(self,):
-        print("data len: ", len(self.arr))
+        print("total history: ", len(self.arr))
+        print("data len: ", len(self.fit_arr))
         print("forecast len: ", self.forecast_len)
 
         if self.model is not None:
-            print(f"model order {self.model.model_orders["ar"], self.model.model_orders["ma"]}")
+            print(f"model order (p, q): ({self.model.model_orders["ar"], self.model.model_orders["ma"]})")
 
         if self.res is not None:
             pass # TODO add stats
