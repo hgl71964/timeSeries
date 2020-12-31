@@ -82,14 +82,16 @@ class arma_wrapper:
         return self.res.forecast(steps=self.forecast_len) if self.res is not None else None
 
     def plot_forecast(self, stay_date="0"):
-        # fore = self.forecast;
+
+        if self.model is None:
+            print("haven't fit model")
+            return None
+
         n = len(self.arr)
+        # fore = self.forecast;
+        # fore = self.res.predict(start=len(self.fit_arr), end=len(self.fit_arr)+self.forecast_len-1)
 
-        pred = self.res.predict(start=len(self.fit_arr)-11, end=len(self.fit_arr)+self.forecast_len)
-
-        # if fore is None:
-        #     print("haven't fit model")
-        #     return None
+        pred = self.res.predict(start=len(self.fit_arr)-11, end=len(self.fit_arr)+self.forecast_len-1)
 
         fig, ax = plt.subplots()
 
