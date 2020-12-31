@@ -32,8 +32,8 @@ class gp_model:
 
         self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
-        self.train_y = self.arr[:n - forecast_len]
-        self.train_x = tr.arange(0, len(self.train_y))
+        self.train_y = self.arr[:n - forecast_len].float()
+        self.train_x = tr.arange(0, len(self.train_y)).float()
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
