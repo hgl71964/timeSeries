@@ -88,6 +88,8 @@ class arma_wrapper:
         ax.plot([i for i in range(-1, len(self.arr)-1)], self.arr, color="black", label = "time series")
         ax.plot([i for i in range(-1, self.forecast_len-1)], pred, color="red", label="forecasting")
 
+        ax.axvline(x = self.forecast_len)
+
         # ax.set_xlim(n, -1); 
         ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
         plt.show()
