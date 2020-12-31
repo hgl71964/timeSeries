@@ -98,7 +98,7 @@ class arma_wrapper:
 
         ax.plot([i for i in range(self.forecast_len)], np.flip(fore), color="red", label="forecasting")
 
-        ax.plot([self.forecast_len + i for i in range(len(pred))], np.flip(pred), color="blue", label="prediction") 
+        ax.plot([self.forecast_len - 1 + i for i in range(len(pred))], np.flip(pred), color="blue", label="prediction") 
         
         ax.axvline(x = self.forecast_len-1)
 
