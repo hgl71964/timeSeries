@@ -29,17 +29,16 @@ class gp:
         if forcast_len >= n:  # check forcast_len
             raise ValueError("history too short")
 
-        self.arr = tr.from_numpy(self.arr.astype(np.float32))
+        self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
         # TODO figure out train test
         self.train_y = self.arr[:n - forcast_len]
-        self.train_x = tr.arange(0, len(self.train_y)-1)
+        self.train_x = tr.arange(0, len(self.train_y))
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
 
     def train(self, **kwargs):
-
         lr = kwargs.get("lr", 1e-1)
         epochs = kwargs.get("epoch", 128)
 
@@ -61,12 +60,29 @@ class gp:
                 model.likelihood.noise.item()
             ))
             optimizer.step()
-    
-    @property
-    def forecast(self):
-        return None 
 
+    def plot_prediction(self):
 
+        self.model.eval()
+        self.likelihood.eval()
+
+        with tr.no_grad():
+
+            test_x = tr.arange(len(self.train_y), len(self.arr))
+            y_preds = self.likelihood(self.model(test_x))
+            lower, upper = y_preds.confidence_region()
+
+            fig, ax = plt.subplots()
+
+            ax.plot(train_x.numpy(), train_y.numpy(), 'k*')
+            ax.plot(test_x.numpy(), y_preds.mean.numpy(), 'b')
+            ax.fill_between(test_x.numpy(), lower.numpy(), upper.numpy(), alpha=0.5)
+
+            ax.legend(['Observed Data', 'Mean', 'Confidence'])
+
+            plt.show()
+
+        return None
 
 class SpectralMixtureGPModel(gpytorch.models.ExactGP):
     def __init__(self, train_x, train_y, likelihood):
