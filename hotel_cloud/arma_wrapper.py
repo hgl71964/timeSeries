@@ -32,7 +32,6 @@ class arma_wrapper:
         self.model = None
         self.res = None
 
-                
     def auto_fit(self, 
                 order_range: tuple,  # (p, q) to search for
                 metric: str = "aic",  # metric to score model; "aic" or "bic"
@@ -77,9 +76,8 @@ class arma_wrapper:
 
     @property
     def stats(self,):
+        print("data len: ", len(self.arr))
+        print("forecast len: ", self.forecast_len)
 
-        if self.res is None:
-            return None
-        else:   
-            s = {}
-            return None
+        if self.res is not None:
+            pass # TODO add stats
