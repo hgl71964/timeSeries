@@ -32,13 +32,10 @@ class gp_model2:
 
         self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
+        # make end point observation points
         self.train_y = tr.cat([self.arr[:n - forecast_len], tr.tensor([self.arr[-1]])]).float()
         self.train_x = tr.cat([tr.arange(0, len(self.train_y)-1), tr.tensor([len(self.arr)-1])]).float()
         
-        # print(self.arr[-1], len(self.arr)-1)
-        # print(self.arr[:n - forecast_len].shape, )        
-        # print(self.train_x.shape, self.train_y.shape)
-
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         if model is None:
             self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
