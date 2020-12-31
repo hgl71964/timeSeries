@@ -91,7 +91,7 @@ class arma_wrapper:
         # fore = self.forecast;
         # fore = self.res.predict(start=len(self.fit_arr), end=len(self.fit_arr)+self.forecast_len-1)
 
-        pred = self.res.predict(start=len(self.fit_arr)-11, end=len(self.fit_arr)+self.forecast_len-1)
+        pred = self.res.predict(start=len(self.fit_arr)-11, end=len(self.fit_arr)-1+self.forecast_len)  # 0 index
 
         fig, ax = plt.subplots()
 
