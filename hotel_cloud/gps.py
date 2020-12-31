@@ -5,7 +5,9 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 
 class gp_model2:
-
+    """
+    this gp is noise-less observation and have end guidance 
+    """
     def __init__(self,
                 arr,  # 1d-array_like
                 history: int,  # total lenght of history 
@@ -121,7 +123,7 @@ class gp_model:
         self.train_y = self.arr[:n - forecast_len].float()
         self.train_x = tr.arange(0, len(self.train_y)).float()
 
-        print(self.train_x.shape, self.train_y.shape)
+        # print(self.train_x.shape, self.train_y.shape)
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         if model is None:
