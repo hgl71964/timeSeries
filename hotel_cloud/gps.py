@@ -35,8 +35,12 @@ class gp_model2:
         # make end point observation points
         self.train_y = tr.cat([self.arr[:n - forecast_len], tr.tensor([self.arr[-1]])]).float()
         self.train_x = tr.cat([tr.arange(0, len(self.train_y)-1), tr.tensor([len(self.arr)-1])]).float()
-        
+
+        # zero noise likelihood
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
+        self.likelihood.noise = 1e-4
+        self.likelihood.noise_covar.raw_noise.requires_grad_(False)
+
         if model is None:
             self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
         else:
