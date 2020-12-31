@@ -87,7 +87,7 @@ class arma_wrapper:
         ax.plot([i for i in range(n)], np.flip(self.arr), color="black", label = "time series")
 
         # temp = [n - self.forecast_len + i for i in range(self.forecast_len)]
-        ax.plot([i for i in range(self.forecast_len)]], np.flip(pred), color="red", label="forecasting")
+        ax.plot([i for i in range(self.forecast_len)], np.flip(pred), color="red", label="forecasting")
 
         ax.axvline(x = self.forecast_len)
 
