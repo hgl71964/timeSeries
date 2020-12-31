@@ -11,6 +11,7 @@ class gp_model:
                 arr,  # 1d-array_like
                 history: int,  # total lenght of history 
                 forecast_len: int, # length that need to forecast
+                model=None,  # a gpytorch model
                 device = tr.device("cpu"), 
                 ):
         
@@ -36,7 +37,10 @@ class gp_model:
         self.train_x = tr.arange(0, len(self.train_y)).float()
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
-        self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
+        if model is None:
+            self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
+        else:
+            self.model = model
 
     def train(self, verbose=True, **kwargs):
         lr = kwargs.get("lr", 1e-1)
@@ -85,7 +89,7 @@ class gp_model:
 class SpectralMixtureGPModel(gpytorch.models.ExactGP):
     def __init__(self, train_x, train_y, likelihood):
         super(SpectralMixtureGPModel, self).__init__(train_x, train_y, likelihood)
-        self.mean_module = gpytorch.means.LinearMean(input_size=1)
+        self.mean_module = gpytorch.means.LinearMean(input_size=2)
         self.covar_module = gpytorch.kernels.SpectralMixtureKernel(num_mixtures=4)
         self.covar_module.initialize_from_data(train_x, train_y)
 
