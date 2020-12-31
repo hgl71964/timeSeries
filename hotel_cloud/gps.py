@@ -66,7 +66,7 @@ class gp_model:
 
         with tr.no_grad():
 
-            test_x = tr.arange(0, len(self.arr))
+            test_x = tr.arange(0, len(self.arr)).float()
             y_preds = self.likelihood(self.model(test_x))
             lower, upper = y_preds.confidence_region()
 
