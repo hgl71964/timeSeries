@@ -33,9 +33,11 @@ class gp_model2:
         self.arr = tr.from_numpy(self.arr.astype(np.float32))  # to Tensor
 
         self.train_y = tr.cat([self.arr[:n - forecast_len], tr.tensor([self.arr[-1]])]).float()
-        self.train_x = tr.cat([tr.arange(0, len(self.train_y)), tr.tensor([len(self.arr)-1])]).float()
-
-        print(self.trian_x.shape, self.train_y.shape)
+        self.train_x = tr.cat([tr.arange(0, len(self.train_y)-1), tr.tensor([len(self.arr)-1])]).float()
+        
+        # print(self.arr[-1], len(self.arr)-1)
+        # print(self.arr[:n - forecast_len].shape, )        
+        # print(self.train_x.shape, self.train_y.shape)
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         if model is None:
@@ -118,6 +120,8 @@ class gp_model:
         self.train_y = self.arr[:n - forecast_len].float()
         self.train_x = tr.arange(0, len(self.train_y)).float()
 
+        print(self.train_x.shape, self.train_y.shape)
+
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
         if model is None:
             self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
@@ -180,3 +184,10 @@ class SpectralMixtureGPModel(gpytorch.models.ExactGP):
         covar_x = self.covar_module(x)
         return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
 
+
+
+
+if __name__ == "__main__":
+    a = np.random.rand(100,)
+
+    gp_model2(a, 60 ,10 )
