@@ -56,7 +56,6 @@ class gp_model:
             loss.backward()
             print('Iter %d/%d - Loss: %.3f   lengthscale: %.3f   noise: %.3f' % (
                 i + 1, epochs, loss.item(),
-                self.model.covar_module.base_kernel.lengthscale.item(),
                 self.model.likelihood.noise.item()
             ))
             optimizer.step()
