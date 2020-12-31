@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-class gp:
+class gp_model:
 
     def __init__(self,
                 arr,  # 1d-array_like
@@ -61,6 +61,7 @@ class gp:
             ))
             optimizer.step()
 
+    @property
     def plot_prediction(self):
 
         self.model.eval(); self.likelihood.eval()
