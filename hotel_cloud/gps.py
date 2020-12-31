@@ -32,13 +32,11 @@ class gp:
         self.arr = tr.from_numpy(self.arr.astype(np.float32))
 
         # TODO figure out train test
-        self.train_x, self.test_x = self.arr[:forcast_len], self.arr[forcast_len:]
-
+        self.train_y = self.arr[:n - forcast_len]
+        self.train_x = tr.arange(0, len(self.train_y)-1)
 
         self.likelihood = gpytorch.likelihoods.GaussianLikelihood() 
-        self.model = SpectralMixtureGPModel(TODO, TODO, self.likelihood)
-
-        self.model = SpectralMixtureGPModel()
+        self.model = SpectralMixtureGPModel(self.train_x, self.train_y, self.likelihood)
 
     def train(self, **kwargs):
 
