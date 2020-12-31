@@ -31,6 +31,7 @@ class arma_wrapper:
         self.forecast_len = forecast_len
         self.model = None
         self.res = None
+
                 
     def auto_fit(self, 
                 order_range: tuple,  # (p, q) to search for
@@ -76,4 +77,9 @@ class arma_wrapper:
 
     @property
     def stats(self,):
-        print("")
+
+        if self.res is None:
+            return None
+        else:   
+            s = {}
+            return None

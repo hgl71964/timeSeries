@@ -45,7 +45,6 @@ class gp:
         lr = kwargs.get("lr", 1e-1)
         epochs = kwargs.get("epoch", 128)
 
-        # Find optimal model hyperparameters
         self.model.train()
         self.likelihood.train()
         optimizer = torch.optim.Adam(model.parameters(), lr=lr)  
