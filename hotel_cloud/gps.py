@@ -63,8 +63,7 @@ class gp:
 
     def plot_prediction(self):
 
-        self.model.eval()
-        self.likelihood.eval()
+        self.model.eval(); self.likelihood.eval()
 
         with tr.no_grad():
 
@@ -79,7 +78,6 @@ class gp:
             ax.fill_between(test_x.numpy(), lower.numpy(), upper.numpy(), alpha=0.5)
 
             ax.legend(['Observed Data', 'Mean', 'Confidence'])
-
             plt.show()
 
         return None
