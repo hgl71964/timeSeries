@@ -29,15 +29,18 @@ class arma_wrapper:
             raise ValueError("history too short")
 
         self.forecast_len = forecast_len
+        self.model = None
+        self.res = None
                 
     def auto_fit(self, 
                 order_range: tuple,  # (p, q) to search for
                 metric: str = "aic",  # metric to score model; "aic" or "bic"
+                verbose=True,  
                 ):
 
         p, q = order_range[0], order_range[1]
+
         scores = np.zeros((p, q))
-        self.model = None
 
         for i in range(p):
             for j in range(q):
@@ -56,7 +59,12 @@ class arma_wrapper:
                 except:
                     scores[i][j] = np.inf
 
-        p, q = np.where(scores==scores.min()); p, q = int(p), int(q); print(f"optimal (p, q) is {p, q}")
+        p, q = np.where(scores==scores.min()); p, q = int(p), int(q)
+        if verbose:
+            print("scores matrix:")
+            print(scores)
+            print("")
+            print(f"optimal (p, q) is {p, q}")
         
         self.model = sm.tsa.statespace.SARIMAX(self.arr, order=(p, 0, q))
         self.res = self.model.fit()
@@ -64,7 +72,7 @@ class arma_wrapper:
     
     @property
     def forecast(self,):
-        return self.res.forcast(step=self.forecast_len)
+        return self.res.forcast(step=self.forecast_len) if self.res is not None else print("haven't fit model!")
 
     @property
     def stats(self,):
