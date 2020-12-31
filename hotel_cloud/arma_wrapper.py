@@ -25,10 +25,11 @@ class arma_wrapper:
             self.arr = self.arr[n-history:]
             n=len(self.arr)
 
-        if forcast_len > n:  # check forcast_len
+        if forcast_len >= n:  # check forcast_len
             raise ValueError("history too short")
-        
-        
+
+        self.forecast_len = forecast_len
+                
     def auto_fit(self, 
                 order_range: tuple,  # (p, q) to search for
                 metric: str = "aic",  # metric to score model; "aic" or "bic"
@@ -47,24 +48,24 @@ class arma_wrapper:
 
                 try:
                     mod = sm.tsa.statespace.SARIMAX(self.arr, order=(i,0,j), enforce_invertibility=False)
+                    res = mod.fit(disp=False)
                     if metric == "aic":
-                        scores[i][j] = mod.aic
+                        scores[i][j] = res.aic
                     elif metric == "bic":
-                        scores[i][j] = mod.bic 
+                        scores[i][j] = res.bic 
                 except:
                     scores[i][j] = np.inf
 
         p, q = np.where(scores==scores.min()); p, q = int(p), int(q); print(f"optimal (p, q) is {p, q}")
         
         self.model = sm.tsa.statespace.SARIMAX(self.arr, order=(p, 0, q))
-
+        self.res = self.model.fit()
         return self
     
+    @property
     def forecast(self,):
+        return self.res.forcast(step=self.forecast_len)
 
-        return 
-
-    def score(self, y_true):
-
-        return None 
-
+    @property
+    def stats(self,):
+        print("")
