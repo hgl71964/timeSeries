@@ -73,7 +73,7 @@ class gp_model:
 
             fig, ax = plt.subplots()
 
-            ax.plot(train_x.numpy(), train_y.numpy(), 'k*')
+            ax.plot(self.train_x.numpy(), self.train_y.numpy(), 'k*')
             ax.plot(test_x.numpy(), y_preds.mean.numpy(), 'b')
             ax.fill_between(test_x.numpy(), lower.numpy(), upper.numpy(), alpha=0.5)
 
