@@ -54,10 +54,8 @@ class gp_model:
             output = self.model(self.train_x)
             loss = -mll(output, self.train_y)
             loss.backward()
-            print('Iter %d/%d - Loss: %.3f   lengthscale: %.3f   noise: %.3f' % (
-                i + 1, epochs, loss.item(),
-                self.model.likelihood.noise.item()
-            ))
+
+            print(f"Iter {i+1}/{epochs} - Loss {loss.item():.3f} - Noise {self.model.likelihood.noise.item():.3f}")
             optimizer.step()
 
     @property
