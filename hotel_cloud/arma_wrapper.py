@@ -70,7 +70,6 @@ class arma_wrapper:
         self.res = self.model.fit()
         return self
     
-    @property
     def forecast(self,):
         return self.res.forcast(step=self.forecast_len) if self.res is not None else print("haven't fit model!")
 
@@ -78,6 +77,9 @@ class arma_wrapper:
     def stats(self,):
         print("data len: ", len(self.arr))
         print("forecast len: ", self.forecast_len)
+
+        if self.model is not None:
+            print(f"model order {self.model.model_orders}")
 
         if self.res is not None:
             pass # TODO add stats
