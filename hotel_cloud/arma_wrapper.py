@@ -83,8 +83,8 @@ class arma_wrapper:
             return None
 
         fig, ax = plt.subplots()
-        ax.plot([i for i in range(-1, len(self.arr)-1)], self.arr, label = "time series")
-        ax.plot([i for i in range(-1, len(pred)-1)], pred, label="forecasting")
+        ax.plot([i for i in range(-1, len(self.arr)-1)], self.arr, color="black" label = "time series")
+        ax.plot([i for i in range(-1, len(pred)-1)], pred, color="red" label="forecasting")
         ax.set_xlim(self.n, -1) 
         ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
         plt.show()
@@ -97,7 +97,8 @@ class arma_wrapper:
         print("forecast len: ", self.forecast_len)
 
         if self.model is not None:
-            print(f"model order (p, q): ({self.model.model_orders["ar"], self.model.model_orders["ma"]})")
+            p, q = self.model.model_orders["ar"], self.model.model_orders["ma"]
+            print(f"model order (p, q): ({p, q})")
 
         if self.res is not None:
             pass # TODO add stats
