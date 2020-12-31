@@ -73,13 +73,18 @@ class arma_wrapper:
     
     @property
     def forecast(self):
-        return self.res.forecast(step=self.forecast_len) if self.res is not None else print("haven't fit model!")
+        return self.res.forecast(step=self.forecast_len) if self.res is not None else None
 
     def plot_forecast(self, stay_date):
         pred = self.forecast
+
+        if pred is None:
+            print("haven't fit model")
+            return None
+
         fig, ax = plt.subplots()
-        ax.plot(, self.arr, label = "time series")
-        ax.plot(, pred, label="forecasting")
+        ax.plot([i for i in range(-1, len(self.arr)-1)], self.arr, label = "time series")
+        ax.plot([i for i in range(-1, len(pred)-1)], pred, label="forecasting")
         ax.set_xlim(self.n, -1) 
         ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
         plt.show()
