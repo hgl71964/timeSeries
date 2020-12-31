@@ -84,12 +84,12 @@ class arma_wrapper:
 
         fig, ax = plt.subplots()
 
-        temp = [i for i in range(n)]; ax.plot(temp, np.flip(self.arr), color="black", label = "time series")
+        ax.plot([i for i in range(n)], np.flip(self.arr), color="black", label = "time series")
 
-        temp = [n - self.forecast_len + i for i in range(self.forecast_len)]
-        ax.plot(temp, np.flip(pred), color="red", label="forecasting")
+        # temp = [n - self.forecast_len + i for i in range(self.forecast_len)]
+        ax.plot([i for i in range(self.forecast_len)]], np.flip(pred), color="red", label="forecasting")
 
-        ax.axvline(x = n - self.forecast_len)
+        ax.axvline(x = self.forecast_len)
 
         ax.set_xlim(n, 0); ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
         plt.show()
