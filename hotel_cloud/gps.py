@@ -63,7 +63,7 @@ class gp:
                 model.covar_module.base_kernel.lengthscale.item(),
                 model.likelihood.noise.item()
             ))
-        optimizer.step()
+            optimizer.step()
     
     @property
     def forecast(self):
