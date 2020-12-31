@@ -84,9 +84,9 @@ class arma_wrapper:
 
         fig, ax = plt.subplots()
 
-        temp = [i for i in range(n)]; temp.reverse(); ax.plot(temp, np.flip(self.arr), color="black", label = "time series")
+        temp = [i for i in range(n)]; ax.plot(temp, np.flip(self.arr), color="black", label = "time series")
 
-        temp = [n - self.forecast_len + i for i in range(self.forecast_len)]; temp.reverse()
+        temp = [n - self.forecast_len + i for i in range(self.forecast_len)]
         ax.plot(temp, np.flip(pred), color="red", label="forecasting")
 
         ax.axvline(x = n - self.forecast_len)
