@@ -9,7 +9,7 @@ class arma_wrapper:
     def __init__(self,
                 arr,  # 1d-array_like
                 history: int,  # total lenght of history 
-                forcast_len: int, # length that need to forecast
+                forecast_len: int, # length that need to forecast
                 ):
         
         if isinstance(arr, pd.Series):  # type conversion 
@@ -25,7 +25,7 @@ class arma_wrapper:
             self.arr = self.arr[n-history:]
             n=len(self.arr)
 
-        if forcast_len >= n:  # check forcast_len
+        if forecast_len >= n:  # check forecast_len
             raise ValueError("history too short")
 
         self.forecast_len = forecast_len
