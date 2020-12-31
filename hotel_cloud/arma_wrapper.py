@@ -49,7 +49,6 @@ class arma_wrapper:
                 if i==0 and j==0:
                     scores[i][j]=np.inf
                     continue 
-
                 try:
                     mod = sm.tsa.statespace.SARIMAX(self.fit_arr, order=(i,0,j), enforce_invertibility=False)
                     res = mod.fit(disp=False)
@@ -80,11 +79,10 @@ class arma_wrapper:
         in statsmodel:
             forecast(10) == predict(start = len(fit_arr), end = len(fit_arr) + 10)
         """
-
         return self.res.forecast(steps=self.forecast_len) if self.res is not None else None
 
     def plot_forecast(self, stay_date="0"):
-        fore = self.forecast; n = len(self.arr)
+        # fore = self.forecast; n = len(self.arr)
 
         pred = self.res.predict(start=len(self.fit_arr)-11, end=len(self.fit_arr)+self.forecast_len)
 
@@ -96,9 +94,9 @@ class arma_wrapper:
 
         ax.plot([i for i in range(n)], np.flip(self.arr), color="black", label = "time series")
 
-        ax.plot([i for i in range(self.forecast_len)], np.flip(fore), color="red", label="forecasting")
+        # ax.plot([i for i in range(self.forecast_len)], np.flip(fore), color="red", label="forecasting")
 
-        ax.plot([self.forecast_len - 1 + i for i in range(len(pred))], np.flip(pred), color="blue", label="prediction") 
+        ax.plot([i for i in range(len(pred))], np.flip(pred), color="red", label="prediction") 
         
         ax.axvline(x = self.forecast_len-1)
 
