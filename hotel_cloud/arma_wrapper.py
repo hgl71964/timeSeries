@@ -2,7 +2,7 @@
 import statsmodels.api as sm
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt 
 
 class arma_wrapper:
 
@@ -29,6 +29,7 @@ class arma_wrapper:
             raise ValueError("history too short")
 
         self.forecast_len = forecast_len
+        self.fit_arr = self.arr[:int(n-forecast_len)]
         self.model = None
         self.res = None
 
@@ -50,7 +51,7 @@ class arma_wrapper:
                     continue 
 
                 try:
-                    mod = sm.tsa.statespace.SARIMAX(self.arr, order=(i,0,j), enforce_invertibility=False)
+                    mod = sm.tsa.statespace.SARIMAX(self.fit_arr, order=(i,0,j), enforce_invertibility=False)
                     res = mod.fit(disp=False)
                     if metric == "aic":
                         scores[i][j] = res.aic
@@ -66,12 +67,23 @@ class arma_wrapper:
             print("")
             print(f"optimal (p, q) is {p, q}")
         
-        self.model = sm.tsa.statespace.SARIMAX(self.arr, order=(p, 0, q))
+        self.model = sm.tsa.statespace.SARIMAX(self.fit_arr, order=(p, 0, q))
         self.res = self.model.fit()
         return self
     
-    def forecast(self,):
+    @property
+    def forecast(self):
         return self.res.forecast(step=self.forecast_len) if self.res is not None else print("haven't fit model!")
+
+    def plot_forecast(self, stay_date):
+        pred = self.forecast
+        fig, ax = plt.subplots()
+        ax.plot(, self.arr, label = "time series")
+        ax.plot(, pred, label="forecasting")
+        ax.set_xlim(self.n, -1) 
+        ax.set_xlabel('days before'); ax.set_ylabel('bookings'); ax.grid(True); ax.set_title(f"stay date: {stay_date}")
+        plt.show()
+
 
     @property
     def stats(self,):
