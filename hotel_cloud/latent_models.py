@@ -92,15 +92,13 @@ class discrete_latent_markov:
                 for k in range(n):
                     count=0
                     for t in range(1, self.seq_len):
-                        if int(data[k][t] - lower) == i and int(data[k][t-1] - lower) == j:
+                        if (int(data[k][t] - lower) == i) and (int(data[k][t-1] - lower) == j):
                             count+=1
                     pvgvz[i, j, :] += qz[k] * count
                 
         pvgvz = np.divide(pvgvz, pvgvz.sum(axis=0))
 
-        self.pz = pz
-        self.pv1gz = pv1gz
-        self.pvgvz = pvgvz
+        self.pz = pz; self.pv1gz = pv1gz; self.pvgvz = pvgvz
     
     def run_epoch(self,
                 data: np.ndarray,  #  shape (n, seq_len); n: number of sequence, seq_len: length of sequence 
