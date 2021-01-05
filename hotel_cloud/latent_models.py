@@ -3,12 +3,18 @@ from copy import deepcopy
 
 class discrete_latent_markov:
 
+    """
+    discrete state space latent markov model to cluster time series
+        parameter learning via EM 
+    """
+
     def __init__(self,
                 data: np.ndarray,  # shape (n, T); n: number of sequence, T: length of sequence 
                 n_cluster: int,   # number of cluster
                 bound: tuple,  #  (lower, upper) -> lower and upper bound for discrete space
                 init_strategy: str = None,  # specify prior distribution
                 ):
+    
         self.lower, self.upper = bound[0], bound[1]
         self.n, self.seq_len = data.shape[0], data.shape[1]
         self.n_cluster = n_cluster
@@ -18,13 +24,13 @@ class discrete_latent_markov:
         else:
             pz = np.array([1/n_cluster] * n_cluster, dtype=np.float64)  # uniform prior
             
-        pz /= np.sum(pz); self.pz = pz
+        pz /= np.sum(pz)
 
         state_space = int(self.upper - self.lower + 1)
         pv1gz = np.random.rand(state_space, n_cluster); pv1gz = np.divide(pv1gz, pv1gz.sum(axis=0)); 
         pvgvz = np.random.rand(state_space, state_space, n_cluster); pvgvz = np.divide(pvgvz, pvgvz.sum(axis=0)); 
 
-        self.pv1gz = pv1gz; self.pvgvz = pvgvz
+        self.pz = pz; self.pv1gz = pv1gz; self.pvgvz = pvgvz
         
         # check probability distribution 
         assert np.isclose(self.pz.sum(), 1.)
@@ -99,7 +105,7 @@ class discrete_latent_markov:
     def run_epoch(self,
                 data: np.ndarray,  #  shape (n, seq_len); n: number of sequence, seq_len: length of sequence 
                 epochs: int,
-                verbose:bool = True, 
+                verbose: bool = True, 
                 ):
 
         llike = 0  # start log-likelihood
