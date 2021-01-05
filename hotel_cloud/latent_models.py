@@ -114,7 +114,7 @@ class discrete_latent_markov:
             new_llike = self.log_llike(qz)
 
             if verbose:
-                print(f"Iter {e+1}, log-likelihood {new_llike:.2f}")
+                print(f"Iter {e+1}, log-likelihood {new_llike:,.2f}")
 
             llike = new_llike
             qz = self.normalise(qz)
