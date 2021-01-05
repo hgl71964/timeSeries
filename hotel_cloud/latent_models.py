@@ -103,7 +103,7 @@ class discrete_latent_markov:
     def run_epoch(self,
                 data: np.ndarray,  #  shape (n, seq_len); n: number of sequence, seq_len: length of sequence 
                 epochs: int,
-                verbose: bool = True, 
+                verbose: bool = False, 
                 ):
 
         llike = 0  # start log-likelihood
