@@ -10,7 +10,7 @@ class evaluator:
         
         self.groups = {}
 
-        for i, r in enumerate(np.unique(labels)):
+        for i, r in enumerate(np.unique(labels.astype(np.int16))):
             key = str(r)
             self.groups[key] = data[labels==r]
 
