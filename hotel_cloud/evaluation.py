@@ -16,7 +16,6 @@ class evaluator:
         self.keys = list(self.groups.keys())
         self.n_cluster = len(self.keys)
 
-
     def intra_inter_group(self, 
                         n: int,  # number of samples to test
                         labels: tuple,  # (label1, label2); notice label1 is the main comparison group
@@ -66,7 +65,7 @@ class evaluator:
             distance = dtw_barycenter_averaging(...)
         
 
-        return 
+        return None
 
     def inter_distance(self,
                 n: int,
@@ -74,7 +73,7 @@ class evaluator:
                 metric: str="dtw", 
                 ):
         
-        return 
+        return None
 
 
 
