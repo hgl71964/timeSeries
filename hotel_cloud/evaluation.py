@@ -2,6 +2,7 @@ import numpy as np
 from numpy.random import default_rng
 from tslearn.metrics import dtw, dtw_path
 from tslearn.barycenters import dtw_barycenter_averaging
+from numpy.linalg import norm
 
 class evaluator:
 
@@ -39,6 +40,11 @@ class evaluator:
             for i in range(n):
                 intra[i] = dtw(sample[i], sample1[i])
                 inter[i] = dtw(sample[i], sample2[i])
+
+        else metric == "l2":
+            for i in range(n):
+                intra[i] = norm(sample[i]- sample1[i])
+                inter[i] = norm(sample[i]- sample2[i])
 
         return intra, inter
 
