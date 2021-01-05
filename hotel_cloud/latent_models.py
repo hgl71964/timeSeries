@@ -109,7 +109,7 @@ class discrete_latent_markov:
                 ):
 
         llike = 0  # start log-likelihood
-        qz = np.empty((self.n, self.n_cluster), dtype=np.float64)
+        qz = np.empty((self.n, self.n_cluster), dtype=np.float64)  # variational distribution for each sequence 
 
         for e in range(epochs):
             qz = self.e_step(data, qz)
@@ -124,4 +124,4 @@ class discrete_latent_markov:
 
             self.m_step(data, qz)
         
-        return posterior_z
+        return posterior_z, llike 
