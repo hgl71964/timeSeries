@@ -36,15 +36,14 @@ class evaluator:
 
         intra, inter = np.empty((n, ), dtype=np.float64), np.empty((n, ), dtype=np.float64)
 
-        for i in range(n):
-            intra[i] = dtw(sample[i], sample1[i])
-            inter[i] = dtw(sample[i], sample2[i])
+        if metric == "dtw":
+            for i in range(n):
+                intra[i] = dtw(sample[i], sample1[i])
+                inter[i] = dtw(sample[i], sample2[i])
 
         return intra, inter
 
 
-        
-        
     def within_distance(self,
                         n: int,
                         label:str,
