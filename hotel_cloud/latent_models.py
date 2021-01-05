@@ -46,9 +46,9 @@ class discrete_latent_markov:
             log_qz = np.log(self.pz) + np.log(self.pv1gz[index])
 
             for t in range(1, self.seq_len):
-            idx1, idx2 = int(data[i][t-1]- self.lower), int(data[i][t] - self.lower)
+                idx1, idx2 = int(data[i][t-1]- self.lower), int(data[i][t] - self.lower)
 
-            log_qz += np.log(self.pvgvz[idx2, idx1])
+                log_qz += np.log(self.pvgvz[idx2, idx1])
 
             qz[i] = np.exp(log_qz)
         return qz
@@ -68,7 +68,6 @@ class discrete_latent_markov:
 
         # update pz -> argmax KL-divergence
         pz = qz.sum(axis=0); pz/= np.sum(pz)
-        self.pz = pz
 
         # update pv1gz
         pv1gz = np.empty((state_space, self.n_cluster), dtype = np.float64)
@@ -78,22 +77,23 @@ class discrete_latent_markov:
             pv1gz[i] = np.sum(qz[index], axis=0)
         
         pv1gz = np.divide(pv1gz, pv1gz.sum(axis=0))  # normalisation
-        self.pv1gz = pv1gz
 
         # update pvgvz
         pvgvz = np.zeros((state_space, state_space, self.n_cluster), dtype = np.float64)
 
         for i in range(state_space):
             for j in range(state_space):
-            for k in range(n):
-                count=0
-                for t in range(1, seq_len):
-                if int(data[k][t] - lower) == i and int(data[k][t-1] - lower) == j:
-                    count+=1
-                pvgvz[i, j, :] += qz[k] * count
+                for k in range(n):
+                    count=0
+                    for t in range(1, self.seq_len):
+                        if int(data[k][t] - lower) == i and int(data[k][t-1] - lower) == j:
+                            count+=1
+                    pvgvz[i, j, :] += qz[k] * count
                 
         pvgvz = np.divide(pvgvz, pvgvz.sum(axis=0))
 
+        self.pz = pz
+        self.pv1gz = pv1gz
         self.pvgvz = pvgvz
     
     def run_epoch(self,
