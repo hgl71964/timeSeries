@@ -92,9 +92,8 @@ class discrete_latent_markov:
 
         self.pvgvz = pvgvz
     
-    def run_epoch(
-                self,
-                data,
+    def run_epoch(self,
+                data: np.ndarray,  #  shape (n, seq_len); n: number of sequence, seq_len: length of sequence 
                 epochs: int,
                 verbose:bool = True, 
                 ):
