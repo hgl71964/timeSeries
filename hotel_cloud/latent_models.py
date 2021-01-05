@@ -59,7 +59,7 @@ class discrete_latent_markov:
             qz[i] = np.exp(log_qz)
         return qz
     
-    def llikehood(self, qz):
+    def log_llike(self, qz):
         llike = np.sum(np.log(np.sum(qz, axis=1))) 
         return llike
     
@@ -111,13 +111,13 @@ class discrete_latent_markov:
 
         for e in range(epochs):
             qz = self.e_step(data, qz)
-            new_llike = log_llike(qz)
+            new_llike = self.log_llike(qz)
 
             if verbose:
                 print(f"Iter {e+1}, log-likelihood {new_llike:.2f}")
 
             llike = new_llike
-            qz = normalise(qz)
+            qz = self.normalise(qz)
             posterior_z = deepcopy(qz)
 
             self.m_step(data, qz)
