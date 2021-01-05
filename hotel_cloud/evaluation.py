@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.random import default_rng
 from tslearn.metrics import dtw, dtw_path
 from tslearn.barycenters import dtw_barycenter_averaging
 
@@ -15,14 +16,32 @@ class evaluator:
         self.keys = list(self.groups.keys())
         self.n_cluster = len(self.keys)
 
-    def inter_distance(self,
-                n: int,
-                label: tuple,  # (label1, label2)
-                metric: str="dtw", 
-                ):
-        
 
-        return 
+    def intra_inter_group(self, 
+                        n: int,  # number of samples to test
+                        labels: tuple,  # (label1, label2); notice label1 is the main comparison group
+                        metric: str = "dtw",
+                        ):
+        l1, l2 = labels[0], labels[1]
+
+        d1, d2 = self.groups[l1], self.groups[l2]
+
+        if 2 * n > d1.shape[0] or n > d2.shape[0]:
+            raise ValueError("not enough data points")
+
+        rng = default_rng()
+        idx1, idx2 = rng.choice(d1.shape[0], size=int(2*n), replace=False), rng.choice(d2.shape[0], size=n, replace=False)
+
+        sample, sample1, sample2 = d1[idx1[:n]], d1[idx1[n:]], d2[idx2]
+
+        intra, inter = np.empty((n, ), dtype=np.float64), np.empty((n, ), dtype=np.float64)
+
+        for i in range(n):
+            intra[i] = dtw(sample[i], sample1[i])
+            inter[i] = dtw(sample[i], sample2[i])
+
+        return intra, inter
+
 
         
         
@@ -40,16 +59,23 @@ class evaluator:
         if 2*n > d.shape[0]:
             raise ValueError("not enough data points")
         
-        idx = np.random.randint(low = 0, high=d.shape[0], size = (int(2*n),))
+        idx = np.random.randint(low=0, high=d.shape[0], size = (int(2*n),))
 
         pool1 = d[idx[:n]]; pool2 = d[idx[n:]]
 
         if metric == "dtw":
             distance = dtw_barycenter_averaging(...)
-            
+        
 
         return 
 
+    def inter_distance(self,
+                n: int,
+                label: tuple,  # (label1, label2)
+                metric: str="dtw", 
+                ):
+        
+        return 
 
 
 
