@@ -17,9 +17,12 @@ class evaluator:
 
     def inter_distance(self,
                 n: int,
-                label: str,  # correspond to a key
+                label: tuple,  # (label1, label2)
                 metric: str="dtw", 
                 ):
+        
+
+        return 
 
         
         
@@ -29,7 +32,10 @@ class evaluator:
                         metric: str = "dtw",
                       ):
 
-        d = self.groups[label]
+        if isinstance(label, tuple):
+            d = self.groups[label[0]]
+        else:
+            d = self.groups[label]
 
         if 2*n > d.shape[0]:
             raise ValueError("not enough data points")
