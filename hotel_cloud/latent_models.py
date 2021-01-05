@@ -79,7 +79,7 @@ class discrete_latent_markov:
         pv1gz = np.empty((state_space, self.n_cluster), dtype = np.float64)
         
         for i in range(state_space):
-            index = (data[:,0] == int(i + lower))
+            index = (data[:,0] == int(i + self.lower))
             pv1gz[i] = np.sum(qz[index], axis=0)
         
         pv1gz = np.divide(pv1gz, pv1gz.sum(axis=0))  # normalisation
@@ -89,10 +89,10 @@ class discrete_latent_markov:
 
         for i in range(state_space):
             for j in range(state_space):
-                for k in range(n):
+                for k in range(self.n):
                     count=0
                     for t in range(1, self.seq_len):
-                        if (int(data[k][t] - lower) == i) and (int(data[k][t-1] - lower) == j):
+                        if (int(data[k][t] - self.lower) == i) and (int(data[k][t-1] - self.lower) == j):
                             count+=1
                     pvgvz[i, j, :] += qz[k] * count
                 
