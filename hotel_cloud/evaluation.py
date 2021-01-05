@@ -24,6 +24,9 @@ class evaluator:
                         ):
         l1, l2 = labels[0], labels[1]
 
+        if not isinstance(l1, str):
+            l1, l2 = str(l1), str(l2)
+
         d1, d2 = self.groups[l1], self.groups[l2]
 
         if 2 * n > d1.shape[0] or n > d2.shape[0]:
