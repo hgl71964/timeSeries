@@ -5,7 +5,9 @@ from tslearn.barycenters import dtw_barycenter_averaging
 from numpy.linalg import norm
 
 class evaluator:
-
+    """
+    evaluation of clustering results 
+    """
     def __init__(self, data, labels):
         
         self.groups = {}
