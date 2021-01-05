@@ -41,11 +41,12 @@ class evaluator:
                 intra[i] = dtw(sample[i], sample1[i])
                 inter[i] = dtw(sample[i], sample2[i])
 
-        else metric == "l2":
+        elif metric == "l2":
             for i in range(n):
                 intra[i] = norm(sample[i]- sample1[i])
                 inter[i] = norm(sample[i]- sample2[i])
 
+        # return two array
         return intra, inter
 
 
