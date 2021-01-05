@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from numpy.random import default_rng
 from tslearn.metrics import dtw, dtw_path
 from tslearn.barycenters import dtw_barycenter_averaging
@@ -54,37 +55,17 @@ class evaluator:
         # return two array
         return intra, inter
 
-
-    def within_distance(self,
-                        n: int,
-                        label:str,
-                        metric: str = "dtw",
-                      ):
-
-        if isinstance(label, tuple):
-            d = self.groups[label[0]]
-        else:
-            d = self.groups[label]
-
-        if 2*n > d.shape[0]:
-            raise ValueError("not enough data points")
-        
-        idx = np.random.randint(low=0, high=d.shape[0], size = (int(2*n),))
-
-        pool1 = d[idx[:n]]; pool2 = d[idx[n:]]
-
-        if metric == "dtw":
-            distance = dtw_barycenter_averaging(...)
-        
+    def visual(self,
+                n: int,  # number of samples to test
+                labels: tuple,  # (label1, label2); notice label1 is the main comparison group
+                ):
+        # TODO plot
 
         return None
 
-    def inter_distance(self,
-                n: int,
-                label: tuple,  # (label1, label2)
-                metric: str="dtw", 
-                ):
-        
+
+    def barycenter(self):
+
         return None
 
 
