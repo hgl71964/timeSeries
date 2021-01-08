@@ -66,7 +66,7 @@ class evaluator:
 
     def visual(self,
                 n: int,  # number of samples to test
-                *args: tuple,  # (label1, label2); notice label1 is the main comparison group
+                *args: list,  
                 ):
 
         fig, ax = plt.subplots()
