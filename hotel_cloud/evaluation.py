@@ -54,6 +54,15 @@ class evaluator:
 
         # return two array
         return intra, inter
+    
+    def acc(self, pred, labels):
+        """provide accuracy of the clustering if labels are available"""
+
+        pred, labels = pred.flatten(), labels.flatten()
+
+        assert len(pred) == len(labels)
+
+        return (pred==labels).mean()
 
     def visual(self,
                 n: int,  # number of samples to test
