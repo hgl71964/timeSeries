@@ -58,6 +58,8 @@ class evaluator:
     def acc(self, pred, labels):
         """provide accuracy of the clustering if labels are available"""
 
+        # TODO resolve order issue
+
         pred, labels = pred.flatten(), labels.flatten()
 
         assert len(pred) == len(labels)
