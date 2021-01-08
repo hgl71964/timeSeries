@@ -1,6 +1,5 @@
 import numpy as np
 from copy import deepcopy
-from numba import jit 
 
 class discrete_latent_markov:
 
@@ -38,7 +37,6 @@ class discrete_latent_markov:
         assert np.isclose(self.pv1gz.sum(axis=0).all(), 1.)
         assert np.isclose(self.pvgvz[:,:,0].sum(axis=0).all(), 1.) # pvgvz[:,:,0] is the first transition matrix
 
-    @jit(nopython=True)
     def e_step(self, data, qz):
         for i in range(self.n):  
             """
@@ -61,18 +59,15 @@ class discrete_latent_markov:
             qz[i] = np.exp(log_qz)
         return qz
 
-    @jit(nopython=True) 
     def log_llike(self, qz):
         llike = np.sum(np.log(np.sum(qz, axis=1))) 
         return llike
 
-    @jit(nopython=True)
     def normalise(self, qz):
         normalise_qz = qz/qz.sum(axis=1).reshape(-1,1)
         assert (np.isclose(normalise_qz.sum(axis=1).all(), 1.))
         return normalise_qz
 
-    @jit(nopython=True)
     def m_step(self, data, qz):
         
         state_space = int(self.upper - self.lower + 1)
@@ -105,7 +100,6 @@ class discrete_latent_markov:
 
         self.pz = pz; self.pv1gz = pv1gz; self.pvgvz = pvgvz
 
-    # @jit(nopython=True)
     def run_epoch(self,
                 data: np.ndarray,  #  shape (n, seq_len); n: number of sequence, seq_len: length of sequence 
                 epochs: int,
