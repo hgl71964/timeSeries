@@ -66,10 +66,27 @@ class evaluator:
 
     def visual(self,
                 n: int,  # number of samples to test
-                labels: tuple,  # (label1, label2); notice label1 is the main comparison group
+                *args: tuple,  # (label1, label2); notice label1 is the main comparison group
                 ):
-        # TODO plot
 
+        fig, ax = plt.subplots()
+
+        for l1 in args:
+            if not isinstance(l1, str):
+                l1 = str(l1)
+
+            d1 = self.groups[l1]
+            rng = default_rng()
+            idx1 = rng.choice(d1.shape[0], size=n, replace=False)
+
+            sample1 = d1[idx1]  # a set of time series 
+
+            for j, s1 in enumerate(sample1):
+                ax.plot([i for i in range(len(s1))], s1, label=f"{l1}_{j}")
+
+        ax.set_xlabel("time series"); ax.set_ylabel("vals"); ax.set_title(f"time series plot")
+        ax.legend()
+        plt.show()
         return None
 
 
