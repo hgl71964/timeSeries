@@ -57,10 +57,30 @@ class evaluator:
     
     def acc(self, pred, labels):
         """provide accuracy of the clustering if labels are available"""
+        
+        pred, labels = pred.flatten().astype(np.int16), labels.flatten().astype(np.int16)
 
-        # TODO resolve order issue
+        diff = labels.min() - pred.min()
 
-        pred, labels = pred.flatten(), labels.flatten()
+        labels -= diff
+
+        rec = {}
+
+        # for i in range(len(np.unique(labels))):
+
+        #     label = labels[i]
+
+        #     group = (pred == label)  # boolean index  
+
+        #     majority_group = labels[group]
+
+        #     # compute the most frequent element
+        #     (values,counts) = np.unique(majority_group,return_counts=True)
+        #     ind=np.argmax(counts)
+        #     most_freq = values[ind]
+
+        #     rec[str(most_freq)] = group
+
 
         assert len(pred) == len(labels)
 
@@ -84,7 +104,7 @@ class evaluator:
             sample1 = d1[idx1]  # a set of time series 
 
             for j, s1 in enumerate(sample1):
-                ax.plot([i for i in range(len(s1))], s1, label=f"label{l1}")
+                ax.plot([i for i in range(len(s1))], s1, label=f"cluster_{l1}")
 
         ax.set_xlabel("time series"); ax.set_ylabel("vals"); ax.set_title(f"time series plot")
         ax.legend()
