@@ -104,8 +104,8 @@ class discrete_latent_markov:
         pvgvz = np.divide(pvgvz, pvgvz.sum(axis=0))
 
         self.pz = pz; self.pv1gz = pv1gz; self.pvgvz = pvgvz
-        
-    @jit(nopython=True)
+
+    # @jit(nopython=True)
     def run_epoch(self,
                 data: np.ndarray,  #  shape (n, seq_len); n: number of sequence, seq_len: length of sequence 
                 epochs: int,
