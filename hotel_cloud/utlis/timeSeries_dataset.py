@@ -22,7 +22,7 @@ class timeSeries_data:
             year = str(year)
         return df[(df["staydate"] == year +"-"+ stay_date)].groupby("lead_in").sum().filter(preserved_col)
 
-    def check_timeseries(self, history: int = 100):
+    def check_timeseries(self, history: int = 100, filter_zero = True):
 
         start_date = datetime.datetime(self.year, 1, 1, 0, 0)
         dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
@@ -40,5 +40,13 @@ class timeSeries_data:
                 data[i,:] = np.flip(d[:history])
             else:
                 data[i,:] = np.zeros((history, ))
-        
+
+        if filter_zero:
+            index = []
+            for i in range(data.shape[0]):
+                if np.all(data[i]==0):
+                    index.append(i)
+                    
+            index = np.array(index)
+            data = (data[[i for i in range(365) if i not in index]])
         return data
