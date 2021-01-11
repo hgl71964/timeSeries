@@ -81,9 +81,6 @@ class evaluator:
 
         #     rec[str(most_freq)] = group
 
-
-        assert len(pred) == len(labels)
-
         return (pred==labels).mean()
 
     def visual(self,
