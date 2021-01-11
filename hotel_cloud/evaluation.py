@@ -88,7 +88,7 @@ class evaluator:
                 *args: list,  
                 ):
 
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
 
         for l1 in args:
             if not isinstance(l1, str):
