@@ -7,7 +7,6 @@ class timeSeries_data:
 
     def __init__(self, **kwargs):
         self.year = kwargs.get("year", 2019)
-
     
     def check_staydate(self, 
                         df: pd.DataFrame, 
@@ -46,7 +45,7 @@ class timeSeries_data:
             for i in range(data.shape[0]):
                 if np.all(data[i]==0):
                     index.append(i)
-                    
+
             index = np.array(index)
             data = (data[[i for i in range(365) if i not in index]])
         return data
