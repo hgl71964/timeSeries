@@ -64,8 +64,6 @@ class evaluator:
 
         labels -= diff
 
-        rec = {}
-
         # for i in range(len(np.unique(labels))):
 
         #     label = labels[i]
