@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd 
 from tslearn.clustering import TimeSeriesKMeans
+import datetime
 
 
 class timeSeries_data:
