@@ -96,7 +96,13 @@ class timeSeries_data:
         return df
 
 
-    def segmentation(self, ):
+    def segmentation(self, data, data_dict):
+        """
+        make data based on their labels
+        """
+
+        TODO
+
 
         return None
 
