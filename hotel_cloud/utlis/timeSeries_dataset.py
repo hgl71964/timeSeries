@@ -49,8 +49,9 @@ class timeSeries_data:
             dates[i] = start_date.strftime("%m-%d")
 
         for i in range(365):
-            s_df = df[(df["staydate"] == str(self.year) +"-"+ dates[i])].groupby("lead_in").sum()
-            s_df = s_df.iloc[:history]
+
+            date = dates[i] 
+            s_df = df[(df["staydate"] == str(self.year) +"-"+ date)].groupby("lead_in").sum().iloc[:history]
 
             s_df = self._interpolate(s_df, interpolate_feat, interpolate_param)
 
@@ -68,7 +69,7 @@ class timeSeries_data:
                     index.append(i)
             index = np.array(index)
             data = (data[[i for i in range(365) if i not in index]])
-        return data
+        return data  # dtype: np.float32
 
 
 
