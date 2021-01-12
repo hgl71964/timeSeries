@@ -52,7 +52,7 @@ class timeSeries_data:
             s_df = df[(df["staydate"] == str(self.year) +"-"+ dates[i])].groupby("lead_in").sum()
             s_df = s_df.iloc[:history]
 
-            s_df = self._interpolate(self, s_df, interpolate_feat, interpolate_param)
+            s_df = self._interpolate(s_df, interpolate_feat, interpolate_param)
 
             d = s_df["rooms_all"].to_numpy()
 
@@ -61,7 +61,7 @@ class timeSeries_data:
             else:
                 data[i,:] = np.zeros((history, ))
 
-        if filter_all_zero:
+        if filter_all_zero:  # if there are staydates that have all 0 booking curve
             index = []
             for i in range(data.shape[0]):
                 if np.all(data[i]==0):
