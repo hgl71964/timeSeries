@@ -60,7 +60,7 @@ class timeSeries_data:
         for i in range(num_days):
 
             full_date = str(self.year) +"-" + dates[i] 
-            data_dict[i] = full_date
+            data_dict[i] = (full_date, 0)
 
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
                                                         interpolate_feat, interpolate_param)
@@ -85,8 +85,6 @@ class timeSeries_data:
 
         return data, data_dict
 
-
-
     def _interpolate(self, df, feats, inter_params):
         if not feats:
             return df
@@ -96,3 +94,18 @@ class timeSeries_data:
             df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
         
         return df
+
+
+    def cluster(self, data, data_dict,**kwargs):
+
+        n_cluster, epochs, metric = kwargs.get("n_cluster", 7), kwargs.get("epochs", 128), \
+                                    kwargs.get("metric", "softdtw")
+
+        km = TimeSeriesKMeans(n_clusters=n_cluster,max_iter = epochs, metric=metric)
+        preds = km.fit_predict(data)  
+        for i, pred in enumerate(preds):  # assign label to each staydate
+            data_dict[i][1] = pred
+
+        return preds
+
+
