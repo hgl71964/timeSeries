@@ -60,7 +60,7 @@ class timeSeries_data:
         for i in range(num_days):
 
             full_date = str(self.year) +"-" + dates[i] 
-            data_dict[i] = [full_date, 0]
+            data_dict[i] = full_date
 
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
                                                         interpolate_feat, interpolate_param)
@@ -96,12 +96,22 @@ class timeSeries_data:
         return df
 
 
-    def segmentation(self, data, data_dict):
+    def segmentation(self, data, labels, data_dict):
         """
         make data based on their labels
-        """
 
-        TODO
+        Return: 
+            dataset: label -> (date, dataset)
+        """
+        dataset = {}
+
+        for i, pred in enumerate(labels):  # assign label to each staydate
+
+
+        for i in range(n):
+            d
+
+        
 
 
         return None
