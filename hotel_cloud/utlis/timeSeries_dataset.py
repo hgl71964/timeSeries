@@ -8,7 +8,7 @@ class timeSeries_data:
     def __init__(self, **kwargs):
         self.year = kwargs.get("year", 2019)
     
-    def check_staydate(self, 
+    def check_staydate(self,
                         df: pd.DataFrame, 
                         stay_date: str, 
                         preserved_col: list,  # list of feature name to preserve
@@ -47,6 +47,7 @@ class timeSeries_data:
 
         for i in range(365):
             s_df = df[(df["staydate"] == str(self.year) +"-"+ dates[i])].groupby("lead_in").sum()
+
             d = s_df["rooms_all"].to_numpy()
 
             if len(d) >= history:
