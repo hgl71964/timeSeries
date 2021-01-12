@@ -43,19 +43,21 @@ class timeSeries_data:
             data: np.ndarray; each row is a booking curve for a staydate
             data_dict: dict; index -> staydate
         """
-        interpolate_feat = kwargs.get("interpolate_feat", [])
-        interpolate_param = kwargs.get("interpolate_param", ("spline", 3))
+        interpolate_feat, interpolate_param = kwargs.get("interpolate_feat", []), \
+                                        kwargs.get("interpolate_param", ("spline", 3))
 
-        start_date = datetime.datetime(self.year, 1, 1, 0, 0)
-        dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
-        data = np.empty((365, history), dtype=np.float32)
+        start_date, end_data = datetime.datetime(self.year, 1, 1, 0, 0), datetime.datetime(self.year+1, 1, 1, 0, 0)
+        num_days = (end_data - start_date).days
 
-        for i in range(1, 365):
+        dates = [None]*num_days; dates[0] = start_date.strftime("%m-%d")
+        data = np.empty((num_days, history), dtype=np.float32)
+
+        for i in range(1, num_days):
             start_date += datetime.timedelta(days=1)
             dates[i] = start_date.strftime("%m-%d")
 
         data_dict = {}
-        for i in range(365):
+        for i in range(num_days):
 
             full_date = str(self.year) +"-" + dates[i] 
             data_dict[i] = full_date
