@@ -105,7 +105,11 @@ class timeSeries_data:
         preds = km.fit_predict(data)  
         for i, pred in enumerate(preds):  # assign label to each staydate
             data_dict[i][1] = pred
-
         return preds
+
+    def pred_dist(self, preds):
+        _=plt.hist(preds)
+        plt.show()
+
 
 

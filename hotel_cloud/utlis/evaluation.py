@@ -19,10 +19,6 @@ class evaluator:
 
         self.keys = list(self.groups.keys())
         self.n_cluster = len(self.keys)
-    
-    def label_dist(self, labels):
-        _=plt.hist(preds)
-        plt.show()
 
     def intra_inter_group(self, 
                         n: int,  # number of samples to test
@@ -58,7 +54,7 @@ class evaluator:
 
         # return two array
         return intra, inter
-    
+
     def visual(self,
                 n: int,  # number of samples to test
                 *args: list,  
