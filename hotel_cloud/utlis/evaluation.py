@@ -19,6 +19,10 @@ class evaluator:
 
         self.keys = list(self.groups.keys())
         self.n_cluster = len(self.keys)
+    
+    def label_dist(self, labels):
+        _=plt.hist(preds)
+        plt.show()
 
     def intra_inter_group(self, 
                         n: int,  # number of samples to test
@@ -55,32 +59,6 @@ class evaluator:
         # return two array
         return intra, inter
     
-    def acc(self, pred, labels):
-        """provide accuracy of the clustering if labels are available"""
-        
-        pred, labels = pred.flatten().astype(np.int16), labels.flatten().astype(np.int16)
-
-        diff = labels.min() - pred.min()
-
-        labels -= diff
-
-        # for i in range(len(np.unique(labels))):
-
-        #     label = labels[i]
-
-        #     group = (pred == label)  # boolean index  
-
-        #     majority_group = labels[group]
-
-        #     # compute the most frequent element
-        #     (values,counts) = np.unique(majority_group,return_counts=True)
-        #     ind=np.argmax(counts)
-        #     most_freq = values[ind]
-
-        #     rec[str(most_freq)] = group
-
-        return (pred==labels).mean()
-
     def visual(self,
                 n: int,  # number of samples to test
                 *args: list,  
