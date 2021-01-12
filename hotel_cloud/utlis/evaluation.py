@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import default_rng
 from tslearn.metrics import dtw, dtw_path
-from tslearn.barycenters import dtw_barycenter_averaging
+# from tslearn.barycenters import dtw_barycenter_averaging
 from numpy.linalg import norm
 
 class evaluator:
@@ -19,6 +19,10 @@ class evaluator:
 
         self.keys = list(self.groups.keys())
         self.n_cluster = len(self.keys)
+
+    def pred_dist(self, preds):
+        _=plt.hist(preds)
+        plt.show()
 
     def intra_inter_group(self, 
                         n: int,  # number of samples to test
