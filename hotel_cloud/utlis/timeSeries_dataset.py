@@ -35,7 +35,7 @@ class timeSeries_data:
 
         return data
 
-    def cleansing(self, df, history: int = 100, filter_zero = True):
+    def cleansing(self, df, history: int = 100, filter_all_zero = True):
 
         start_date = datetime.datetime(self.year, 1, 1, 0, 0)
         dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
@@ -54,7 +54,7 @@ class timeSeries_data:
             else:
                 data[i,:] = np.zeros((history, ))
 
-        if filter_zero:
+        if filter_all_zero:
             index = []
             for i in range(data.shape[0]):
                 if np.all(data[i]==0):
