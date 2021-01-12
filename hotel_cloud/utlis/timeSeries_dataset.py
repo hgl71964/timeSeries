@@ -15,6 +15,25 @@ class timeSeries_data:
                         ):
         return df[(df["staydate"] == str(self.year) +"-"+ stay_date)].groupby("lead_in").sum().filter(preserved_col)
 
+    def check_timeseries(self, df, history: int = 100):
+        start_date = datetime.datetime(self.year, 1, 1, 0, 0)
+        dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
+        data = np.empty((365, history), dtype=np.float32)
+
+        for i in range(1, 365):
+            start_date += datetime.timedelta(days=1)
+            dates[i] = start_date.strftime("%m-%d")
+
+        for i in range(365):
+            s_df = df[(df["staydate"] == str(self.year) +"-"+ dates[i])].groupby("lead_in").sum()
+            d = s_df["rooms_all"].to_numpy()
+
+            if len(d) >= history:
+                data[i,:] = np.flip(d[:history])
+            else:
+                data[i,:] = np.zeros((history, ))
+
+        return data
 
     def cleansing(self, df, history: int = 100, filter_zero = True):
 
@@ -42,24 +61,4 @@ class timeSeries_data:
                     index.append(i)
             index = np.array(index)
             data = (data[[i for i in range(365) if i not in index]])
-        return data
-
-    def check_timeseries(self, df, history: int = 100):
-        start_date = datetime.datetime(self.year, 1, 1, 0, 0)
-        dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
-        data = np.empty((365, history), dtype=np.float32)
-
-        for i in range(1, 365):
-            start_date += datetime.timedelta(days=1)
-            dates[i] = start_date.strftime("%m-%d")
-
-        for i in range(365):
-            s_df = df[(df["staydate"] == str(self.year) +"-"+ dates[i])].groupby("lead_in").sum()
-            d = s_df["rooms_all"].to_numpy()
-
-            if len(d) >= history:
-                data[i,:] = np.flip(d[:history])
-            else:
-                data[i,:] = np.zeros((history, ))
-
         return data
