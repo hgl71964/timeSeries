@@ -35,7 +35,10 @@ class timeSeries_data:
 
         return data
 
-    def cleansing(self, df, history: int = 100, filter_all_zero = True):
+    def cleansing(self, df, history: int = 100, filter_all_zero = True, **kwargs):
+
+        interpolate_feat = kwargs.get("interpolate_feat", [])
+        interpolate_param = kwargs.get("interpolate_param", ("spline", 3))
 
         start_date = datetime.datetime(self.year, 1, 1, 0, 0)
         dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
@@ -47,6 +50,9 @@ class timeSeries_data:
 
         for i in range(365):
             s_df = df[(df["staydate"] == str(self.year) +"-"+ dates[i])].groupby("lead_in").sum()
+            s_df = s_df.iloc[:history]
+
+            s_df = self._interpolate(self, s_df, interpolate_feat, interpolate_param)
 
             d = s_df["rooms_all"].to_numpy()
 
@@ -63,3 +69,15 @@ class timeSeries_data:
             index = np.array(index)
             data = (data[[i for i in range(365) if i not in index]])
         return data
+
+
+
+    def _interpolate(self, df, feats, inter_params):
+        if not feats:
+            return df
+
+        inter_method, inter_order = inter_params
+        for i, feat in enumerate(feats):  # interpolate 0 for all feats in the list
+            df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
+        
+        return df
