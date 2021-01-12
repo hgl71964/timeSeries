@@ -36,7 +36,13 @@ class timeSeries_data:
         return data
 
     def cleansing(self, df, history: int = 100, filter_all_zero=True, **kwargs):
+        """
+        this method handles missing values 
 
+        Return: 
+            data: np.ndarray; each row is a booking curve for a staydate
+            data_dict: dict; index -> staydate
+        """
         interpolate_feat = kwargs.get("interpolate_feat", [])
         interpolate_param = kwargs.get("interpolate_param", ("spline", 3))
 
