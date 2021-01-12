@@ -52,13 +52,12 @@ class timeSeries_data:
         for i in range(365):
 
             full_date = str(self.year) +"-" + dates[i] 
+            data_dict[i] = full_date
 
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
                                                         interpolate_feat, interpolate_param)
 
             d = s_df["rooms_all"].to_numpy()
-
-            data_dict[i] = full_date
 
             if len(d) >= history:
                 data[i,:] = np.flip(d[:history])
