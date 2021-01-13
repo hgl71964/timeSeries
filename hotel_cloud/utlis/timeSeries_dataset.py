@@ -103,17 +103,17 @@ class timeSeries_data:
         Return: 
             dataset: label -> (date, dataset)
         """
-        dataset = {}
-
-        for i, pred in enumerate(labels):  # assign label to each staydate
-
-
-        for i in range(n):
-            d
-
-        
-
-
+#        dataset = {}
+#
+#        for i, pred in enumerate(labels):  # assign label to each staydate
+#
+#
+#        for i in range(n):
+#            d
+#
+#        
+#
+#
         return None
 
 
