@@ -138,17 +138,12 @@ class timeSeries_data:
         features = [i for i in preserved_col if i != target]  # list of features
 
         all_indices = np.where(labels==group_num)[0].flatten()
-
         test_size = int(len(all_indices)*0.2)
-        test_dates = [None] * test_size
+
         test_indices = np.random.choice(all_indices, test_size, replace=False)
         train_indices = [i for i in all_indices if i not in test_indices]
+
         df_list = [None] * len(train_indices)
-
-        for i, key in enumerate(test_indices):
-            idx = int(key)
-            test_dates[i] = data_dict[idx]
-
         for i, index in enumerate(train_indices):
             date = data_dict[index]
 
@@ -162,7 +157,7 @@ class timeSeries_data:
             df_list[i] = s_df
 
         # print(f"{len(selected_index)} staydate in total")
-        return pd.concat(df_list, axis=0, ignore_index=True), test_dates
+        return pd.concat(df_list, axis=0, ignore_index=True), test_indices
 
     def make_single_lag_feature(self,
                         df, 
