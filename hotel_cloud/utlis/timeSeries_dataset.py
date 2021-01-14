@@ -151,7 +151,7 @@ class timeSeries_data:
 
             s_df = self._add_temporal_info(s_df, date)
 
-            #TODO filter row has NA
+            s_df = s_df.dropna()  # filter row has NA
 
             s_df = s_df.iloc[:history]
 
