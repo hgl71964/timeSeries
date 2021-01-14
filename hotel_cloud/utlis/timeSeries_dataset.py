@@ -152,6 +152,7 @@ class timeSeries_data:
             s_df = s_df.dropna()  # filter row has NA
             df_list[i] = s_df
 
+        print(f"{len(selected_index)} staydate in total")
         return pd.concat(df_list, axis=0, ignore_index=True)
 
 
