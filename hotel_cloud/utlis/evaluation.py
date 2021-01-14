@@ -4,8 +4,9 @@ from numpy.random import default_rng
 from tslearn.metrics import dtw, dtw_path
 # from tslearn.barycenters import dtw_barycenter_averaging
 from numpy.linalg import norm
+from torch_dtw import SoftDTW
 
-class evaluator:
+class cluster_evaluator:
     """
     evaluation of clustering results 
     """
@@ -84,14 +85,12 @@ class evaluator:
         plt.show()
         return None
 
+class metric:
 
-    def barycenter(self):
-
+    @staticmethod
+    def softdtw():
         return None
 
-
-
-
-    
-
-        
+    @staticmethod
+    def mse():
+        return None
