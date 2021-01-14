@@ -13,7 +13,7 @@ class evaluator:
         
         self.groups = {}
 
-        for i, r in enumerate(np.unique(labels.astype(np.int16))):
+        for r in np.unique(labels.astype(np.int16)):
             key = str(r)
             self.groups[key] = data[labels==r]
 
@@ -76,7 +76,7 @@ class evaluator:
 
             sample1 = d1[idx1]  # a set of time series 
 
-            for j, s1 in enumerate(sample1):
+            for s1 in sample1:
                 ax.plot([i for i in range(len(s1))], s1, label=f"cluster_{l1}")
 
         ax.set_xlabel("time series"); ax.set_ylabel("vals"); ax.set_title(f"time series plot")
