@@ -138,12 +138,12 @@ class timeSeries_data:
             s_df = self._add_lag_features(s_df, features, lag_bound)
             s_df = self._add_temporal_info()
             s_df = s_df.iloc[:history]
-            break
 
-        # TODO merge df_list
-        """
-        pd.concat([...], axis=0, ignore_index=True)
-        """
-        return s_df
+            df_list[i] = s_df
+
+            if i == 2:
+                break
+
+        return pd.concat(df_list, axis=0, ignore_index=True)
 
 
