@@ -152,9 +152,6 @@ class timeSeries_data:
             s_df = s_df.dropna()  # filter row has NA
             df_list[i] = s_df
 
-            if i == 2:
-                break
-
         return pd.concat(df_list, axis=0, ignore_index=True)
 
 
