@@ -155,4 +155,22 @@ class timeSeries_data:
         # print(f"{len(selected_index)} staydate in total")
         return pd.concat(df_list, axis=0, ignore_index=True)
 
+    def make_single_lag_feature(self,
+                        df, 
+                        date: str, 
+                        preserved_col: List[str], 
+                        target: str, 
+                        group_num: int = 0,                    
+                        history: int = 100, 
+                        lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
+                        ):
+        features = [i for i in preserved_col if i != target]  # list of features
+
+        s_df = df[(df["staydate"] == date)].groupby("lead_in")\
+                    .sum().reset_index().drop(columns=["lead_in"]).filter(preserved_col)
+        s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
+        s_df = s_df.iloc[:history]
+        s_df = s_df.drop(columns = features)  # drop no lag features
+        s_df = self._add_temporal_info(s_df, date)
+        return s_df.dropna() 
 
