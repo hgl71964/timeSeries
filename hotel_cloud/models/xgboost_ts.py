@@ -14,6 +14,4 @@ max_delta_step is set to 0.7 by default in poisson regression (used to safeguard
 """
 
 def train():
-
-
     return None

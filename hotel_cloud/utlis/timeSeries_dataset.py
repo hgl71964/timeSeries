@@ -160,7 +160,6 @@ class timeSeries_data:
                         date: str, 
                         preserved_col: List[str], 
                         target: str, 
-                        group_num: int = 0,                    
                         history: int = 100, 
                         lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
                         ):
