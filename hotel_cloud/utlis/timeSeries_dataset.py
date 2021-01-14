@@ -99,9 +99,9 @@ class timeSeries_data:
 
     def _add_lag_features(self, 
                     df, 
-                    features
+                    features, 
                     lag_bound,
-                    )
+                    ):
         for feat in features:
             for lag in range(lag_bound[0], lag_bound[1]+1):
                 df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
@@ -111,12 +111,14 @@ class timeSeries_data:
 
     def make_lag_feature(self, 
                         df, 
-                        group_num: int = 0,
-                        preserved_col: List[str], 
-                        target: str, 
-                        lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
                         labels: np.ndarray,  # outcome of clustering 
                         data_dict: np.ndarray,
+                        preserved_col: List[str], 
+                        target: str, 
+                        group_num: int = 0,                    
+                        history: int = 100, 
+                        lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
+
                         ):
         """
         make df based on their labels
@@ -134,9 +136,14 @@ class timeSeries_data:
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in").sum().drop(columns=["lead_in"]).filter(preserved_col)
             s_df = self._add_lag_features(s_df, features, lag_bound)
+            s_df = self._add_temporal_info()
+            s_df = s_df.iloc[:history]
             break
 
-
+        # TODO merge df_list
+        """
+        pd.concat([...], axis=0, ignore_index=True)
+        """
         return s_df
 
 
