@@ -128,11 +128,17 @@ class timeSeries_data:
         """
         features = [i for i in preserved_col if i != target]  # list of features
 
-        selected_index = np.where(preds==group_num)[0].flatten()
+        selected_index = np.where(labels==group_num)[0].flatten()
         df_list = [None] * len(selected_index)
 
         for i, index in enumerate(selected_index):
             date = data_dict[index]
+
+            date_time = datetime.datetime.strptime(date, "%Y-%m-%d")
+
+            print(date_time)
+
+            _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in").sum().drop(columns=["lead_in"]).filter(preserved_col)
             s_df = self._add_lag_features(s_df, features, lag_bound)
