@@ -91,7 +91,7 @@ class timeSeries_data:
             return df
 
         inter_method, inter_order = inter_params
-        for i, feat in enumerate(feats):  # interpolate 0 for all feats in the list
+        for feat in feats:  # interpolate 0 for all feats in the list
             df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
         
         return df
