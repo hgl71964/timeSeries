@@ -109,9 +109,14 @@ class timeSeries_data:
     
     def _add_temporal_info(self, 
                            df,
-                           date_time):
-
-        return None
+                           date):
+        date_time = datetime.datetime.strptime(date, "%Y-%m-%d")
+        _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
+        df["month"] = month
+        df["day_of_month"] = day_of_month
+        df["day_of_week"] = day_of_week
+        df["day_of_year"] = day_of_year
+        return df
 
     def make_lag_feature(self, 
                         df, 
@@ -138,17 +143,16 @@ class timeSeries_data:
         for i, index in enumerate(selected_index):
             date = data_dict[index]
 
-            date_time = datetime.datetime.strptime(date, "%Y-%m-%d")
-
-            _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
-
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
                         .sum().reset_index().drop(columns=["lead_in"]).filter(preserved_col)
             s_df = self._add_lag_features(s_df, features, lag_bound)
 
-            s_df = s_df.drop(columns = features)
+            s_df = s_df.drop(columns = features)  # drop no lag features
 
-            # s_df = self._add_temporal_info()
+            s_df = self._add_temporal_info(s_df, date)
+
+            #TODO filter row has NA
+
             s_df = s_df.iloc[:history]
 
             df_list[i] = s_df
