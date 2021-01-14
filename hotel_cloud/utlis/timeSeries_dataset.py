@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd 
 from tslearn.clustering import TimeSeriesKMeans
 import datetime
+from typing import List
 
 class timeSeries_data:
 
@@ -96,24 +97,49 @@ class timeSeries_data:
         return df
 
 
-    def segmentation(self, data, labels, data_dict):
+    def _compute_lag(self, 
+                    df, 
+                    features
+                    lag_bound,
+                    )
+        for feat in features:
+            for lag in range(lag_bound[0], lag_bound[1]+1):
+                df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
+        return df
+    
+
+
+    def make_lag_feature(self, 
+                        df, 
+                        group_num: int = 0,
+                        preserved_col: List[str], 
+                        target: str, 
+                        lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
+                        labels: np.ndarray,  # outcome of clustering 
+                        data_dict: np.ndarray,
+                        ):
         """
-        make data based on their labels
+        make df based on their labels
 
         Return: 
-            dataset: label -> (date, dataset)
+        
         """
-#        dataset = {}
-#
-#        for i, pred in enumerate(labels):  # assign label to each staydate
-#
-#
-#        for i in range(n):
-#            d
-#
-#        
-#
-#
+        features = [i for i in preserved_col if i != target]  # list of features
+
+        selected_index = np.where(preds==group_num)[0].flatten()
+        selected_dates = [None] * len(selected_index)
+
+        for i, index in enumerate(selected_index):
+            selected_dates[i] = data_dict[index]
+
+
+
+        for date in selected_dates:
+            s_df = df[(df["staydate"] == )].groupby("lead_in").sum().filter(preserved_col)
+            s_df = self._compute_lag()
+
+
+
         return None
 
 
