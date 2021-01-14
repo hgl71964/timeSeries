@@ -97,7 +97,7 @@ class timeSeries_data:
         return df
 
 
-    def _compute_lag(self, 
+    def _add_lag_features(self, 
                     df, 
                     features
                     lag_bound,
@@ -127,19 +127,16 @@ class timeSeries_data:
         features = [i for i in preserved_col if i != target]  # list of features
 
         selected_index = np.where(preds==group_num)[0].flatten()
-        selected_dates = [None] * len(selected_index)
+        df_list = [None] * len(selected_index)
 
         for i, index in enumerate(selected_index):
-            selected_dates[i] = data_dict[index]
+            date = data_dict[index]
+
+            s_df = df[(df["staydate"] == date)].groupby("lead_in").sum().drop(columns=["lead_in"]).filter(preserved_col)
+            s_df = self._add_lag_features(s_df, features, lag_bound)
+            break
 
 
-
-        for date in selected_dates:
-            s_df = df[(df["staydate"] == )].groupby("lead_in").sum().filter(preserved_col)
-            s_df = self._compute_lag()
-
-
-
-        return None
+        return s_df
 
 
