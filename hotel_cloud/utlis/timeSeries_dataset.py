@@ -139,12 +139,13 @@ class timeSeries_data:
         selected_index = np.where(labels==group_num)[0].flatten()
         df_list = [None] * len(selected_index)
 
+        # TODO we may want train test split here
         for i, index in enumerate(selected_index):
             date = data_dict[index]
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
                         .sum().reset_index().drop(columns=["lead_in"]).filter(preserved_col)
-            s_df = self._add_lag_features(s_df, features, lag_bound)
+            s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
             s_df = s_df.iloc[:history]
             s_df = s_df.drop(columns = features)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
