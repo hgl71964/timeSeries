@@ -93,7 +93,6 @@ class timeSeries_data:
         inter_method, inter_order = inter_params
         for feat in feats:  # interpolate 0 for all feats in the list
             df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
-        
         return df
 
 
@@ -149,10 +148,10 @@ class timeSeries_data:
             s_df = s_df.iloc[:history]
             s_df = s_df.drop(columns = features)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
-            s_df = s_df.dropna()  # filter row has NA
+            s_df = s_df.dropna()  # remove row has NA
             df_list[i] = s_df
 
-        print(f"{len(selected_index)} staydate in total")
+        # print(f"{len(selected_index)} staydate in total")
         return pd.concat(df_list, axis=0, ignore_index=True)
 
 
