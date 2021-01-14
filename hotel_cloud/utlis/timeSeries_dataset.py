@@ -140,9 +140,10 @@ class timeSeries_data:
 
             _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
 
-            s_df = df[(df["staydate"] == date)].groupby("lead_in").sum().drop(columns=["lead_in"]).filter(preserved_col)
+            s_df = df[(df["staydate"] == date)].groupby("lead_in")\
+                        .sum().reset_index().drop(columns=["lead_in"]).filter(preserved_col)
             s_df = self._add_lag_features(s_df, features, lag_bound)
-            s_df = self._add_temporal_info()
+            # s_df = self._add_temporal_info()
             s_df = s_df.iloc[:history]
 
             df_list[i] = s_df
