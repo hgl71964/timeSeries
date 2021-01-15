@@ -149,7 +149,8 @@ class timeSeries_data:
             date = data_dict[index]
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
-                        .sum().reset_index().drop(columns=["lead_in"]).filter(preserved_col)
+                        .sum().reset_index().drop(columns=["lead_in"])\
+                                            .filter(preserved_col)
             s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
             s_df = s_df.iloc[:history]
             s_df = s_df.drop(columns = features)  # drop no lag features
@@ -176,7 +177,8 @@ class timeSeries_data:
         for i, date in enumerate(dates):
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
-                        .sum().reset_index().drop(columns=["lead_in"]).filter(preserved_col)
+                        .sum().reset_index().drop(columns=["lead_in"])\
+                                            .filter(preserved_col)
             s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
             s_df = s_df.iloc[:history]
             s_df = s_df.drop(columns = features)  # drop no lag features
