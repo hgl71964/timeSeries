@@ -5,6 +5,10 @@ from tslearn.metrics import dtw, dtw_path
 # from tslearn.barycenters import dtw_barycenter_averaging
 from numpy.linalg import norm
 from torch_dtw import SoftDTW
+from pandas import Series
+from torch import from_numpy
+from torch import Tensor
+
 
 class cluster_evaluator:
     """
@@ -85,12 +89,28 @@ class cluster_evaluator:
         plt.show()
         return None
 
-class metric:
+class forecast_metric:
 
     @staticmethod
-    def softdtw():
-        return None
+    def softdtw(x, y):
+
+        if isinstance(x, Series):
+            x, y = x.to_numpy() y.to_numpy()
+
+        assert (x[0] > x[-1] and y[0] > y[-1])  # check both flipped 
+
+        soft_dtw = SoftDTW()
+        if isinstance(x, np.ndarray):
+            return soft_dtw(from_numpy(x), from_numpy(y))
+        elif isinstance(x, Tensor):
+            return soft_dtw(x.flatten(), y.flatten())
+        else:
+            raise TypeError("wrong data type")
 
     @staticmethod
-    def mse():
-        return None
+    def mse(x, y):
+        if isinstance(x, Series):
+            x, y = x.to_numpy() y.to_numpy()
+
+        assert (x[0] > x[-1] and y[0] > y[-1])  # check both flipped 
+        return ((x-y)**2).mean()
