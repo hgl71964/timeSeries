@@ -91,7 +91,7 @@ class forecast_metric:
 
     @staticmethod
     def softdtw(x, y):
-        """softDTW always negative, the larger the better"""
+        """softDTW the smaller the better"""
         if isinstance(x, Series):
             x = x.to_numpy()
         if isinstance(y, Series):
