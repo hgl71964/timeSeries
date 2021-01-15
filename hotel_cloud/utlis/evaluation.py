@@ -112,3 +112,7 @@ class forecast_metric:
         assert type(x) is type(y)
         assert (x[0] > x[-1] and y[0] > y[-1])  # check both flipped 
         return ((x-y)**2).mean()
+    
+    @staticmethod
+    def rmse(x, y):
+        return np.sqrt(forecast_metric.mse(x, y))
