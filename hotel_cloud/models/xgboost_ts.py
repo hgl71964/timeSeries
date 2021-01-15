@@ -39,5 +39,5 @@ def xgb_train(train_df: DataFrame,
     if "eta" not in param:
         param.update({"eta":1e-1})
 
-    return train(param, dtrain, n_estimators, watchlist), dtrain, dtest
+    return train(param, dtrain, n_estimators, watchlist)
 
