@@ -103,6 +103,7 @@ class forecast_metric:
 
     @staticmethod
     def mse(x, y):
+        """always positive, the smaller the better"""
         if isinstance(x, Series):
             x = x.to_numpy()
         if isinstance(y, Series):
