@@ -13,8 +13,8 @@ def xgb_train(train_df: DataFrame,
         param: dict,
         n_estimators: int = 10,  # num_boost_round
         ):
-
     """
+    list of possible params: https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
     Return:
         Booster
     """
