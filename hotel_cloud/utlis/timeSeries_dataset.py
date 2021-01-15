@@ -84,6 +84,7 @@ class timeSeries_data:
                 data_dict.pop(key)
             data = data[[i for i in range(365) if i not in index]]
 
+        data = np.where(data < 0, 0, data)  # if there exists negative term due to interpolation 
         return data, data_dict
 
     def _interpolate(self, df, feats, inter_params):
