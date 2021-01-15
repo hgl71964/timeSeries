@@ -47,7 +47,7 @@ def xgb_CV(full_df: DataFrame,
         feval=None, 
         early_stopping_rounds=None,
         verbose_eval=None, 
-        callbacks = None,
+        callbacks=None,
         ) -> Booster:
 
     if not isinstance(full_df, DataFrame):
