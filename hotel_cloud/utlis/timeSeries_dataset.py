@@ -118,25 +118,17 @@ class timeSeries_data:
         df["day_of_year"] = day_of_year
         return df
 
-    def make_lag_feature(self, 
-                        df, 
+    def train_test_dates(self, 
                         labels: np.ndarray,  # outcome of clustering 
                         data_dict: dict,
-                        preserved_col: List[str], 
-                        target: str, 
                         test_size: float = 0.2, 
                         group_num: int = 0,                    
-                        history: int = 100, 
-                        lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
-
                         ):
-        """
-        make df based on their labels
-        """
-        features = [i for i in preserved_col if i != target]  # list of features
 
         all_indices = np.where(labels==group_num)[0].flatten()
-        test_size = int(len(all_indices)*0.2)
+
+        n = len(all_indices)
+        test_size = int(n * 0.2)
 
         test_indices = np.random.choice(all_indices, test_size, replace=False)
         train_indices = [i for i in all_indices if i not in test_indices]
@@ -145,22 +137,11 @@ class timeSeries_data:
         for i, key in enumerate(test_indices):
             test_dates[i] = data_dict[int(key)]
 
-        df_list = [None] * len(train_indices)
-        for i, index in enumerate(train_indices):
-            date = data_dict[index]
+        train_dates = [None] * int(n - test_size)
+        for i, key in enumerate(train_indices):
+            train_dates[i] = data_dict[int(key)] 
+        return train_dates, test_dates
 
-            s_df = df[(df["staydate"] == date)].groupby("lead_in")\
-                        .sum().reset_index().drop(columns=["lead_in"])\
-                                            .filter(preserved_col)
-            s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
-            s_df = s_df.iloc[:history]
-            s_df = s_df.drop(columns = features)  # drop no lag features
-            s_df = self._add_temporal_info(s_df, date)
-            s_df = s_df.dropna()  # remove row has NA
-            df_list[i] = s_df
-
-        # print(f"{len(selected_index)} staydate in total")
-        return pd.concat(df_list, axis=0, ignore_index=True), test_dates
 
     def make_lag_from_dates(self, 
                         df, 
