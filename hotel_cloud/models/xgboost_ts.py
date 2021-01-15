@@ -28,7 +28,10 @@ def xgb_train(train_df: DataFrame,
     if "max_depth" not in param:
         param.update({"max_depth":6})
     if "eta" not in param:
-        param.update({"eta":6})
+        param.update({"eta":1e-1})
+    if "silent" not in param:
+        param.update({"silent":1})
+
 
     watchlist = [(dtest, 'eval'), (dtrain, 'train')]
 
