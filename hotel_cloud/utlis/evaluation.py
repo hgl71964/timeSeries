@@ -104,9 +104,9 @@ class forecast_metric:
 
         soft_dtw = SoftDTW()
         if isinstance(x, np.ndarray):
-            return soft_dtw(from_numpy(x), from_numpy(y))
+            return soft_dtw(from_numpy(x).flatten().unsqueeze(1), from_numpy(y).flatten().unsqueeze(1))
         elif isinstance(x, Tensor):
-            return soft_dtw(x.flatten(), y.flatten())
+            return soft_dtw(x.flatten().unsqueeze(1), y.flatten().unsqueeze(1))
         else:
             raise TypeError("wrong data type")
 
