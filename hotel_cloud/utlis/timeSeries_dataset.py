@@ -36,7 +36,7 @@ class timeSeries_data:
 
         return data
 
-    def cleansing(self, df, history: int = 100, filter_all_zero=True, **kwargs):
+    def cleansing(self, df,  history: int = 100, filter_all_zero=True, **kwargs):
         """
         this method handles missing values 
 
@@ -44,7 +44,7 @@ class timeSeries_data:
             data: np.ndarray; each row is a booking curve for a staydate
             data_dict: dict; index -> staydate
         """
-        interpolate_feat, interpolate_param = kwargs.get("interpolate_feat", []), \
+        interpolate_col, interpolate_param = kwargs.get("interpolate_col", []), \
                                         kwargs.get("interpolate_param", ("spline", 3))
 
         start_date, end_data = datetime.datetime(self.year, 1, 1, 0, 0), datetime.datetime(self.year+1, 1, 1, 0, 0)
@@ -64,7 +64,7 @@ class timeSeries_data:
             data_dict[i] = full_date
 
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
-                                                        interpolate_feat, interpolate_param)
+                                        interpolate_col, interpolate_param)
 
             d = s_df["rooms_all"].to_numpy()
 
@@ -92,7 +92,8 @@ class timeSeries_data:
 
         inter_method, inter_order = inter_params
         for feat in feats:  # interpolate 0 for all feats in the list
-            df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
+            if any(df[feat].iloc[:20].eq(0)):  # only iterpolate if the last 20 dates contain 0 
+                df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
         return df
 
 
