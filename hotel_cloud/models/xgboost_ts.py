@@ -23,10 +23,10 @@ def xgb_train(train_df: DataFrame,
         raise TypeError("must provide pf")
 
     # make core data structure
-    dtrain = DMatrix(train_df, train_df[target])
+    dtrain = DMatrix(train_df, train_df[target], feature_names=train_df.columns)
 
     if test_df is not None:
-        dtest = DMatrix(test_df, test_df[target])
+        dtest = DMatrix(test_df, test_df[target], feature_names=test_df.columns)
         watchlist = [(dtest, 'eval'), (dtrain, 'train')]
     else:
         watchlist = [(dtrain, 'train')]
