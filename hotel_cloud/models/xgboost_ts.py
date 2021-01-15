@@ -1,5 +1,6 @@
 from xgboost import train
 from xgboost import Booster
+from xgboost import DMatrix
 from pandas import DataFrame
 
 """
@@ -12,7 +13,7 @@ def xgb_train(train_df: DataFrame,
         target: str, 
         param: dict,
         n_estimators: int = 10,  # num_boost_round
-        ):
+        ) -> Booster:
     """
     list of possible params: https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
     Return:
@@ -22,10 +23,10 @@ def xgb_train(train_df: DataFrame,
         raise TypeError("must provide pf")
 
     # make core data structure
-    dtrain = xgb.DMatrix(train_df, train_df[target])
+    dtrain = DMatrix(train_df, train_df[target])
 
     if test_df is not None:
-        dtest = xgb.DMatrix(test_df, test_df[target])
+        dtest = DMatrix(test_df, test_df[target])
         watchlist = [(dtest, 'eval'), (dtrain, 'train')]
     else:
         watchlist = [(dtrain, 'train')]
@@ -36,5 +37,5 @@ def xgb_train(train_df: DataFrame,
     if "eta" not in param:
         param.update({"eta":1e-1})
 
-    return xgb.train(param, dtrain, n_estimators, watchlist)
+    return train(param, dtrain, n_estimators, watchlist)
 
