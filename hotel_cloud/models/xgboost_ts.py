@@ -30,6 +30,7 @@ def xgb_train(train_df: DataFrame,
         dtest = DMatrix(test_df[feats], label=test_df[target])
         watchlist = [(dtest, 'eval'), (dtrain, 'train')]
     else:
+        dtest = None
         watchlist = [(dtrain, 'train')]
 
     # make params
@@ -38,5 +39,5 @@ def xgb_train(train_df: DataFrame,
     if "eta" not in param:
         param.update({"eta":1e-1})
 
-    return train(param, dtrain, n_estimators, watchlist)
+    return train(param, dtrain, n_estimators, watchlist), dtrain, dtest
 
