@@ -35,8 +35,6 @@ def xgb_train(train_df: DataFrame,
         param.update({"max_depth":6})
     if "eta" not in param:
         param.update({"eta":1e-1})
-    if "silent" not in param:
-        param.update({"silent":1})
 
     return xgb.train(param, dtrain, n_estimators, watchlist)
 
