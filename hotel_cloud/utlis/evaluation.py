@@ -113,7 +113,10 @@ class forecast_metric:
     @staticmethod
     def mse(x, y):
         if isinstance(x, Series):
-            x, y = x.to_numpy() y.to_numpy()
+            x = x.to_numpy()
+        if isinstance(y, Series):
+            y = y.to_numpy()
 
+        assert type(x) is type(y)
         assert (x[0] > x[-1] and y[0] > y[-1])  # check both flipped 
         return ((x-y)**2).mean()
