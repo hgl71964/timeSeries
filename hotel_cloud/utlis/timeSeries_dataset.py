@@ -172,6 +172,7 @@ class timeSeries_data:
 
         """make lag feature for a single staydate"""
         features = [i for i in preserved_col if i != target]  # list of features
+        df_list = [None] * len(dates)
 
         for i, date in enumerate(dates):
 
@@ -184,4 +185,4 @@ class timeSeries_data:
             s_df = s_df.dropna()  # remove row has NA
             df_list[i] = s_df
 
-        return 
+        return pd.concat(df_list, axis=0, ignore_index=True)
