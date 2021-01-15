@@ -160,7 +160,7 @@ class timeSeries_data:
         # print(f"{len(selected_index)} staydate in total")
         return pd.concat(df_list, axis=0, ignore_index=True), test_dates
 
-   def make_lag_from_dates(self, 
+    def make_lag_from_dates(self, 
                         df, 
                         dates: List[str], 
                         preserved_col: List[str], 
@@ -168,7 +168,6 @@ class timeSeries_data:
                         history: int = 100, 
                         lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
                         ):
-
 
         """make lag feature for a single staydate"""
         features = [i for i in preserved_col if i != target]  # list of features
