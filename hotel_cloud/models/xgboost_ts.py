@@ -50,4 +50,6 @@ def xgb_CV(full_df: DataFrame,
     feats = [i for i in train_df.columns if i != target]
     dtrain = DMatrix(full_df[feats], label=full_df[target])
 
-    return cv(param, dtrain, n_estimators)
+    return cv(param, dtrain, num_boost_round=n_estimators, nfold=3,
+                metrics=(), obj=None, feval=None, early_stopping_rounds=None,
+                verbose_eval=None, callbacks = None)
