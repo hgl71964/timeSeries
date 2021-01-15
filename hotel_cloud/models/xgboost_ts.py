@@ -8,7 +8,7 @@ model Booster; train via xgb.train
 """
 
 def xgb_train(train_df: DataFrame, 
-        test_df: DataFrame = None, 
+        test_df: DataFrame, 
         target: str, 
         param: dict,
         n_estimators: int = 10,  # num_boost_round
