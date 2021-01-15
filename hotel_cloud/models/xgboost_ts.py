@@ -50,15 +50,15 @@ def xgb_CV(full_df: DataFrame,
         callbacks = None,
         ) -> Booster:
 
-    if not isinstance(train_df, DataFrame):
+    if not isinstance(full_df, DataFrame):
         raise TypeError("must provide pf")
     
     # make core data structure
-    feats = [i for i in train_df.columns if i != target]
-    dtrain = DMatrix(full_df[feats], label=full_df[target])
+    feats = [i for i in full_df.columns if i != target]
+    dcv = DMatrix(full_df[feats], label=full_df[target])
 
     # metric = eval_metric 'User can add multiple evaluation metrics' 
-    return cv(param, dtrain, num_boost_round=n_estimators, nfold=nfold,
+    return cv(param, dcv, num_boost_round=n_estimators, nfold=nfold,
                 metrics=metrics, obj=obj, feval=feval, 
                 early_stopping_rounds=early_stopping_rounds,
                 verbose_eval=verbose_eval, callbacks=callbacks)
