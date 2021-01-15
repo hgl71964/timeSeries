@@ -21,12 +21,13 @@ def xgb_train(train_df: DataFrame,
     """
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
-
+    
     # make core data structure
-    dtrain = DMatrix(train_df, train_df[target], feature_names=train_df.columns)
+    feats = [i for i in train_df.columns if i != target]
+    dtrain = DMatrix(train_df[feats], label=train_df[target])
 
     if test_df is not None:
-        dtest = DMatrix(test_df, test_df[target], feature_names=test_df.columns)
+        dtest = DMatrix(test_df[feats], label=test_df[target])
         watchlist = [(dtest, 'eval'), (dtrain, 'train')]
     else:
         watchlist = [(dtrain, 'train')]
