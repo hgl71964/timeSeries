@@ -3,6 +3,7 @@ from xgboost import Booster
 from xgboost import DMatrix
 from pandas import DataFrame
 from xgboost import cv
+from sklearn.model_selection import KFold
 
 
 """

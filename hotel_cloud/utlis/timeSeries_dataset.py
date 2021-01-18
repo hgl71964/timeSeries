@@ -143,31 +143,6 @@ class timeSeries_data:
             train_dates[i] = data_dict[int(key)] 
         return train_dates, test_dates
 
-    def k_fold_dates(self, 
-                    labels: np.ndarray,  # outcome of clustering 
-                    data_dict: dict,
-                    test_size: float = 0.2, 
-                    group_num: int = 0,                    
-                    nfoldd: int = 3,
-                    ):
-
-        all_indices = np.where(labels==group_num)[0].flatten()
-
-        n = len(all_indices)
-        test_size = int(n * 0.2)
-
-        test_indices = np.random.choice(all_indices, test_size, replace=False)
-        train_indices = [i for i in all_indices if i not in test_indices]
-
-        test_dates=[None] * test_size
-        for i, key in enumerate(test_indices):
-            test_dates[i] = data_dict[int(key)]
-
-        train_dates = [None] * int(n - test_size)
-        for i, key in enumerate(train_indices):
-            train_dates[i] = data_dict[int(key)] 
-        return train_dates, test_dates
-
 
     def make_lag_from_dates(self, 
                         df, 
