@@ -36,7 +36,7 @@ class timeSeries_data:
 
         return data
 
-    def cleansing(self, df,  history: int = 100, filter_all_zero=True, **kwargs):
+    def cleansing(self, df, target: str, history: int = 100, filter_all_zero=True, **kwargs):
         """
         this method handles missing values 
 
@@ -66,8 +66,10 @@ class timeSeries_data:
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
                                         interpolate_col, interpolate_param)
 
-            d = s_df["rooms_all"].to_numpy()
+            # TODO: check this inplace modification of target
+            df[target] = s_df[target]
 
+            d = s_df[target].to_numpy()
             if len(d) >= history:
                 data[i,:] = np.flip(d[:history])
             else:
