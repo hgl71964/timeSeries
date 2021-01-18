@@ -74,11 +74,12 @@ def xgb_cv(full_df: DataFrame,
             ivd_test_df = ts.make_lag_from_dates(full_df, test_date, preserved_cols,\
                                          target, history,lag_bound, **kwargs)
             
-            # TODO interpolate target
+            break
+        
+        break
 
 
-
-    return None
+    return ivd_test_df
 
 
 

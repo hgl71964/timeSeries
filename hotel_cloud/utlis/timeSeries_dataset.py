@@ -173,8 +173,10 @@ class timeSeries_data:
                                             .filter(preserved_col)
             s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
             s_df = s_df.iloc[:history]
-            s_df = self._interpolate(s_df, interpolate_col, interpolate_param)  # interpolate cols
             s_df = s_df.drop(columns = features)  # drop no lag features
+
+            # interpolate cols
+            s_df = self._interpolate(s_df, interpolate_col, interpolate_param)  
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
             df_list[i] = s_df
