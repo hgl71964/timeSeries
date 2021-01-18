@@ -4,6 +4,7 @@ from xgboost import DMatrix
 from pandas import DataFrame
 from xgboost import cv
 
+
 """
 low level interface to XGboost
 model Booster; train via xgb.train
@@ -37,6 +38,25 @@ def xgb_train(train_df: DataFrame,
     return train(param, dtrain, n_estimators, watchlist)
 
 
+def CV(full_df: DataFrame, 
+        data_dict: dict,  # index -> date
+        target: str, 
+        param: dict,
+        n_estimators: int = 10,  # num_boost_round
+        nfold=3, 
+        make_folds: callable = lambda x: None,  # return list[list[str]]
+        make_lag_from_dates: callable = lambda x: None,  # make lag feature given list of dates
+        ):
+    
+    folds = make_folds(nfold)  # List[List[str]]
+
+
+    
+
+    return None
+
+
+
 def xgb_CV(full_df: DataFrame, 
         target: str, 
         param: dict,
@@ -50,6 +70,10 @@ def xgb_CV(full_df: DataFrame,
         callbacks=None,
         ) -> Booster:
 
+    """
+    this does not preserve sequential property
+    """
+
     if not isinstance(full_df, DataFrame):
         raise TypeError("must provide pf")
     
@@ -62,3 +86,4 @@ def xgb_CV(full_df: DataFrame,
                 metrics=metrics, obj=obj, feval=feval, 
                 early_stopping_rounds=early_stopping_rounds,
                 verbose_eval=verbose_eval, callbacks=callbacks)
+    
