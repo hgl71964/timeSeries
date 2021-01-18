@@ -97,7 +97,11 @@ class forecast_metric:
         if isinstance(y, Series):
             y = y.to_numpy()
 
-        assert type(x) is type(y)
+        assert type(x) is type(y)  # check typing 
+
+        #  softDTW must preserve sequential property 
+        assert (x[0] > x[-1] and y[0] > y[-1]) or \
+                (x[0]< x[-1] and y[0] < y[-1])
         return soft_dtw(x, y)
 
     @staticmethod
