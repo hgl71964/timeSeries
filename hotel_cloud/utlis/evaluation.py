@@ -100,10 +100,9 @@ class forecast_metric:
         assert type(x) is type(y)  # check typing 
 
         #  softDTW must preserve sequential property 
-        if not (x[0] > x[-1] and y[0] > y[-1]) or (x[0]< x[-1] and y[0] < y[-1]):
-            print(x)
-            print(y)
-            
+        assert (x[0] > x[-1] and y[0] > y[-1]) or (x[0]< x[-1] and y[0] < y[-1]), \
+                f"\n x: {x} \n y: {y}"
+
         return soft_dtw(x, y)
 
     @staticmethod
@@ -115,7 +114,6 @@ class forecast_metric:
             y = y.to_numpy()
 
         assert type(x) is type(y)
-        assert (x[0] > x[-1] and y[0] > y[-1])  # check both flipped 
         return ((x-y)**2).mean()
     
     @staticmethod
