@@ -91,6 +91,7 @@ class timeSeries_data:
         if not feats:
             return df
 
+        # TODO interpolate logic can be improved 
         inter_method, inter_order = inter_params
         for feat in feats:  # interpolate 0 for all feats in the list
             if any(df[feat].iloc[:20].eq(0)):  # only iterpolate if the last 20 dates contain 0 
@@ -166,9 +167,9 @@ class timeSeries_data:
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
                         .sum().reset_index().drop(columns=["lead_in"])\
                                             .filter(preserved_col)
-            s_df = s_df._interpolate(s_df, interpolate_col, interpolate_param)
             s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
             s_df = s_df.iloc[:history]
+            s_df = self._interpolate(s_df, interpolate_col, interpolate_param)  # interpolate cols
             s_df = s_df.drop(columns = features)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
