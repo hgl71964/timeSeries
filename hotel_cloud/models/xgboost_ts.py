@@ -50,6 +50,7 @@ def xgb_cv(full_df: DataFrame,
         target: str, 
         history: int, 
         lag_bound: tuple, 
+        **kwargs,
         ):
     """
     hand-made cross-validation
@@ -61,11 +62,21 @@ def xgb_cv(full_df: DataFrame,
         train_dates, test_dates = [data_dict[j] for j in train_keys], \
                                     [data_dict[i] for i in test_keys]
         train_df = ts.make_lag_from_dates(full_df, train_dates, preserved_cols, \
-                                        target, history, lag_bound)
+                                        target, history, lag_bound, **kwargs)
         test_df = ts.make_lag_from_dates(full_df, test_dates, preserved_cols,\
-                                         target, history,lag_bound)
+                                         target, history,lag_bound, **kwargs)
 
+        """here test_df is added to watchlist"""
         bst = xgb_train(train_df, test_df, target, param, n_estimators)
+
+        """apply metric"""
+        for i, test_date in enumerate(test_dates):
+            ivd_test_df = ts.make_lag_from_dates(full_df, test_date, preserved_cols,\
+                                         target, history,lag_bound, **kwargs)
+            
+            # TODO interpolate target
+
+
 
     return None
 
