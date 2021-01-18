@@ -15,4 +15,8 @@ def k_mean_model_selection(data, n_possible_cluster: int = 7, **kwargs):
     for num in range(2, n_possible_cluster):
         labels = ts_k_means(data, num, **kwargs)
 
+        # TODO add inertia...
+
+        
+
     return None
