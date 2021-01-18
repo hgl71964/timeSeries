@@ -40,7 +40,7 @@ def xgb_train(train_df: DataFrame,
     return train(param, dtrain, n_estimators, watchlist)
 
 
-def xgb_cv(full_df: DataFrame, 
+def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         data_dict: dict,  # index -> date
         param: dict,
         n_estimators: int,  # num_boost_round
@@ -63,9 +63,9 @@ def xgb_cv(full_df: DataFrame,
 
         train_dates, test_dates = [data_dict[j] for j in train_keys], \
                                     [data_dict[i] for i in test_keys]
-        train_df = ts.make_lag_from_dates(full_df, train_dates, preserved_cols, \
+        train_df = ts.make_lag_from_dates(df, train_dates, preserved_cols, \
                                         target, history, lag_bound)
-        test_df = ts.make_lag_from_dates(full_df, test_dates, preserved_cols,\
+        test_df = ts.make_lag_from_dates(df, test_dates, preserved_cols,\
                                          target, history,lag_bound)
 
         """here test_df is added to watchlist"""
@@ -76,7 +76,7 @@ def xgb_cv(full_df: DataFrame,
 
         temp_softdtw, temp_mse = [], []
         for test_date in test_dates:
-            ivd_test_df = ts.make_lag_from_dates(full_df, [test_date], preserved_cols,\
+            ivd_test_df = ts.make_lag_from_dates(df, [test_date], preserved_cols,\
                                          target, history,lag_bound)
             
             preds = bst.predict(DMatrix(ivd_test_df[feats]))

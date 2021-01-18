@@ -58,6 +58,7 @@ class timeSeries_data:
             dates[i] = start_date.strftime("%m-%d")
 
         data_dict = {}
+        clean_df = [None] * num_days 
         for i in range(num_days):
 
             full_date = str(self.year) +"-" + dates[i] 
@@ -65,9 +66,7 @@ class timeSeries_data:
 
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
                                         interpolate_col, interpolate_param)
-
-            # TODO: check this inplace modification of target
-            df[target] = s_df[target]
+            clean_df[i] = s_df  # record interpolated df
 
             d = s_df[target].to_numpy()
             if len(d) >= history:
@@ -87,7 +86,7 @@ class timeSeries_data:
             data = data[[i for i in range(365) if i not in index]]
 
         data = np.where(data < 0, 0, data)  # if there exists negative term due to interpolation 
-        return data, data_dict
+        return data, data_dict, pd.concat(clean_df, axis=0)
 
     def _interpolate(self, df, feats, inter_params):
         if not feats:
