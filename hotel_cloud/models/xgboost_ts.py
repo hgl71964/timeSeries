@@ -88,10 +88,8 @@ def xgb_cv(full_df: DataFrame,
             temp_softdtw.append(soft_dtw_res)
             temp_mse.append(mse_res)
 
-        softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), \
-                                                        sum(temp_softdtw)/len(temp_softdtw)], \
-                                                        [min(temp_mse), max(temp_mse), \
-                                                        sum(temp_mse)/len(temp_mse)]
+        softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
+                                                        [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
     # [min, max, mean]
     return softdtw_collector, mse_collector
 
