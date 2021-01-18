@@ -89,7 +89,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
 
         softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
                                                         [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
-    # [min, max, mean]
+    # [[min, max, mean], ...]
     return softdtw_collector, mse_collector
 
 
