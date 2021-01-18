@@ -45,8 +45,8 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         param: dict,
         n_estimators: int,  # num_boost_round
         nfold: int, 
-        ts: object,  #  a timeSeries_data object
-        metric: object,  # for evaluation
+        ts: object,  #  timeSeries_data object
+        metric: object,  # metric object 
         preserved_cols: List[str], 
         target: str, 
         history: int, 
