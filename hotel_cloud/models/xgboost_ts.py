@@ -45,7 +45,8 @@ def xgb_cv(full_df: DataFrame,
         param: dict,
         n_estimators: int,  # num_boost_round
         nfold: int, 
-        ts: object,  # a timeSeries_data object
+        ts: object,  #  a timeSeries_data object
+        metric: object,  # for evaluation
         preserved_cols: List[str], 
         target: str, 
         history: int, 
@@ -57,7 +58,9 @@ def xgb_cv(full_df: DataFrame,
     """
     kf = KFold(n_splits=nfold, shuffle=False)
 
-    for train_keys, test_keys in kf.split(list(data_dict.keys())):  # CV
+    softdtw_collector, mse_collector = [[None]*3]*nfold, [[None]*3]*nfold  # min, max, mean
+
+    for index, (train_keys, test_keys) in enumerate(kf.split(list(data_dict.keys()))):  # CV
 
         train_dates, test_dates = [data_dict[j] for j in train_keys], \
                                     [data_dict[i] for i in test_keys]
@@ -70,16 +73,27 @@ def xgb_cv(full_df: DataFrame,
         bst = xgb_train(train_df, test_df, target, param, n_estimators)
 
         """apply metric"""
-        for i, test_date in enumerate(test_dates):
-            ivd_test_df = ts.make_lag_from_dates(full_df, test_date, preserved_cols,\
+        feats = [i for i in train_df.columns if i != target]
+
+        temp_softdtw, temp_mse = [], []
+        for test_date in test_dates:
+            ivd_test_df = ts.make_lag_from_dates(full_df, [test_date], preserved_cols,\
                                          target, history,lag_bound, **kwargs)
             
-            break
-        
-        break
+            preds = bst.predict(DMatrix(ivd_test_df[feats]))
+            
+            soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])
+            mse_res = metric.mse(preds, ivd_test_df[target])
 
+            temp_softdtw.append(soft_dtw_res)
+            temp_mse.append(mse_res)
 
-    return ivd_test_df
+        softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), \
+                                                        sum(temp_softdtw)/len(temp_softdtw)], \
+                                                        [min(temp_mse), max(temp_mse), \
+                                                        sum(temp_mse)/len(temp_mse)]
+    # [min, max, mean]
+    return softdtw_collector, mse_collector
 
 
 
