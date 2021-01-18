@@ -156,15 +156,11 @@ class timeSeries_data:
                         target: str,         
                         history: int = 100, 
                         lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
-                        **kwargs, 
                         ):
 
         """make lag feature for a single staydate"""
         features = [i for i in preserved_col if i != target]  # list of features
         df_list = [None] * len(dates)
-
-        interpolate_col, interpolate_param = kwargs.get("interpolate_col", []), \
-                                        kwargs.get("interpolate_param", ("spline", 3))
 
         for i, date in enumerate(dates):
 
@@ -174,9 +170,6 @@ class timeSeries_data:
             s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
             s_df = s_df.iloc[:history]
             s_df = s_df.drop(columns = features)  # drop no lag features
-
-            # interpolate cols
-            s_df = self._interpolate(s_df, interpolate_col, interpolate_param)  
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
             df_list[i] = s_df
