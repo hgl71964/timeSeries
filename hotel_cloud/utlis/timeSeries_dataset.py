@@ -93,6 +93,10 @@ class timeSeries_data:
 
         # TODO interpolate logic can be improved 
         inter_method, inter_order = inter_params
+
+        if isinstance(feats, str):  # prevent keyError
+            feats = [feats]
+        
         for feat in feats:  # interpolate 0 for all feats in the list
             if any(df[feat].iloc[:20].eq(0)):  # only iterpolate if the last 20 dates contain 0 
                 df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
