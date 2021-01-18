@@ -66,6 +66,7 @@ class timeSeries_data:
 
             s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
                                         interpolate_col, interpolate_param)
+            s_df["staydate"] = full_date
             clean_df[i] = s_df  # record interpolated df
 
             d = s_df[target].to_numpy()
