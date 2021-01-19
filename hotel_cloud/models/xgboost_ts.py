@@ -111,7 +111,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
     return DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
             DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
-def log_xgbCV(index: int, params: dict, *args):
+def log_CV_results(index: int, params: dict, *args):
 
     if "name" not in params:
         params["name"] = "xgboost"

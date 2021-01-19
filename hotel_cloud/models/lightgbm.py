@@ -16,6 +16,7 @@ def lgb_train(train_df: DataFrame,
         param: dict,
         cat_list: List[str],  # categorical feature names
         n_estimators: int = 10,  # num_boost_round
+        **kwargs,
         ) -> Booster:
     """
     list of possible params: https://lightgbm.readthedocs.io/en/latest/Parameters.html
@@ -25,7 +26,7 @@ def lgb_train(train_df: DataFrame,
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
     
-    # make core data structure TODO make categorical label
+    # TODO make categorical label
     feats = [i for i in train_df.columns if i != target]
     dtrain = Dataset(train_df[feats], label=train_df[target])
 
@@ -42,5 +43,6 @@ def lgb_train(train_df: DataFrame,
     if "eta" not in param:
         param.update({"eta":1e-1})
 
-    return train(param, dtrain, n_estimators, watchlist, categorical_feature=cat_list)
+    return train(param, dtrain, n_estimators, watchlist, \
+                    categorical_feature=cat_list)
 
