@@ -17,6 +17,7 @@ def xgb_train(train_df: DataFrame,
         target: str, 
         param: dict,
         n_estimators: int = 10,  # num_boost_round
+        **kwargs, 
         ) -> Booster:
     """
     list of possible params: https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
@@ -36,8 +37,13 @@ def xgb_train(train_df: DataFrame,
     else:
         dtest = None
         watchlist = [(dtrain, 'train')]
+    
+    # get param from kwarg
+    early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
 
-    return train(param, dtrain, n_estimators, watchlist)
+    return train(param, dtrain, n_estimators, watchlist, \
+            early_stopping_rounds=early_stopping_rounds, \
+            )
 
 
 def xgb_cv(df: DataFrame,  # df contains all staydates that we want
@@ -53,6 +59,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         target: str, 
         history: int, 
         lag_bound: tuple, 
+        **kwargs, 
         ):
     """
     hand-made cross-validation
