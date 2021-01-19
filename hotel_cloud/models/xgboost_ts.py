@@ -57,9 +57,12 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
     """
     hand-made cross-validation
     """
-    kf = KFold(n_splits=nfold, shuffle=False)
-    all_indices = np.where(labels==group_num)[0].flatten()
+    if isinstance(labels, list):
+        all_indices = np.where(np.array(labels)==group_num)[0].flatten()
+    else:
+        all_indices = np.where(labels==group_num)[0].flatten()
 
+    kf = KFold(n_splits=nfold, shuffle=False)
     softdtw_collector, mse_collector = [[None]*3]*nfold, [[None]*3]*nfold  # min, max, mean
 
     for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
