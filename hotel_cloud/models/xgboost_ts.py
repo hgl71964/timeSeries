@@ -120,7 +120,7 @@ def log_xgbCV(index: int, params: dict, *args):
                 glob(f"./data/log/metric_{index}.csv")
     
     if file_present:
-        raise FileExistsError("file exists!")
+        raise FileExistsError(f"file No. {index} exists!")
     else:
         DataFrame(params, index=[0]).to_csv(f"./data/log/param_{index}.csv")  
         concat(args, axis=1).to_csv(f"./data/log/metric_{index}.csv")
