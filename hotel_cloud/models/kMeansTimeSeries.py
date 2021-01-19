@@ -10,13 +10,15 @@ def Kmeans_predict(data, n_cluster, **kwargs):
     km = TimeSeriesKMeans(n_clusters=n_cluster,max_iter = epochs, metric=metric)
     return km, km.fit_predict(data)  # model, labels
 
-def k_mean_model_selection(data, n_possible_cluster: int = 7, **kwargs):
+def k_mean_model_selection(data, n_possible_cluster: int = 7, verbose=True, **kwargs):
 
     losses = []
     for num in range(2, n_possible_cluster+1):
         km, _ = Kmeans_predict(data, num, **kwargs)
         loss = km.inertia_
         losses.append(loss)
+        if verbose:
+            print(f"n_cluster {num}, inertia: {loss}")
 
     indice = [i for i in range(2, n_possible_cluster+1)]
 
