@@ -98,39 +98,5 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
                                                         [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
 
-
     return DataFrame(softdtw_collector, columns=["min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-            DataFrame(mse_collector, columns=["min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))]),
-
-
-
-# def xgb_CV(full_df: DataFrame, 
-#         target: str, 
-#         param: dict,
-#         n_estimators: int = 10,  # num_boost_round
-#         nfold=3, 
-#         metrics=(),
-#         obj=None,
-#         feval=None, 
-#         early_stopping_rounds=None,
-#         verbose_eval=None, 
-#         callbacks=None,
-#         ) -> Booster:
-# 
-#     """
-#     this does not preserve sequential property
-#     """
-# 
-#     if not isinstance(full_df, DataFrame):
-#         raise TypeError("must provide pf")
-#     
-#     # make core data structure
-#     feats = [i for i in full_df.columns if i != target]
-#     dcv = DMatrix(full_df[feats], label=full_df[target])
-# 
-#     # metric = eval_metric 'User can add multiple evaluation metrics' 
-#     return cv(param, dcv, num_boost_round=n_estimators, nfold=nfold,
-#                 metrics=metrics, obj=obj, feval=feval, 
-#                 early_stopping_rounds=early_stopping_rounds,
-#                 verbose_eval=verbose_eval, callbacks=callbacks)
-    
+            DataFrame(mse_collector, columns=["min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
