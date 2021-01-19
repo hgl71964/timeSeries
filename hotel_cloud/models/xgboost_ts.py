@@ -2,10 +2,13 @@ from xgboost import train
 from xgboost import Booster
 from xgboost import DMatrix
 from pandas import DataFrame
+from pandas import concat
 from xgboost import cv
 from sklearn.model_selection import KFold
 from typing import List
 import numpy as np
+from glob2 import glob
+
 
 """
 low level interface to XGboost
@@ -108,15 +111,18 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
     return DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
             DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
-def log_xgb(index: int, params: dict, *args):
+def log_xgbCV(index: int, params: dict, *args):
 
     if "name" not in params:
         params["name"] = "xgboost"
 
-    param_df = DataFrame(params, index=[0])  # from dict to DataFrame
-
-    softdtw_df, mse_df = args  # assume there is only 2
+    file_present = glob(f"./data/log/param_{index}.csv") or \
+                glob(f"./data/log/metric_{index}.csv")
     
-
-    param_df.to_csv(f"./data/log/param_{index}.csv") 
+    if file_present:
+        raise FileExistsError("file exists!")
+    else:
+        DataFrame(params, index=[0]).to_csv(f"./data/log/param_{index}.csv")  
+        concat(args, axis=1).to_csv(f"./data/log/metric_{index}.csv")
+        print("save complete")
     return None
