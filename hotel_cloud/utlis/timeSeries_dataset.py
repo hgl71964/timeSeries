@@ -75,7 +75,7 @@ class timeSeries_data:
             else:
                 data[i,:] = np.zeros((history, ))
 
-        if filter_all_zero:  # if there are staydates that have all 0 booking curve
+        if filter_all_zero:  # if there are staydates with all 0 booking curve
             index = []
             for i in range(data.shape[0]):
                 if np.all(data[i]==0):
