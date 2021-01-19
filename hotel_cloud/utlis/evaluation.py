@@ -1,12 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.random import default_rng
-from tslearn.metrics import dtw, dtw_path
-# from tslearn.barycenters import dtw_barycenter_averaging
+from tslearn.metrics import dtw
 from numpy.linalg import norm
 from pandas import Series
 from tslearn.metrics import soft_dtw
-
 
 class cluster_evaluator:
     """
