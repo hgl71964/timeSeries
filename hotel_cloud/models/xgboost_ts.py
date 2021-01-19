@@ -70,7 +70,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         all_indices = np.where(labels==group_num)[0].flatten()
 
     kf = KFold(n_splits=nfold, shuffle=False)
-    softdtw_collector, mse_collector = [[None]*3]*nfold, [[None]*3]*nfold  # min, max, mean
+    softdtw_collector, mse_collector = [[None]*4]*nfold, [[None]*4]*nfold  # [[min, max, mean, name], ...]
 
     for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
 
@@ -84,7 +84,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
                                          target, history,lag_bound)
 
         """here test_df is added to watchlist"""
-        bst = xgb_train(train_df, test_df, target, param, n_estimators)
+        bst = xgb_train(train_df, test_df, target, param, n_estimators, **kwargs)
 
         """apply metric"""
         feats = [i for i in train_df.columns if i != target]
@@ -102,8 +102,17 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
             temp_softdtw.append(soft_dtw_res)
             temp_mse.append(mse_res)
 
-        softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
-                                                        [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
+        softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw), "softdtw"], \
+                                                        [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse), "mse"]
 
-    return DataFrame(softdtw_collector, columns=["min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-            DataFrame(mse_collector, columns=["min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+    return DataFrame(softdtw_collector, columns=["min", "max", "mean", "method"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+            DataFrame(mse_collector, columns=["min", "max", "mean", "method"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+
+    def log_xgb(params, *args):
+
+        if "name" not in params:
+            params["name"] = "xgboost"
+
+        
+
+        return None
