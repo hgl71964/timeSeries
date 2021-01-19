@@ -42,6 +42,8 @@ def xgb_train(train_df: DataFrame,
 
 def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         data_dict: dict,  # index -> date
+        labels: list,
+        group_num: int, 
         param: dict,
         n_estimators: int,  # num_boost_round
         nfold: int, 
@@ -56,13 +58,16 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
     hand-made cross-validation
     """
     kf = KFold(n_splits=nfold, shuffle=False)
+    all_indices = np.where(labels==group_num)[0].flatten()
 
     softdtw_collector, mse_collector = [[None]*3]*nfold, [[None]*3]*nfold  # min, max, mean
 
-    for index, (train_keys, test_keys) in enumerate(kf.split(list(data_dict.keys()))):  # CV
+    for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
 
-        train_dates, test_dates = [data_dict[j] for j in train_keys], \
-                                    [data_dict[i] for i in test_keys]
+        train_indices, test_indices = all_indices[train_keys], all_indices[test_keys]
+
+        train_dates, test_dates = [data_dict[i] for i in train_indices], \
+                                    [data_dict[i] for i in test_indices]
         train_df = ts.make_lag_from_dates(df, train_dates, preserved_cols, \
                                         target, history, lag_bound)
         test_df = ts.make_lag_from_dates(df, test_dates, preserved_cols,\

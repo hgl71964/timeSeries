@@ -18,7 +18,7 @@ def k_mean_model_selection(data, n_possible_cluster: int = 7, verbose=True, **kw
         loss = km.inertia_
         losses.append(loss)
         if verbose:
-            print(f"n_cluster {num}, inertia: {loss}")
+            print(f"n_cluster {num}, inertia: {loss:.2f}")
 
     indice = [i for i in range(2, n_possible_cluster+1)]
 
