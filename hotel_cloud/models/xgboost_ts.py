@@ -105,14 +105,18 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw), "softdtw"], \
                                                         [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse), "mse"]
 
-    return DataFrame(softdtw_collector, columns=["min", "max", "mean", "method"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-            DataFrame(mse_collector, columns=["min", "max", "mean", "method"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+    return DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+            DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
-    def log_xgb(params, *args):
+def log_xgb(index: int, params: dict, *args):
 
-        if "name" not in params:
-            params["name"] = "xgboost"
+    if "name" not in params:
+        params["name"] = "xgboost"
 
-        
+    param_df = DataFrame(params, index=[0])  # from dict to DataFrame
 
-        return None
+    softdtw_df, mse_df = args  # assume there is only 2
+    
+
+    param_df.to_csv(f"./data/log/param_{index}.csv") 
+    return None
