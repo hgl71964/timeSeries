@@ -32,14 +32,14 @@ def lgb_train(train_df: DataFrame,
     if test_df is not None:
         dtest = Dataset(test_df[feats], label=test_df[target], \
                                 reference=dtrain)
+        watchlist = [dtest, dtrain]
     else:
-        dtest = None
-
+        watchlist = [dtrain]
     # make params
     if "verbose" not in param:
         param.update({"verbose":1})
 
-    return train(param, dtrain, n_estimators, valid_sets=dtrain, \
+    return train(param, dtrain, n_estimators, valid_sets=watchlist, \
                     categorical_feature=cat_list, \
                         )
 
