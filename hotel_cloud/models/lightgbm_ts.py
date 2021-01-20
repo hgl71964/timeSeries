@@ -40,8 +40,8 @@ def lgb_train(train_df: DataFrame,
 
     verbose_eval = kwargs.get("verbose_eval", False)
 
-    # print(dtrain.get_feature_name())
-
     return train(param, dtrain, n_estimators, valid_sets=watchlist, \
+                    feature_name=feats, \
+                    categorical_feature=cat_list, \
                     verbose_eval=verbose_eval, )
 
