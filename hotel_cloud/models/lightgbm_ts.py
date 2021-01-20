@@ -26,23 +26,20 @@ def lgb_train(train_df: DataFrame,
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
     
-    # TODO make categorical label
     feats = [i for i in train_df.columns if i != target]
     dtrain = Dataset(train_df[feats], label=train_df[target])
 
     if test_df is not None:
-        dtest = Dataset(test_df[feats], label=test_df[target])
-        watchlist = [(dtest, 'eval'), (dtrain, 'train')]
+        dtest = Dataset(test_df[feats], label=test_df[target], \
+                                reference=dtrain)
     else:
         dtest = None
-        watchlist = [(dtrain, 'train')]
 
     # make params
-    if "max_depth" not in param:
-        param.update({"max_depth":6})
-    if "eta" not in param:
-        param.update({"eta":1e-1})
+    if "verbose" not in param:
+        param.update({"verbose":1})
 
-    return train(param, dtrain, n_estimators, watchlist, \
-                    categorical_feature=cat_list)
+    return train(param, dtrain, n_estimators, valid_sets=dtrain, \
+                    categorical_feature=cat_list, \
+                        )
 
