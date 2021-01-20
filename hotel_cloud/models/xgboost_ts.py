@@ -21,6 +21,7 @@ def xgb_train(train_df: DataFrame,
         test_df: DataFrame, 
         target: str, 
         param: dict,
+        cat_list: List[str], 
         n_estimators: int = 10,  # num_boost_round
         **kwargs, 
         ) -> Booster:
@@ -42,6 +43,8 @@ def xgb_train(train_df: DataFrame,
     else:
         dtest = None
         watchlist = [(dtrain, 'train')]
+
+    # TODO add one hot encoding 
     
     # get param from kwarg
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
@@ -58,6 +61,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         labels: list,
         group_num: int, 
         param: dict,
+        cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
         nfold: int, 
         ts: object,  #  timeSeries_data object
@@ -91,7 +95,8 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
                                          target, history,lag_bound)
 
         """here test_df is added to watchlist"""
-        bst = xgb_train(train_df, test_df, target, param, n_estimators, **kwargs)
+        bst = xgb_train(train_df, test_df, target, param, \
+                        cat_list, n_estimators, **kwargs)
 
         """apply metric"""
         feats = [i for i in train_df.columns if i != target]
