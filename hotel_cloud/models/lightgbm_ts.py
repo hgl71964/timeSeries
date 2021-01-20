@@ -26,7 +26,7 @@ def lgb_train(train_df: DataFrame,
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
     
-    feats = [i for i in train_df.columns if i != target and i not in cat_list]
+    feats = [i for i in train_df.columns if (i != target and i not in cat_list)]
 
     dtrain = Dataset(train_df[feats], label=train_df[target], \
                     feature_name=feats, categorical_feature=cat_list)
