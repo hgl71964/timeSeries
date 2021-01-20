@@ -33,6 +33,10 @@ def xgb_train(train_df: DataFrame,
     
     # make core data structure
     feats = [i for i in train_df.columns if i != target]
+
+    # TODO if cat_list not in train_df then add one-hot encoding
+
+
     dtrain = DMatrix(train_df[feats], label=train_df[target])
 
     if test_df is not None:
@@ -42,7 +46,6 @@ def xgb_train(train_df: DataFrame,
         dtest = None
         watchlist = [(dtrain, 'train')]
 
-    # TODO add one hot encoding 
     
     # get param from kwarg
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
@@ -117,7 +120,6 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
 
     return DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
             DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
-
 
 
 def _one_hot_encoding(df, names: List[str]):
