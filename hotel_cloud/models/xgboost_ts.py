@@ -2,13 +2,11 @@ from xgboost import train
 from xgboost import Booster
 from xgboost import DMatrix
 from pandas import DataFrame
-from pandas import concat
 from pandas import get_dummies
 from xgboost import cv
 from sklearn.model_selection import KFold
 from typing import List
 import numpy as np
-from glob2 import glob
 
 
 
@@ -120,21 +118,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
     return DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
             DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
-def log_CV_results(index: int, params: dict, *args):
 
-    if "name" not in params:
-        params["name"] = "xgboost"
-
-    file_present = glob(f"./data/log/param_{index}.csv") or \
-                glob(f"./data/log/metric_{index}.csv")
-    
-    if file_present:
-        raise FileExistsError(f"file No. {index} exists!")
-    else:
-        DataFrame(params, index=[0]).to_csv(f"./data/log/param_{index}.csv")  
-        concat(args, axis=1).to_csv(f"./data/log/metric_{index}.csv")
-        print("save complete")
-    return None
 
 def _one_hot_encoding(df, names: List[str]):
     """names a list of feature names that need to be one hot encoding"""
