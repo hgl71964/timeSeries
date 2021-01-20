@@ -123,7 +123,7 @@ class timeSeries_data:
         df["month"] = month
         df["day_of_month"] = day_of_month
         df["day_of_week"] = day_of_week
-        df["day_of_year"] = day_of_year
+        # df["day_of_year"] = day_of_year  # this val is unique for every data point in 2019
         return df
 
     def train_test_dates(self, 
