@@ -46,3 +46,8 @@ def lgb_train(train_df: DataFrame,
                     verbose_eval=verbose_eval, \
                     )
 
+# TODO add CV
+
+def lgb_cv():
+
+    return None
