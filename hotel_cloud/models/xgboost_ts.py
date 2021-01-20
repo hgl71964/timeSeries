@@ -3,11 +3,13 @@ from xgboost import Booster
 from xgboost import DMatrix
 from pandas import DataFrame
 from pandas import concat
+from pandas import get_dummies
 from xgboost import cv
 from sklearn.model_selection import KFold
 from typing import List
 import numpy as np
 from glob2 import glob
+
 
 
 """
@@ -126,3 +128,11 @@ def log_CV_results(index: int, params: dict, *args):
         concat(args, axis=1).to_csv(f"./data/log/metric_{index}.csv")
         print("save complete")
     return None
+
+def _one_hot_encoding(df, names: List[str]):
+    """names a list of feature names that need to be one hot encoding"""
+
+    for name in names:
+        df = df.join(get_dummies(df[name], \
+                        prefix=f"{name}")).drop(columns=[name])
+    return df
