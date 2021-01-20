@@ -39,8 +39,10 @@ def lgb_train(train_df: DataFrame,
         watchlist = [dtrain]
 
     verbose_eval = kwargs.get("verbose_eval", False)
+    early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
 
     return train(param, dtrain, n_estimators, valid_sets=watchlist, \
+                    early_stopping_rounds=early_stopping_rounds, \
                     verbose_eval=verbose_eval, \
                     )
 
