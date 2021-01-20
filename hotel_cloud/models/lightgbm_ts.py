@@ -26,7 +26,7 @@ def lgb_train(train_df: DataFrame,
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
     
-    feats = [i for i in train_df.columns if (i != target and i not in cat_list)]
+    feats = [i for i in train_df.columns if i != target]
 
     dtrain = Dataset(train_df[feats], label=train_df[target], \
                     feature_name=feats, categorical_feature=cat_list)
@@ -41,7 +41,7 @@ def lgb_train(train_df: DataFrame,
     verbose_eval = kwargs.get("verbose_eval", False)
 
     return train(param, dtrain, n_estimators, valid_sets=watchlist, \
-                    feature_name=feats, \
-                    categorical_feature=cat_list, \
+                    # feature_name=feats, \
+                    # categorical_feature=cat_list, \
                     verbose_eval=verbose_eval, )
 
