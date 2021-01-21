@@ -122,9 +122,12 @@ class helper:
             elif series["metric"] == "mse":
                 mse_df.append(series)
 
-        df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
-        df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
-        return pd.concat([df1, df2], axis=0)
+        if len(softdtw_df) == 1:  # on the unclustered data
+            return pd.concat(softdtw_df+mse_df, axis=1).T
+        else:
+            df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
+            df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
+            return pd.concat([df1, df2], axis=0)
 
 
 
@@ -144,12 +147,14 @@ class logger:
         if file_present:
             raise FileExistsError(f"file No. {zidx} exists!")
         else:
+            """save params"""
             temp = pd.DataFrame(list(params.items())).T
             header = temp.iloc[0]
             temp = temp[1:]
             temp.columns = header
             pd.DataFrame(temp).to_csv(f"./data/log/{zidx}_param.csv")  
 
+            """save cv logs"""
             if isinstance(args[0], pd.Series):
                 pd.concat(args, axis=1).T.reset_index(drop=True).to_csv(f"./data/log/{zidx}_metric.csv")
             elif isinstance(args[0], pd.DataFrame):
