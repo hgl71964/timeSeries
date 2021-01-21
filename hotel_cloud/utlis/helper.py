@@ -9,7 +9,7 @@ from sklearn.model_selection import KFold
 class helper:
 
     @staticmethod
-    def CV(df: DataFrame,  # df contains all staydates that we want
+    def CV(df: pd.DataFrame,  # df contains all staydates that we want
         data_dict: dict,  # index -> date
         labels: list,  # outcome of clustering
         group_num: int,  # the group of data that we want to use
@@ -72,8 +72,8 @@ class helper:
             softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw), "softdtw"], \
                                                             [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse), "mse"]
 
-        return DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-                DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+        return pd.DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+                pd.DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
 
 class logger:
