@@ -12,13 +12,14 @@ class helper:
     @staticmethod
     def CV(df: DataFrame,  # df contains all staydates that we want
         data_dict: dict,  # index -> date
-        labels: list,
-        group_num: int, 
-        param: dict,
+        labels: list,  # outcome of clustering
+        group_num: int,  # the group of data that we want to use
+        param: dict,  #  for xgboost or lightgbm
         cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
         nfold: int, 
         training_func: callable,  # xgb_train or lgb_train
+        core_data_func: callable,  # Dmatrix or Dataset
         ts: object,  #  timeSeries_data object
         metric: object,  # metric object 
         preserved_cols: List[str], 
