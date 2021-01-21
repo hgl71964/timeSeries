@@ -47,11 +47,9 @@ def lgb_train(train_df: DataFrame,
                     )
 
 def lgb_predict(df,
-                cat_list,
+                cat_list,  # to keep signature the same
                 target, 
                 booster,
                 ):
-
     feats = [i for i in df.columns if i != target]
-    dtest=Dataset(df[feats], feature_name=feats, categorical_feature=cat_list)
-    return booster.predict(dtest)
+    return booster.predict(df[feats])
