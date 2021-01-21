@@ -4,6 +4,7 @@ import datetime
 from typing import List
 from glob2 import glob
 from sklearn.model_selection import KFold
+import os 
 
 
 class helper:
@@ -83,19 +84,21 @@ class logger:
 
         if "name" not in params:
             params["name"] = name  # e.g. xgboost
+        
+        zidx = str(index).zfill(3)  # 3 figs naming
 
-        file_present = glob(f"./data/log/param_{index}.csv") or \
-                    glob(f"./data/log/metric_{index}.csv")
+        file_present = glob(f"./data/log/{zidx}_param.csv") or \
+                    glob(f"./data/log/{zidx}_metric.csv")
         
         if file_present:
-            raise FileExistsError(f"file No. {index} exists!")
+            raise FileExistsError(f"file No. {zidx} exists!")
         else:
             temp = pd.DataFrame(list(params.items())).T
             header = temp.iloc[0]
             temp = temp[1:]
             temp.columns = header
-            pd.DataFrame(temp).to_csv(f"./data/log/param_{index}.csv")  
-            pd.concat(args, axis=0).to_csv(f"./data/log/metric_{index}.csv")
+            pd.DataFrame(temp).to_csv(f"./data/log/{zidx}_param.csv")  
+            pd.concat(args, axis=0).to_csv(f"./data/log/{zidx}_metric.csv")
             print("save complete")
         return None
 
@@ -105,11 +108,19 @@ class logger:
 
 
     @staticmethod
-    def show_all_df(path: str,  # path to the directory  
+    def show_all_df(dir_path: str,  # path to the directory  
                         ):
 
         # TODO open all file (df) and concat the results    
+        files = os.listdir(dir_path)
 
-        logger.show_df()
+        param_prefix = []
+        metric_prefix = []
+        for i, f in enumerate(files):
+            full_path = os.path.join(dir_path, f)
+            pd.read_csv(full_path)
+
+            as
+            logger.show_df()
 
         return None
