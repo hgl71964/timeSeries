@@ -54,6 +54,16 @@ def xgb_train(train_df: DataFrame,
             verbose_eval=verbose_eval, \
             )
 
+def xgb_predict(df: DataFrame,
+                cat_list: List[str], 
+                target: str,
+                booster: object):
+
+    df = _one_hot_encoding(df, cat_list)
+    feats = [i for i in df.columns if i != target]
+    
+    return booster.predict(DMatrix(df[feats]))
+
 
 def _one_hot_encoding(df, names: List[str]):
     """names a list of feature names that need to be one hot encoding"""
