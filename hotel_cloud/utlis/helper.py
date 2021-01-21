@@ -57,6 +57,8 @@ class helper:
 
             """apply metric"""
             temp_softdtw, temp_mse = [], []
+
+            # TODO find worst date
             for test_date in test_dates:
 
                 # TODO record the worst scenario date for visual
@@ -67,7 +69,7 @@ class helper:
                 
                 soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])
                 mse_res = metric.mse(preds, ivd_test_df[target])
-
+                
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
 
@@ -124,4 +126,4 @@ class logger:
             elif "metric" in f:
                 metric_df.append(pd.read_csv(full_path))
 
-        return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0)
+        return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0).reset_index(drop=True)
