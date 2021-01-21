@@ -4,7 +4,6 @@ import datetime
 from typing import List
 from glob2 import glob
 from sklearn.model_selection import KFold
-from pandas import DataFrame
 
 
 class helper:
@@ -91,7 +90,11 @@ class logger:
         if file_present:
             raise FileExistsError(f"file No. {index} exists!")
         else:
-            pd.DataFrame(params, index=[0]).to_csv(f"./data/log/param_{index}.csv")  
+            temp = pd.DataFrame(list(params.items())).T
+            header = temp.iloc[0]
+            temp = temp[1:]
+            temp.columns = header
+            pd.DataFrame(temp).to_csv(f"./data/log/param_{index}.csv")  
             pd.concat(args, axis=0).to_csv(f"./data/log/metric_{index}.csv")
             print("save complete")
         return None
