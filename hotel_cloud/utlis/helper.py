@@ -11,9 +11,10 @@ class helper:
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want
+        name: str, # xgb or lgb
         data_dict: dict,  # index -> date
         labels: list,  # outcome of clustering
-        group_num: int,  # the group of data that we want to use
+        group_num: int,  # if -1 means we use all data
         param: dict,  #  for xgboost or lightgbm
         cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
@@ -37,7 +38,7 @@ class helper:
             all_indices = np.where(labels==group_num)[0].flatten()
 
         kf = KFold(n_splits=nfold, shuffle=False)
-        softdtw_collector, mse_collector = [[None]*4]*nfold, [[None]*4]*nfold  # [[min, max, mean, name], ...]
+        softdtw_collector, mse_collector = [[None]*6]*nfold, [[None]*6]*nfold  # [[name, min, max, mean, metric, group_num], ...]
 
         for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
 
@@ -70,11 +71,11 @@ class helper:
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
 
-            softdtw_collector[index], mse_collector[index] = [min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw), "softdtw"], \
-                                                            [min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse), "mse"]
+            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
+                                                            [name, "mse", group_num, min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
 
-        return pd.DataFrame(softdtw_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-                pd.DataFrame(mse_collector, columns=["min", "max", "mean", "metric"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_num", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+                pd.DataFrame(mse_collector, columns=["name", "metric", "group_num", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
 
 class logger:
