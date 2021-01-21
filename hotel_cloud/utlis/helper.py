@@ -55,8 +55,6 @@ class helper:
                             cat_list, n_estimators, **kwargs)
 
             """apply metric"""
-            feats = [i for i in train_df.columns if i != target]
-
             temp_softdtw, temp_mse = [], []
             for test_date in test_dates:
 
