@@ -90,6 +90,8 @@ class helper:
             df["min_of_mines"] = df.min()["min"]
             df["mean_of_means"] = df.mean()["mean"]
 
+            df = df.drop(columns=["min", "max", "mean"]).iloc[0]
+
             temp.append(df)
 
         return temp
@@ -117,7 +119,12 @@ class logger:
             temp = temp[1:]
             temp.columns = header
             pd.DataFrame(temp).to_csv(f"./data/log/{zidx}_param.csv")  
-            pd.concat(args, axis=0).to_csv(f"./data/log/{zidx}_metric.csv")
+
+            if isinstance(args[0], pd.Series):
+                pd.concat(args, axis=1).T.reset_index(drop=True).to_csv(f"./data/log/{zidx}_metric.csv")
+            elif isinstance(args[0], pd.DataFrame):
+                pd.concat(args, axis=0).to_csv(f"./data/log/{zidx}_metric.csv")
+            
             print("save complete")
         return None
 
