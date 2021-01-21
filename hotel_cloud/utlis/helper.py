@@ -79,22 +79,28 @@ class helper:
 
         return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
                 pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+    
+    @staticmethod
+    def average_over_folds(df):
+        df["max_of_maxes"] = df.max()["max"]
+        df["min_of_mines"] = df.min()["min"]
+        df["mean_of_means"] = df.mean()["mean"]
+        df = df.drop(columns=["min", "max", "mean"]).iloc[0]
+        return df
+
 
     @staticmethod
     def post_process(*args):
 
-        temp = []        
+        ans = []        
 
         for df in args:
 
-            df["max_of_maxes"] = df.max()["max"]
-            df["min_of_mines"] = df.min()["min"]
-            df["mean_of_means"] = df.mean()["mean"]
-            df = df.drop(columns=["min", "max", "mean"]).iloc[0]
+            df = helper.average_over_folds(df)
 
-            temp.append(df)
+            ans.append(df)
 
-        return temp
+        return ans
 
 
 
