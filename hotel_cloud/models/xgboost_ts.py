@@ -56,7 +56,7 @@ def xgb_train(train_df: DataFrame,
             )
 
 
-def xgb_cv(df: DataFrame,  # df contains all staydates that we want
+def CV(df: DataFrame,  # df contains all staydates that we want
         data_dict: dict,  # index -> date
         labels: list,
         group_num: int, 
@@ -64,6 +64,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
         cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
         nfold: int, 
+        training_func: callable,  # xgb_train or lgb_train
         ts: object,  #  timeSeries_data object
         metric: object,  # metric object 
         preserved_cols: List[str], 
@@ -95,7 +96,7 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
                                          target, history,lag_bound)
 
         """here test_df is added to watchlist"""
-        bst = xgb_train(train_df, test_df, target, param, \
+        bst = training_func(train_df, test_df, target, param, \
                         cat_list, n_estimators, **kwargs)
 
         """apply metric"""
@@ -103,6 +104,8 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
 
         temp_softdtw, temp_mse = [], []
         for test_date in test_dates:
+
+            # TODO record the worst scenario date for visual
             ivd_test_df = ts.make_lag_from_dates(df, [test_date], preserved_cols,\
                                          target, history,lag_bound)
             
