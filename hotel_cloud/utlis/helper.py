@@ -94,6 +94,9 @@ class helper:
         size_recorder, mean_recorder = [], []        
         temp_df = df[df["metric"]==f"{metric_name}"]
         for i in range(num_groups):
+
+            print(temp_df)
+
             size_recorder.append(   \
                     float(temp_df[temp_df["group_label"]==i]["group_size"].to_numpy()))
             mean_recorder.append(   \
@@ -113,7 +116,7 @@ class helper:
 
         for df in args:
 
-            # add stats over folds
+            # add stats over folds, -> pd.series
             series = helper.average_over_folds(df)
 
             if series["metric"] == "softdtw":
