@@ -124,4 +124,4 @@ class logger:
             elif "metric" in f:
                 metric_df.append(pd.read_csv(full_path))
 
-        return None
+        return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0)
