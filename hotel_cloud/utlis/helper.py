@@ -36,9 +36,11 @@ class helper:
             all_indices = np.where(np.array(labels)==group_num)[0].flatten()
         else:
             all_indices = np.where(labels==group_num)[0].flatten()
+        
+        group_size = len(all_indices)
 
         kf = KFold(n_splits=nfold, shuffle=False)
-        softdtw_collector, mse_collector = [[None]*7]*nfold, [[None]*7]*nfold  # [["name", "metric", "group_num", "nfold","min", "max", "mean"], ...]
+        softdtw_collector, mse_collector = [[None]*8]*nfold, [[None]*8]*nfold  # [["name", "metric", "group_label", "group_size","nfold","min", "max", "mean"], ...]
 
         for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
 
@@ -61,7 +63,6 @@ class helper:
             # TODO find worst date
             for test_date in test_dates:
 
-                # TODO record the worst scenario date for visual
                 ivd_test_df = ts.make_lag_from_dates(df, [test_date], preserved_cols,\
                                             target, history,lag_bound)
                 
@@ -73,11 +74,11 @@ class helper:
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
 
-            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, nfold, min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
-                                                            [name, "mse", group_num, nfold, min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
+            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, group_size, nfold, min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
+                                                            [name, "mse", group_num, group_size, nfold, min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
 
-        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_num", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-                pd.DataFrame(mse_collector, columns=["name", "metric", "group_num", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+                pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
     @staticmethod
     def post_process(*args):
