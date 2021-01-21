@@ -120,15 +120,12 @@ class helper:
             series = helper.average_over_folds(df)
 
             if series["metric"] == "softdtw":
-                print(series)
                 softdtw_df.append(series)
             elif series["metric"] == "mse":
                 mse_df.append(series)
 
-            
-
-            df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
-            df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
+        df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
+        df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
         return pd.concat([df1, df2], axis=1)
 
 
