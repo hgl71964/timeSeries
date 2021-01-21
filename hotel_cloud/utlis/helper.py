@@ -87,20 +87,43 @@ class helper:
         df["mean_of_means"] = df.mean()["mean"]
         df = df.drop(columns=["min", "max", "mean"]).iloc[0]
         return df
+    
+    @staticmethod
+    def add_weighted_mean(df, num_groups, metric_name):
+
+        size_recorder, mean_recorder = [], []        
+        temp_df = df[df["metric"]=="metric_name"]
+        for i in range(num_groups):
+            size_recorder.append(   \
+                    float(temp_df[temp_df["group_label"]==i]["group_size"].to_numpy()))
+            mean_recorder.append(   \
+                    float(temp_df[temp_df["group_label"]==i]["mean_of_means"].to_numpy()))
+
+        size_recorder, mean_recorder = np.array(size_recorder), np.array(mean_recorder)
+        fraction = size_recorder/size_recorder.sum()
+        df[f"{metric_name}_weighted_mean"] = np.multiply(fraction, mean_recorder).sum()
+        return df
 
 
     @staticmethod
-    def post_process(*args):
+    def post_process(num_groups: int,  # numbers of group in total 
+                    *args):
 
-        ans = []        
+        softdtw_df, mse_df = [], []
 
         for df in args:
 
-            df = helper.average_over_folds(df)
+            # add stats over folds
+            series = helper.average_over_folds(df)
 
-            ans.append(df)
+            if series["metric"] == "softdtw":
+                softdtw_df.append(series)
+            elif series["metric"] == "mse":
+                mse_df.append(series)
 
-        return ans
+            df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
+            df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
+        return pd.concat([df1, df2], axis=1)
 
 
 
