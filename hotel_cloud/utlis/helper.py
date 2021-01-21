@@ -64,7 +64,7 @@ class helper:
                 ivd_test_df = ts.make_lag_from_dates(df, [test_date], preserved_cols,\
                                             target, history,lag_bound)
                 
-                preds = bst.predict(DMatrix(ivd_test_df[feats]))
+                preds = bst.predict(core_data_func(ivd_test_df[feats]))
                 
                 soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])
                 mse_res = metric.mse(preds, ivd_test_df[target])
