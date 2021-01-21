@@ -95,8 +95,6 @@ class helper:
         temp_df = df[df["metric"]==f"{metric_name}"]
         for i in range(num_groups):
 
-            print(temp_df)
-
             size_recorder.append(   \
                     float(temp_df[temp_df["group_label"]==i]["group_size"].to_numpy()))
             mean_recorder.append(   \
@@ -126,7 +124,7 @@ class helper:
 
         df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
         df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
-        return pd.concat([df1, df2], axis=1)
+        return pd.concat([df1, df2], axis=0)
 
 
 
