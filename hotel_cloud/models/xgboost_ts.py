@@ -47,9 +47,10 @@ def xgb_train(train_df: DataFrame,
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
     verbose_eval = kwargs.get("verbose_eval", False)
 
-    return train(param, dtrain, n_estimators, watchlist, \
-            early_stopping_rounds=early_stopping_rounds, \
-            verbose_eval=verbose_eval, \
+    return train(param, dtrain, n_estimators, watchlist, 
+            obj=None, feval=None, # custmised obj and eval_metric
+            early_stopping_rounds=early_stopping_rounds, 
+            verbose_eval=verbose_eval, 
             )
 
 def xgb_predict(df: DataFrame,
