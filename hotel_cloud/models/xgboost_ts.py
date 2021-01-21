@@ -7,8 +7,6 @@ from xgboost import cv
 from typing import List
 import numpy as np
 
-
-
 """
 low level interface to XGboost
 model Booster; train via xgb.train
@@ -40,7 +38,7 @@ def xgb_train(train_df: DataFrame,
     dtrain = DMatrix(train_df[feats], label=train_df[target])
     if test_df is not None:
         dtest = DMatrix(test_df[feats], label=test_df[target])
-        watchlist = [(dtest, 'eval'), (dtrain, 'train')]
+        watchlist = [(dtrain, 'train'), (dtest, 'eval')]  # last entry for early stopping  
     else:
         dtest = None
         watchlist = [(dtrain, 'train')]
