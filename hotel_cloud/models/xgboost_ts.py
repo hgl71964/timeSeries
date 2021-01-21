@@ -61,6 +61,15 @@ def _one_hot_encoding(df, names: List[str]):
     feats = df.columns.to_list()
     for name in names:
         if name in feats:  # if name in df.cloumns then one-hot encoding
-            df = df.join(get_dummies(df[name], \
-                        prefix=f"{name}")).drop(columns=[name])
+
+        # add transform so that one hot encoding allows missing values
+            if name == "month":
+                full_list = [f"{name}_{i}" for i in range(1, 13)]
+            elif name == "day_of_week":
+                full_list = [f"{name}_{i}" for i in range(0, 7)]
+            elif name == "day_of_month":
+                full_list = [f"{name}_{i}" for i in range(1, 32)]
+
+            dummies = get_dummies(df[name], prefix=f"{name}")
+            df = df.join(dummies.T.reindex(full_list).T.fillna(0)).drop(columns=[name])
     return df
