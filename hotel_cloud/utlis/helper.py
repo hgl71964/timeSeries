@@ -69,7 +69,7 @@ class helper:
                 
                 soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])
                 mse_res = metric.mse(preds, ivd_test_df[target])
-                
+
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
 
@@ -78,6 +78,22 @@ class helper:
 
         return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_num", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
                 pd.DataFrame(mse_collector, columns=["name", "metric", "group_num", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+
+    @staticmethod
+    def post_process(*args):
+
+        temp = []        
+
+        for df in args:
+
+            df["max_of_maxes"] = df.max()["max"]
+            df["min_of_mines"] = df.min()["min"]
+            df["mean_of_means"] = df.mean()["mean"]
+
+            temp.append(df)
+
+        return temp
+
 
 
 class logger:
