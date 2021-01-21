@@ -92,7 +92,7 @@ class helper:
     def add_weighted_mean(df, num_groups, metric_name):
 
         size_recorder, mean_recorder = [], []        
-        temp_df = df[df["metric"]=="metric_name"]
+        temp_df = df[df["metric"]==f"{metric_name}"]
         for i in range(num_groups):
             size_recorder.append(   \
                     float(temp_df[temp_df["group_label"]==i]["group_size"].to_numpy()))
