@@ -31,14 +31,14 @@ def xgb_train(train_df: DataFrame,
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
     
+    # check if cat_list in df.columns then one-hot encoding
+    train_df, test_df = _one_hot_encoding(train_df, cat_list),\
+                        _one_hot_encoding(test_df, cat_list) 
+
     # make core data structure
     feats = [i for i in train_df.columns if i != target]
 
-    # TODO if cat_list not in train_df then add one-hot encoding
-
-
     dtrain = DMatrix(train_df[feats], label=train_df[target])
-
     if test_df is not None:
         dtest = DMatrix(test_df[feats], label=test_df[target])
         watchlist = [(dtest, 'eval'), (dtrain, 'train')]
@@ -46,8 +46,7 @@ def xgb_train(train_df: DataFrame,
         dtest = None
         watchlist = [(dtrain, 'train')]
 
-    
-    # get param from kwarg
+    # get train param from kwarg
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
     verbose_eval = kwargs.get("verbose_eval", False)
 
@@ -125,7 +124,9 @@ def xgb_cv(df: DataFrame,  # df contains all staydates that we want
 def _one_hot_encoding(df, names: List[str]):
     """names a list of feature names that need to be one hot encoding"""
 
+    feats = df.columns.to_list()
     for name in names:
-        df = df.join(get_dummies(df[name], \
+        if name in feats:  # if name in df.cloumns then one-hot encoding
+            df = df.join(get_dummies(df[name], \
                         prefix=f"{name}")).drop(columns=[name])
     return df
