@@ -148,4 +148,4 @@ class logger:
             elif "metric" in f:
                 metric_df.append(pd.read_csv(full_path))
 
-        return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0).reset_index(drop=True)
+        return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0).reset_index(drop=True).drop(columns=["Unnamed: 0"])
