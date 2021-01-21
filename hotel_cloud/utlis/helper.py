@@ -111,16 +111,16 @@ class logger:
     def show_all_df(dir_path: str,  # path to the directory  
                         ):
 
-        # TODO open all file (df) and concat the results    
         files = os.listdir(dir_path)
 
-        param_prefix = []
-        metric_prefix = []
-        for i, f in enumerate(files):
-            full_path = os.path.join(dir_path, f)
-            pd.read_csv(full_path)
+        param_df, metric_df = [], []
 
-            as
-            logger.show_df()
+        for f in sorted(files, key=lambda x:x[:3]):  # 3 fig naming
+            full_path = os.path.join(dir_path, f)
+
+            if "param" in f:
+                param_df.append(pd.read_csv(full_path))
+            elif "metric" in f:
+                metric_df.append(pd.read_csv(full_path))
 
         return None
