@@ -19,7 +19,7 @@ class helper:
         n_estimators: int,  # num_boost_round
         nfold: int, 
         training_func: callable,  # xgb_train or lgb_train
-        predict_func: callable,  # Dmatrix or Dataset
+        predict_func: callable,  # xgb_predict or lgb_predict
         ts: object,  #  timeSeries_data object
         metric: object,  # metric object 
         preserved_cols: List[str], 
@@ -62,7 +62,6 @@ class helper:
                 ivd_test_df = ts.make_lag_from_dates(df, [test_date], preserved_cols,\
                                             target, history,lag_bound)
                 
-                # TODO 
                 preds = predict_func(ivd_test_df, cat_list, target, bst)
                 
                 soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])

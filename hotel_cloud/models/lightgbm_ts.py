@@ -46,8 +46,12 @@ def lgb_train(train_df: DataFrame,
                     verbose_eval=verbose_eval, \
                     )
 
-# TODO add CV
+def lgb_predict(df,
+                cat_list,
+                target, 
+                booster,
+                ):
 
-def lgb_cv():
-
-    return None
+    feats = [i for i in df.columns if i != target]
+    dtest=Dataset(df[feats], feature_name=feats, categorical_feature=cat_list)
+    return booster.predict(dtest)
