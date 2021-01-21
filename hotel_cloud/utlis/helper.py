@@ -38,7 +38,7 @@ class helper:
             all_indices = np.where(labels==group_num)[0].flatten()
 
         kf = KFold(n_splits=nfold, shuffle=False)
-        softdtw_collector, mse_collector = [[None]*6]*nfold, [[None]*6]*nfold  # [[name, min, max, mean, metric, group_num], ...]
+        softdtw_collector, mse_collector = [[None]*7]*nfold, [[None]*7]*nfold  # [["name", "metric", "group_num", "nfold","min", "max", "mean"], ...]
 
         for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
 
@@ -73,11 +73,11 @@ class helper:
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
 
-            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
-                                                            [name, "mse", group_num, min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
+            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, nfold, min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
+                                                            [name, "mse", group_num, nfold, min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
 
-        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_num", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-                pd.DataFrame(mse_collector, columns=["name", "metric", "group_num", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_num", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+                pd.DataFrame(mse_collector, columns=["name", "metric", "group_num", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 
     @staticmethod
     def post_process(*args):
@@ -89,7 +89,6 @@ class helper:
             df["max_of_maxes"] = df.max()["max"]
             df["min_of_mines"] = df.min()["min"]
             df["mean_of_means"] = df.mean()["mean"]
-
             df = df.drop(columns=["min", "max", "mean"]).iloc[0]
 
             temp.append(df)
