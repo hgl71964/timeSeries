@@ -110,6 +110,10 @@ class helper:
     def post_process(num_groups: int,  # numbers of group in total 
                     *args):
 
+        """
+        make sure feature names are consistent (do not rename existing feature...)
+        """
+
         softdtw_df, mse_df = [], []
 
         for df in args:
