@@ -92,7 +92,7 @@ class logger:
             raise FileExistsError(f"file No. {index} exists!")
         else:
             pd.DataFrame(params, index=[0]).to_csv(f"./data/log/param_{index}.csv")  
-            pd.concat(args, axis=1).to_csv(f"./data/log/metric_{index}.csv")
+            pd.concat(args, axis=0).to_csv(f"./data/log/metric_{index}.csv")
             print("save complete")
         return None
 
