@@ -4,6 +4,8 @@ from tslearn.clustering import TimeSeriesKMeans
 import datetime
 from typing import List
 from glob2 import glob
+from collections import deque 
+
 
 class timeSeries_data:
 
@@ -60,41 +62,40 @@ class timeSeries_data:
 
         dates = [None]*num_days; 
         dates[0] = start_date.strftime("%m-%d")
-        booking_curve = np.empty((num_days, history), dtype=np.float32)
 
         for i in range(1, num_days):
             start_date += datetime.timedelta(days=1)
             dates[i] = start_date.strftime("%m-%d")
 
         data_dict = {}
-        clean_df = [None] * num_days 
+        idx = 0
+        # booking_curve = np.empty((num_days, history), dtype=np.float32)
+        booking_curve = deque()
+        clean_df = deque()
         for i in range(num_days):
 
             full_date = str(self.year) +"-" + dates[i] 
-            data_dict[i] = full_date
 
-            s_df = self._interpolate(df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history], \
-                                        interpolate_col, interpolate_param)
+            s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history]
+
+            if filter_all_zero and len(s_df[target]) < history:  # booking_curve less than history are dicarded
+                continue
+
+            # apply interpolation
+            s_df = self._interpolate(s_df, interpolate_col, interpolate_param)
+
+            # add feats
             s_df["staydate"] = full_date
-            clean_df[i] = s_df  # record interpolated df
-
             d = s_df[target].to_numpy()  
-            if len(d) >= history:
-                booking_curve[i,:] = np.flip(d[:history])
-            else:
-                booking_curve[i,:] = np.zeros((history, ))  # if the staydate has valid curve shorter than history
 
-        if filter_all_zero:  # if there are staydates with all 0 booking curve
-            index = []
-            for i in range(booking_curve.shape[0]):
-                if np.all(data[i]==0):
-                    index.append(i)
-            index = np.array(index)
+            # collect
+            data_dict[idx] = full_date
+            idx+=1
+            clean_df.append(s_df) 
+            booking_curve.append(d)
 
-            for key in index:
-                data_dict.pop(key)
-            booking_curve = booking_curve[[i for i in range(365) if i not in index]]
-
+        # type conversion & post-cleansing
+        booking_curve = np.array(booking_curve).reshape(idx, -1)
         booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
         return booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
