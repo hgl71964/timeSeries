@@ -36,22 +36,31 @@ class timeSeries_data:
                 data[i,:] = np.zeros((history, ))
         return data
 
-    def cleansing(self, df, target: str, history: int = 100, filter_all_zero=True, **kwargs):
+    def cleansing(self, 
+                df, 
+                years: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
+                target: str,  # the target to model
+                history: int = 100,  # length of the booking curve to be used 
+                filter_all_zero=True,  # whether to filter ts that is shorter than history 
+                **kwargs,  # handle interpolation method
+                ):
         """
-        this method handles missing values 
+        cleanse the dataFrame and return 
 
         Return: 
             data: np.ndarray; each row is a booking curve for a staydate
             data_dict: dict; index -> staydate
+            df
         """
         interpolate_col, interpolate_param = kwargs.get("interpolate_col", []), \
                                         kwargs.get("interpolate_param", ("spline", 3))
 
-        start_date, end_data = datetime.datetime(self.year, 1, 1, 0, 0), datetime.datetime(self.year+1, 1, 1, 0, 0)
+        start_date, end_data = datetime.datetime(years[0], 1, 1, 0, 0), datetime.datetime(years[1], 1, 1, 0, 0)
         num_days = (end_data - start_date).days
 
-        dates = [None]*num_days; dates[0] = start_date.strftime("%m-%d")
-        data = np.empty((num_days, history), dtype=np.float32)
+        dates = [None]*num_days; 
+        dates[0] = start_date.strftime("%m-%d")
+        booking_curve = np.empty((num_days, history), dtype=np.float32)
 
         for i in range(1, num_days):
             start_date += datetime.timedelta(days=1)
@@ -71,23 +80,23 @@ class timeSeries_data:
 
             d = s_df[target].to_numpy()  
             if len(d) >= history:
-                data[i,:] = np.flip(d[:history])
+                booking_curve[i,:] = np.flip(d[:history])
             else:
-                data[i,:] = np.zeros((history, ))  # if the staydate has valid curve shorter than history
+                booking_curve[i,:] = np.zeros((history, ))  # if the staydate has valid curve shorter than history
 
         if filter_all_zero:  # if there are staydates with all 0 booking curve
             index = []
-            for i in range(data.shape[0]):
+            for i in range(booking_curve.shape[0]):
                 if np.all(data[i]==0):
                     index.append(i)
             index = np.array(index)
 
             for key in index:
                 data_dict.pop(key)
-            data = data[[i for i in range(365) if i not in index]]
+            booking_curve = booking_curve[[i for i in range(365) if i not in index]]
 
-        data = np.where(data < 0, 0, data)  # if there exists negative term due to interpolation 
-        return data, data_dict, pd.concat(clean_df, axis=0)
+        booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
+        return booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
     def _interpolate(self, df, feats, inter_params):
         if not feats:
