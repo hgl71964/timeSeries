@@ -59,22 +59,15 @@ class timeSeries_data:
 
         start_date, end_data = datetime.datetime(years[0], 1, 1, 0, 0), datetime.datetime(years[1], 1, 1, 0, 0)
         num_days = (end_data - start_date).days
-
-        dates = [None]*num_days; 
-        dates[0] = start_date.strftime("%m-%d")
-
-        for i in range(1, num_days):
-            start_date += datetime.timedelta(days=1)
-            dates[i] = start_date.strftime("%m-%d")
-
-        data_dict = {}
-        idx = 0
-        # booking_curve = np.empty((num_days, history), dtype=np.float32)
-        booking_curve = deque()
-        clean_df = deque()
+        data_dict, idx = {}, 0
+        
+        # deque with O(1) complexity to append
+        booking_curve, clean_df = deque(), deque()
         for i in range(num_days):
 
-            full_date = str(self.year) +"-" + dates[i] 
+            # full_date = dates[i] 
+            full_date = start_date.strftime("%Y-%m-%d")
+            start_date+=1
 
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history]
 
@@ -94,6 +87,7 @@ class timeSeries_data:
             clean_df.append(s_df) 
             booking_curve.append(d)
 
+        print(start_date.strftime("%Y-%m-%d"))
         # type conversion & post-cleansing
         booking_curve = np.array(booking_curve).reshape(idx, -1)
         booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
