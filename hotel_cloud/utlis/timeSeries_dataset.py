@@ -87,6 +87,10 @@ class timeSeries_data:
         # type conversion & post-cleansing
         booking_curve = np.flip(np.array(booking_curve).reshape(idx, -1), axis=1)
         booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
+
+        assert (np.all(np.isfinite(booking_curve)) and not np.any(np.isnan(booking_curve))), \
+                                        "data contain nan or inf"
+
         return booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
     def _interpolate(self, df, **kwargs):
