@@ -67,7 +67,7 @@ class timeSeries_data:
 
             # full_date = dates[i] 
             full_date = start_date.strftime("%Y-%m-%d")
-            start_date+=1
+            start_date += datetime.timedelta(days=1)
 
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history]
 
