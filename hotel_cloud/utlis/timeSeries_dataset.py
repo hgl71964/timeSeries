@@ -54,8 +54,6 @@ class timeSeries_data:
             data_dict: dict; index -> staydate
             df
         """
-        interpolate_col, interpolate_param = kwargs.get("interpolate_col", []), \
-                                        kwargs.get("interpolate_param", ("spline", 3))
 
         start_date, end_data = datetime.datetime(years[0], 1, 1, 0, 0), datetime.datetime(years[1]+1, 1, 1, 0, 0)
         num_days = (end_data - start_date).days
@@ -74,7 +72,7 @@ class timeSeries_data:
                 continue
 
             # apply interpolation
-            s_df = self._interpolate(s_df, interpolate_col, interpolate_param)
+            s_df = self._interpolate(s_df, **kwargs)
 
             # add feats
             s_df["staydate"] = full_date
@@ -91,18 +89,27 @@ class timeSeries_data:
         booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
         return booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
-    def _interpolate(self, df, feats, inter_params):
+    def _interpolate(self, df, **kwargs):
+
+        feats, interpolate_param = kwargs.get("interpolate_col", []), \
+                                kwargs.get("interpolate_param", ("spline", 3))
         if not feats:
             return df
 
         # TODO interpolate logic can be improved 
-        inter_method, inter_order = inter_params
+        inter_method, inter_order = interpolate_param
 
         if isinstance(feats, str):  # prevent keyError
             feats = [feats]
         
-        for feat in feats:  # interpolate 0 for all feats in the list
-            if any(df[feat].iloc[:20].eq(0)):  # only iterpolate if the last 20 dates contain 0 
+        for feat in feats:  # interpolate "0" for all feats in the list
+
+            # interpolation algorithm cannot handle last entry
+            if not df[feat].eq(0)[0]:
+                df[feat].iat[0] = df[feat][1]  # direct assignment
+
+            # only iterpolate if the last 20 dates contain 0 
+            if any(df[feat].iloc[:20].eq(0)):  
                 df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
         return df
 
