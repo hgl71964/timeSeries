@@ -34,7 +34,6 @@ class timeSeries_data:
                 data[i,:] = np.flip(d[:history])
             else:
                 data[i,:] = np.zeros((history, ))
-
         return data
 
     def cleansing(self, df, target: str, history: int = 100, filter_all_zero=True, **kwargs):
@@ -70,11 +69,11 @@ class timeSeries_data:
             s_df["staydate"] = full_date
             clean_df[i] = s_df  # record interpolated df
 
-            d = s_df[target].to_numpy()
+            d = s_df[target].to_numpy()  
             if len(d) >= history:
                 data[i,:] = np.flip(d[:history])
             else:
-                data[i,:] = np.zeros((history, ))
+                data[i,:] = np.zeros((history, ))  # if the staydate has valid curve shorter than history
 
         if filter_all_zero:  # if there are staydates with all 0 booking curve
             index = []
