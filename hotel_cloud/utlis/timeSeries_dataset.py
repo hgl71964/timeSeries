@@ -57,7 +57,7 @@ class timeSeries_data:
         interpolate_col, interpolate_param = kwargs.get("interpolate_col", []), \
                                         kwargs.get("interpolate_param", ("spline", 3))
 
-        start_date, end_data = datetime.datetime(years[0], 1, 1, 0, 0), datetime.datetime(years[1], 1, 1, 0, 0)
+        start_date, end_data = datetime.datetime(years[0], 1, 1, 0, 0), datetime.datetime(years[1]+1, 1, 1, 0, 0)
         num_days = (end_data - start_date).days
         data_dict, idx = {}, 0
         
@@ -65,7 +65,6 @@ class timeSeries_data:
         booking_curve, clean_df = deque(), deque()
         for i in range(num_days):
 
-            # full_date = dates[i] 
             full_date = start_date.strftime("%Y-%m-%d")
             start_date += datetime.timedelta(days=1)
 
@@ -87,7 +86,6 @@ class timeSeries_data:
             clean_df.append(s_df) 
             booking_curve.append(d)
 
-        print(start_date.strftime("%Y-%m-%d"))
         # type conversion & post-cleansing
         booking_curve = np.array(booking_curve).reshape(idx, -1)
         booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
