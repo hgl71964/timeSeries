@@ -60,7 +60,7 @@ class timeSeries_data:
         data_dict, idx = {}, 0
         
         # deque with O(1) complexity to append
-        booking_curve, clean_df = deque(), deque()
+        all_booking_curve, clean_df = deque(), deque()
         for i in range(num_days):
 
             full_date = start_date.strftime("%Y-%m-%d")
@@ -68,7 +68,7 @@ class timeSeries_data:
 
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history]
 
-            if filter_all_zero and len(s_df[target]) < history:  # booking_curve less than history are dicarded
+            if filter_all_zero and len(s_df[target]) < history:  # all_booking_curve less than history are dicarded
                 continue
 
             # apply interpolation
@@ -82,16 +82,16 @@ class timeSeries_data:
             data_dict[idx] = full_date
             idx+=1
             clean_df.append(s_df)
-            booking_curve.append(d)
+            all_booking_curve.append(d)
 
         # type conversion & post-cleansing
-        booking_curve = np.flip(np.array(booking_curve).reshape(idx, -1), axis=1)
-        booking_curve = np.where(booking_curve < 0, 0, booking_curve)  # if there exists negative term due to interpolation 
+        all_booking_curve = np.flip(np.array(all_booking_curve).reshape(idx, -1), axis=1)
+        all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation 
 
-        assert (np.all(np.isfinite(booking_curve)) and not np.any(np.isnan(booking_curve))), \
+        assert (np.all(np.isfinite(all_booking_curve)) and not np.any(np.isnan(all_booking_curve))), \
                                         "data contain NAN or INF"
 
-        return booking_curve, data_dict, pd.concat(clean_df, axis=0)
+        return all_booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
     def _interpolate(self, df, **kwargs):
 
