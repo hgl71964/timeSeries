@@ -126,7 +126,7 @@ class helper:
             elif series["metric"] == "mse":
                 mse_df.append(series)
 
-        if len(softdtw_df) == 1:  # on the unclustered data
+        if len(softdtw_df) == 1:  # on the unclustered data, i.e. group_num = -1
             return pd.concat(softdtw_df+mse_df, axis=1).T
         else:
             df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
