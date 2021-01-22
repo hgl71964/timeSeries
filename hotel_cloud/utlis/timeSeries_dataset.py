@@ -105,8 +105,8 @@ class timeSeries_data:
         for feat in feats:  # interpolate "0" for all feats in the list
 
             # interpolation algorithm cannot handle last entry
-            if not df[feat].eq(0)[0]:
-                df[feat].iat[0] = df[feat][1]  # direct assignment
+            if df[feat].eq(0).iloc[0]:
+                df[feat].iat[0] = df[feat].iloc[1]  # direct assignment
 
             # only iterpolate if the last 20 dates contain 0 
             if any(df[feat].iloc[:20].eq(0)):  
