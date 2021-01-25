@@ -6,9 +6,6 @@ from glob2 import glob
 from sklearn.model_selection import KFold
 import os 
 
-
-
-
 class cv_helper:
 
     def __init__(self,
@@ -28,7 +25,7 @@ class cv_helper:
                 target: str, 
                 history: int, 
                 lag_bound: tuple, 
-                **kwargs, 
+                **train_kwargs, 
                 ):
         self.name = name
         self.data_dict = data_dict
@@ -46,7 +43,7 @@ class cv_helper:
         self.target = target
         self.history = history
         self.lag_bound = lag_bound
-        self.kwargs = kwargs
+        self.train_kwargs = train_kwargs
 
     def run_cv(self, df):
         return cv_helper.CV(df, self.name, self.data_dict, \
@@ -54,7 +51,7 @@ class cv_helper:
                     self.cat_list, self.n_estimators, self.nfold,\
                     self.training_func, self.predict_func, self.ts,\
                     self.metric, self.preserved_cols, self.target, self.history,\
-                    self.lag_bound, **self.kwargs)
+                    self.lag_bound, **self.train_kwargs)
 
 
     @staticmethod
@@ -75,7 +72,7 @@ class cv_helper:
         target: str, 
         history: int, 
         lag_bound: tuple, 
-        **kwargs, 
+        **train_kwargs, 
         ):
         """
         hand-made cross-validation
@@ -103,7 +100,7 @@ class cv_helper:
 
             """here test_df is added to watchlist"""
             bst = training_func(train_df, test_df, target, param, \
-                            cat_list, n_estimators, **kwargs)
+                            cat_list, n_estimators, **train_kwargs)
 
             """apply metric"""
             temp_softdtw, temp_mse = [], []
