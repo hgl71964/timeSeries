@@ -61,9 +61,6 @@ class bayesian_optimiser:
                     y: tr.Tensor, # shape shape [n,1]; 1-dimensional output
                     api: callable, 
                     ):
-
-        input_dim = x.shape[-1]
-
         mll, model = self.gpr.init_model(x, y, state_dict=None)
 
         for t in range(self.T):
