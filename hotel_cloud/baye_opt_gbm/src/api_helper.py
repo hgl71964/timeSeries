@@ -20,14 +20,8 @@ class api_utils:
             for _ in range(5): 
                 try:
                     for i in range(q):  
-                        # update params
-                        print("query: ")
-                        print(x)
+
                         update_dict = cv.numeric_to_dict(x)
-
-                        print("update param")
-                        print(update_dict)
-
                         cv.update_param(update_dict)
 
                         print("params")
