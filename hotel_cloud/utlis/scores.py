@@ -78,8 +78,8 @@ class cv_scores:
         if self.name == "xgb":
             new_param["booster"] = self.rev_booster[int(new_vals[0])]
             new_param["eta"] = new_vals[1]
-            new_param["max_depth"] = new_vals[2]
-            new_param["min_child_weight"] = new_vals[3]
+            new_param["max_depth"] = int(new_vals[2])
+            new_param["min_child_weight"] = int(new_vals[3])
             new_param["subsample"] = new_vals[4]
             new_param["lambda"] = new_vals[5]
 
