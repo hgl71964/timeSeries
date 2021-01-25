@@ -4,6 +4,7 @@ import datetime
 from typing import List
 from glob2 import glob
 from sklearn.model_selection import KFold
+from collections import OrderedDict
 import os 
 
 class cv_helper:
@@ -13,7 +14,7 @@ class cv_helper:
                 data_dict: dict,  # index -> date
                 labels: list,  # outcome of clustering
                 group_num: int,  # if -1 means we use all data
-                param: dict,  #  for xgboost or lightgbm
+                param: OrderedDict,  #  for xgboost or lightgbm; order for tuning
                 cat_list: List[str],  # list of categorical data
                 n_estimators: int,  # num_boost_round
                 nfold: int, 
@@ -61,13 +62,14 @@ class cv_helper:
         # else:
         #     print("overwrite params")
 
+
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want
         name: str, # xgb or lgb
         data_dict: dict,  # index -> date
         labels: list,  # outcome of clustering
         group_num: int,  # if -1 means we use all data
-        param: dict,  #  for xgboost or lightgbm
+        param: OrderedDict,  #  for xgboost or lightgbm
         cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
         nfold: int, 
