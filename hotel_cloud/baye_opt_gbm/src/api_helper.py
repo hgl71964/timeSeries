@@ -34,11 +34,11 @@ class api_utils:
                         softdtw, mse = api_func(*args, **kwargs)  
 
                         if metric == "softdtw":
-                            score = 
+                            score = softdtw["mean"].mean()
                         elif metric == "mse":
-                            score =
+                            score = mse["mean"].mean()
 
-                        neg_rewards[i] = -(r/r0)   # record normalised negative margin
+                        neg_rewards[i] = - score   # record normalised negative margin
 
                 except TypeError as ter:
                     print(f"api has error {ter}")

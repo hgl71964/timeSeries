@@ -1,6 +1,5 @@
 import torch as tr
 import numpy as np
-import copy
 import botorch
 import gpytorch
 from src import GPs  #  this script should be imported as packages
