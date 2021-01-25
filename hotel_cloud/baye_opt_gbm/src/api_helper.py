@@ -13,7 +13,7 @@ class api_utils:
         def wrapper(df,
                     x,  # query in numeric
                     ):  
-            x = x.cpu()
+            x = x.cpu().numpy()
             q = x.shape[0]  # should be 1 for now 
             neg_rewards = tr.zeros(q, )
             
@@ -30,7 +30,7 @@ class api_utils:
                         elif metric_name == "mse":
                             score = mse["mean"].mean()
 
-                        neg_rewards[i] = - score   # record normalised negative margin
+                        neg_rewards[i] = -score   # record normalised negative margin
 
                 except TypeError as ter:
                     print(f"api has error {ter}")
