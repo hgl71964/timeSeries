@@ -5,6 +5,7 @@ import botorch
 import gpytorch
 from src import GPs  #  this script should be imported as packages
 from src.api_helper import api_utils
+dtype = tr.float32
 
 
 def bayes_loop(bayes_opt: object,
@@ -24,7 +25,7 @@ def bayes_loop(bayes_opt: object,
     print(x0, y0)
 
     #  format the initial pair
-    x0, y0 = tr.from_numpy(x0).to(device), y0.to(device)
+    x0, y0 = tr.tensor(x0, dtype=dtype).to(device), tr.tensor([y0],dtype=dtype).to(device)
 
     #  decorate the api
     api = api_utils.api_wrapper(cv, metric_name)
