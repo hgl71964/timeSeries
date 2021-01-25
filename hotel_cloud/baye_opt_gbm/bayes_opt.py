@@ -25,8 +25,8 @@ def bayes_loop(bayes_opt: object,
     print(f"initial x, y: \n ({x0}, {y0})")
 
     #  format the initial pair
-    x0, y0 = tr.tensor(x0, dtype=dtype).to(device), \
-            tr.tensor([y0],dtype=dtype).to(device)
+    x0, y0 = tr.tensor(x0, dtype=dtype).view(1, -1).to(device), \
+            tr.tensor([y0],dtype=dtype).view(1, -1).to(device)
 
     #  decorate the api
     api = api_utils.api_wrapper(cv, metric_name)
