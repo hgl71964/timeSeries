@@ -72,7 +72,7 @@ class bayesian_optimiser:
             acq = self._init_acqu_func(model, y)
             query = self._inner_loop(acq, self.batch_size, self.bounds)
 
-            reward = api(df, query).to(device)
+            reward = api(df, query).to(self.device)
 
             # append available data && update model
             x, y = tr.cat([x, query]), tr.cat([y, reward])
