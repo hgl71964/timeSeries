@@ -23,8 +23,8 @@ class api_utils:
             q = x.shape[0]  # should be 1 for now 
             neg_rewards = tr.zeros(q, )
             
-            # pre-process api
-            x = api_utils.query_wrapper(x)
+            # update params
+            cv.update_param(cv.numeric_to_dict(x))
 
             for _ in range(5): 
                 try:
@@ -45,10 +45,10 @@ class api_utils:
                 else:
                     break
 
-            return neg_margins.view(-1, 1).to(device)  # assume dtype == torch.float() overall
+            return neg_rewards.view(-1, 1).to(device)  # assume dtype == torch.float() overall
 
         return wrapper    
 
     @staticmethod
-    def init_reward(x):
-        return None
+    def init_reward(cv, df):
+        return cv.run_cv(df)
