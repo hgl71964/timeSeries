@@ -3,7 +3,7 @@ import numpy as np
 import copy
 import botorch
 import gpytorch
-from . import GPs  #  this script should be imported as packages
+from src import GPs  #  this script should be imported as packages
 
 class bayesian_optimiser:
     """
@@ -11,51 +11,49 @@ class bayesian_optimiser:
     the optimiser is set to MAXIMISE function!
     """
     def __init__(self, 
+                T: int, 
+                domain: np.ndarray, # shape(n, 2) [[min, max], ... ]
+                batch_size: int, 
                 gp_name: str, 
                 gp_params: dict, 
-                device: str,
                 params: dict,  #  params for acquisition functions
+                device: tr.device = tr.device("cpu"),
                 ):
-        self.params = params
+        self.T = T
+        self.batch_size = batch_size
         self.gpr = self._init_GPs(gp_name, gp_params, device)  #  instantiate GP
         self.device = device
+        self.params = params  # acqu_func 
+
+        # handle domain
+        if isinstance(domain, tuple):
+            self.bounds = tr.tensor([[domain[0]] * input_dim, [domain[1]] * input_dim], \
+                                        dtype=tr.float32).to(self.device)
+        else:
+            self.bounds = tr.from_numpy(domain).float().to(self.device)
 
     def outer_loop(self, 
-                    T: int, # time_horizon 
-                    domain: tuple,  # variable domain, (0, 1) or np.ndarray if shape(n, 2)
                     x: tr.Tensor, # init samples; [n,d] -> n samples, d-dimensional
                     y: tr.Tensor, # shape shape [n,1]; 1-dimensional output
                     r0: float, # unormalised reward,
-                    api: callable,  #  reward = api(query, r0, device)
-                    batch_size: int, #  q-parallelism
+                    api: callable, 
                     ):
-        """
-        standard bayesian optimisation loop;
-        Returns:
-            x,y: collection of queries and rewards; torch.tensor
-        """
-        # assume bounds of variables are the same; shape [2,d]
-        input_dim = x.shape[-1]
 
-        if isinstance(domain, tuple):
-            bounds = tr.tensor([[domain[0]] * input_dim, [domain[1]] * input_dim], \
-                                        dtype=tr.float32).to(self.device)
-        else:
-            bounds = tr.from_numpy(domain).float().to(self.device)
+        input_dim = x.shape[-1]
 
         mll, model = self.gpr.init_model(x, y, state_dict=None)
 
-        for t in range(T):
+        for t in range(self.T):
 
             # fit model every round
             self.gpr.fit_model(mll, model, x, y)
 
             # acquisition function && query
             acq = self._init_acqu_func(model, y)
-            query = self._inner_loop(acq, batch_size, bounds)
+            query = self._inner_loop(acq, self.batch_size, self.bounds)
 
-            # reward
-            reward = api(query, r0, self.device)
+            # TODO refine signature 
+            reward = api(query, r0, self.device) 
 
             # append available data && update model
             x, y = tr.cat([x, query]), tr.cat([y, reward])
