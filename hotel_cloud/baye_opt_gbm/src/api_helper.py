@@ -21,7 +21,7 @@ class api_utils:
                 try:
                     for i in range(q):  
 
-                        update_dict = cv.numeric_to_dict(x)
+                        update_dict = cv.numeric_to_dict(x[i])
                         cv.update_param(update_dict)
 
                         print("params")
