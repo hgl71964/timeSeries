@@ -10,23 +10,20 @@ import asyncio
 class api_utils:
 
     @staticmethod
-    def transform(api_func: callable):
+    def transform(api_func: callable, metric: str):
         """
         wrap the api service;
-            provide small number perturbation, type conversion etc.
-
             api_func acts on cpu, while bayes_opt at GPU
         """
 
-        def wrapper(x: tr.tensor,  #  shape[q,d]; q query, d-dimensional
-                    r0: float,  #  unormalised reward
-                    device: str,
-                    ):
+        def wrapper(*args, **kwargs):
             """
             Returns:
                 neg_margins: [q, 1]
             """
-            x = x.cpu(); q = x.shape[0]; neg_margins = tr.zeros(q, )
+            x = x.cpu()
+            q = x.shape[0]
+            neg_rewards = tr.zeros(q, )
             
             # we may want to push query off the boundary
             # for i in x:
@@ -39,7 +36,7 @@ class api_utils:
             for _ in range(5):  # handle potential network disconnection issue
                 try:
                     for i in range(q):  # sequential query 
-                        r = api_func(x[i])  # float
+                        df = api_func(x[i])  # float
                         neg_margins[i] = -(r/r0)   # record normalised negative margin
 
                 except TypeError as ter:
