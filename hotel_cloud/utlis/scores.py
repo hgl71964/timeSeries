@@ -70,16 +70,9 @@ class cv_scores:
         """WARNINGs: order must be correct"""
 
         if self.name == "xgb":
-            return [
-                    self.booster[self.param["booster"]],  # str -> integer
-                    self.param["eta"], \
-                    self.param["max_depth"], \
-                    self.param["min_child_weight"], \
-                    self.param["subsample"], \
-                    self.param["lambda"], \
-                    ]
+            pass
         elif self.name == "lgb":
-            return []  # TODO add lightgbm
+            pass  # TODO add lightgbm
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
             

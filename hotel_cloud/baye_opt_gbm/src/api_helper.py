@@ -11,7 +11,9 @@ class api_utils:
         return x
 
     @staticmethod
-    def api_wrapper(api_func: callable, metric: str):
+    def api_wrapper(api_func: callable, 
+                    metric: str, 
+                    ):
 
         def wrapper(df,
                     x,  # query in numeric
@@ -46,3 +48,7 @@ class api_utils:
             return neg_margins.view(-1, 1).to(device)  # assume dtype == torch.float() overall
 
         return wrapper    
+
+    @staticmethod
+    def init_reward(x):
+        return None
