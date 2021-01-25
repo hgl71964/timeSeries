@@ -16,23 +16,23 @@ class api_utils:
             x = x.cpu().numpy()
             q = x.shape[0]  # should be 1 for now 
             neg_rewards = tr.zeros(q, )
-            
-            # update params
-            print("query: ")
-            print(x)
-            update_dict = cv.numeric_to_dict(x)
-
-            print("update param")
-            print(update_dict)
-
-            cv.update_param(update_dict)
-
-            print("params")
-            print(cv.param)
 
             for _ in range(5): 
                 try:
                     for i in range(q):  
+                        # update params
+                        print("query: ")
+                        print(x)
+                        update_dict = cv.numeric_to_dict(x)
+
+                        print("update param")
+                        print(update_dict)
+
+                        cv.update_param(update_dict)
+
+                        print("params")
+                        print(cv.param)
+
                         softdtw, mse = cv.run_cv(df)
 
                         if metric_name == "softdtw":
