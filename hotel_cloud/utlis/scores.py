@@ -47,33 +47,20 @@ class cv_scores:
                         "gblinear": 1,
                         "dart": 2, 
                         }
-
         self.rev_booster =  {0: "gbtree",
                             1: "gblinear",
                             2: "dart", 
                             }
 
-
-    def run_cv(self, df):
-        return cv_helper.CV(df, self.name, self.data_dict, \
-                    self.labels, self.group_num, self.param,\
-                    self.cat_list, self.n_estimators, self.nfold,\
-                    self.training_func, self.predict_func, self.ts,\
-                    self.metric, self.preserved_cols, self.target, self.history,\
-                    self.lag_bound, **self.train_kwargs)
-
     def update_param(self, new_param: dict):
         try:
             self.param.update(new_param)
         except:
-            raise ValueError("cannot overwrite param")
-        # else:
-        #     print("overwrite params")
+            raise RuntimeError("cannot overwrite param")
     
     def numeric_to_dict(self, new_vals):
 
         """WARNINGs: order must be correct"""
-
         new_param = {}
         if self.name == "xgb":
             new_param["booster"] = self.rev_booster[int(new_vals[0])]
@@ -87,14 +74,12 @@ class cv_scores:
             raise EnvironmentError("not support lgb yet")  # TODO add lightgbm
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
-            
         return new_param
 
     @property
     def dict_to_numeric(self):
 
         """WARNINGs: order must be correct"""
-
         if self.name == "xgb":
             return [
                     self.booster[self.param["booster"]],  # str -> integer
@@ -108,6 +93,17 @@ class cv_scores:
             raise EnvironmentError("not support lgb yet")  # TODO add lightgbm
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
+
+
+    def run_cv(self, df):
+        return cv_helper.CV(df, self.name, self.data_dict, \
+                    self.labels, self.group_num, self.param,\
+                    self.cat_list, self.n_estimators, self.nfold,\
+                    self.training_func, self.predict_func, self.ts,\
+                    self.metric, self.preserved_cols, self.target, self.history,\
+                    self.lag_bound, **self.train_kwargs)
+
+
 
 
     @staticmethod
