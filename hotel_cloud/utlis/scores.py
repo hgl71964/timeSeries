@@ -48,6 +48,11 @@ class cv_scores:
                         "dart": 2, 
                         }
 
+        self.rev_booster =  {0: "gbtree",
+                            1: "gblinear",
+                            2: "dart", 
+                            }
+
 
     def run_cv(self, df):
         return cv_helper.CV(df, self.name, self.data_dict, \
@@ -69,15 +74,21 @@ class cv_scores:
 
         """WARNINGs: order must be correct"""
 
+        new_param = {}
         if self.name == "xgb":
-            pass
+            new_param["booster"] = self.rev_booster[int(new_vals[0])]
+            new_param["eta"] = new_vals[1]
+            new_param["max_depth"] = new_vals[2]
+            new_param["min_child_weight"] = new_vals[3]
+            new_param["subsample"] = new_vals[4]
+            new_param["lambda"] = new_vals[5]
+
         elif self.name == "lgb":
-            pass  # TODO add lightgbm
+            raise EnvironmentError("not support lgb yet")  # TODO add lightgbm
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
             
         return new_param
-
 
     @property
     def dict_to_numeric(self):
@@ -94,7 +105,7 @@ class cv_scores:
                     self.param["lambda"], \
                     ]
         elif self.name == "lgb":
-            return []  # TODO add lightgbm
+            raise EnvironmentError("not support lgb yet")  # TODO add lightgbm
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
 
