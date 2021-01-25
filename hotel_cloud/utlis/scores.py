@@ -60,7 +60,10 @@ class cv_scores:
     
     def numeric_to_dict(self, new_vals):
 
-        """WARNINGs: order must be correct"""
+        """
+        WARNINGs: order must be correct
+        """
+
         new_param = {}
         if self.name == "xgb":
             new_param["booster"] = self.rev_booster[int(new_vals[0])]
@@ -96,15 +99,12 @@ class cv_scores:
 
 
     def run_cv(self, df):
-        return cv_helper.CV(df, self.name, self.data_dict, \
+        return cv_scores.CV(df, self.name, self.data_dict, \
                     self.labels, self.group_num, self.param,\
                     self.cat_list, self.n_estimators, self.nfold,\
                     self.training_func, self.predict_func, self.ts,\
                     self.metric, self.preserved_cols, self.target, self.history,\
                     self.lag_bound, **self.train_kwargs)
-
-
-
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want
