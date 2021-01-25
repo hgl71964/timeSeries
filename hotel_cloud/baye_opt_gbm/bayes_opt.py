@@ -21,6 +21,8 @@ def bayes_loop(bayes_opt: object,
     x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward(cv, df, metric_name)
 
+    print(x0, y0)
+
     #  format the initial pair
     x0, y0 = tr.from_numpy(x0).to(device), y0.to(device)
 

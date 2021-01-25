@@ -7,14 +7,9 @@ import asyncio
 class api_utils:
 
     @staticmethod
-    def query_wrapper(x):
-        return x
-
-    @staticmethod
     def api_wrapper(cv: object,  # provide conversion 
                     metric_name: str, 
                     ):
-
         def wrapper(df,
                     x,  # query in numeric
                     device, 

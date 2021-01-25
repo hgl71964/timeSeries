@@ -59,11 +59,9 @@ class cv_scores:
             raise RuntimeError("cannot overwrite param")
     
     def numeric_to_dict(self, new_vals):
-
         """
         WARNINGs: order must be correct
         """
-
         new_param = {}
         if self.name == "xgb":
             new_param["booster"] = self.rev_booster[int(new_vals[0])]
