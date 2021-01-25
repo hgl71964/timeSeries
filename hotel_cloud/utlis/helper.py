@@ -61,7 +61,10 @@ class cv_helper:
             raise ValueError("cannot overwrite param")
         # else:
         #     print("overwrite params")
-
+        
+    @property
+    def OrderedDict_to_values(self):
+        return [i for i in self.param.values()]  # this preserve order 
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want

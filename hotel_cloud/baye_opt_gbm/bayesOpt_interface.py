@@ -15,8 +15,8 @@ def bayes_loop(
         cv.run_cv(df) -> (a, b)
     """
 
-    # get x0, y0
-    x0 = api_utils.init_query()
+    # TODO
+    x0 = cv.OrderedDict_to_values
     y0 = api_utils.init_reward()
 
     #  format the initial pair
