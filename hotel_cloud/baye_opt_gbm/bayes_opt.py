@@ -29,7 +29,7 @@ def bayes_loop(bayes_opt: object,
     #  decorate the api
     api = api_utils.api_wrapper(cv, metric_name)
 
-    return bayes_opt.outer_loop(x0, y0, r0, api)
+    return bayes_opt.outer_loop(x0, y0, api)
 
 
 
@@ -63,9 +63,9 @@ class bayesian_optimiser:
             self.bounds = tr.from_numpy(domain).float().to(self.device)
 
     def outer_loop(self, 
+                    df: DataFrame, 
                     x: tr.Tensor, # init samples; [n,d] -> n samples, d-dimensional
                     y: tr.Tensor, # shape shape [n,1]; 1-dimensional output
-                    r0: float, # unormalised reward,
                     api: callable, 
                     ):
 
@@ -82,8 +82,7 @@ class bayesian_optimiser:
             acq = self._init_acqu_func(model, y)
             query = self._inner_loop(acq, self.batch_size, self.bounds)
 
-            # TODO refine signature 
-            reward = api(query, r0, self.device) 
+            reward = api(df, query).to(device)
 
             # append available data && update model
             x, y = tr.cat([x, query]), tr.cat([y, reward])

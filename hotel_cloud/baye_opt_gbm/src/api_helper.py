@@ -12,7 +12,6 @@ class api_utils:
                     ):
         def wrapper(df,
                     x,  # query in numeric
-                    device, 
                     ):  
             x = x.cpu()
             q = x.shape[0]  # should be 1 for now 
@@ -40,7 +39,7 @@ class api_utils:
                 else:
                     break
 
-            return neg_rewards.view(-1, 1).to(device)  # assume dtype == torch.float() overall
+            return neg_rewards.view(-1, 1)  # assume dtype == torch.float() overall
 
         return wrapper    
 
