@@ -1,5 +1,6 @@
 import torch as tr
 import numpy as np
+from pandas import DataFrame
 import botorch
 import gpytorch
 from src import GPs  #  this script should be imported as packages
@@ -17,7 +18,6 @@ def bayes_loop(bayes_opt: object,
         cv.run_cv(df) -> (a, b)
     """
 
-    # TODO
     x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward(cv, df, metric_name)
 
