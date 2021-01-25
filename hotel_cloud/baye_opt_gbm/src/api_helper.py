@@ -7,7 +7,7 @@ import asyncio
 class api_utils:
 
     @staticmethod
-    def api_wrapper(cv: object,  # provide conversion 
+    def api_wrapper(cv: object,  
                     metric_name: str, 
                     ):
         def wrapper(df,
