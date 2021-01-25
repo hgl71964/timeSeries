@@ -14,10 +14,6 @@ class api_utils:
     def api_wrapper(api_func: callable, metric: str):
 
         def wrapper(*args, **kwargs):
-            """
-            Returns:
-                neg_margins: [q, 1]
-            """
             x = x.cpu()
             q = x.shape[0]  # should be 1 for now 
             neg_rewards = tr.zeros(q, )

@@ -81,7 +81,7 @@ class helper:
                 pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
     
     @staticmethod
-    def average_over_folds(df):
+    def _average_over_folds(df):
         df["max_of_maxes"] = df.max()["max"]
         df["min_of_mines"] = df.min()["min"]
         df["mean_of_means"] = df.mean()["mean"]
@@ -89,7 +89,7 @@ class helper:
         return df
     
     @staticmethod
-    def add_weighted_mean(df, num_groups, metric_name):
+    def _add_weighted_mean(df, num_groups, metric_name):
 
         size_recorder, mean_recorder = [], []        
         temp_df = df[df["metric"]==f"{metric_name}"]
@@ -119,7 +119,7 @@ class helper:
         for df in args:
 
             # add stats over folds, -> pd.series
-            series = helper.average_over_folds(df)
+            series = helper._average_over_folds(df)
 
             if series["metric"] == "softdtw":
                 softdtw_df.append(series)
@@ -129,8 +129,8 @@ class helper:
         if len(softdtw_df) == 1:  # on the unclustered data, i.e. group_num = -1
             return pd.concat(softdtw_df+mse_df, axis=1).T
         else:
-            df1 = helper.add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
-            df2 = helper.add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
+            df1 = helper._add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
+            df2 = helper._add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
             return pd.concat([df1, df2], axis=0)
 
 
