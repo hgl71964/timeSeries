@@ -54,13 +54,7 @@ class bayesian_optimiser:
         self.gpr = self._init_GPs(gp_name, gp_params, device)  #  instantiate GP
         self.device = device
         self.params = params  # acqu_func 
-
-        # TODO refine bound
-        if isinstance(domain, tuple):
-            self.bounds = tr.tensor([[domain[0]] * input_dim, [domain[1]] * input_dim], \
-                                        dtype=tr.float32).to(self.device)
-        else:
-            self.bounds = tr.from_numpy(domain).float().to(self.device)
+        self.bounds = tr.from_numpy(domain).float().to(self.device)
 
     def outer_loop(self, 
                     df: DataFrame, 
