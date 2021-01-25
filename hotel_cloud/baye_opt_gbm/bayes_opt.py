@@ -24,7 +24,7 @@ class bayesian_optimiser:
         self.device = device
         self.params = params  # acqu_func 
 
-        # handle domain
+        # TODO refine bound
         if isinstance(domain, tuple):
             self.bounds = tr.tensor([[domain[0]] * input_dim, [domain[1]] * input_dim], \
                                         dtype=tr.float32).to(self.device)
