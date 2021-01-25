@@ -7,7 +7,55 @@ from sklearn.model_selection import KFold
 import os 
 
 
-class helper:
+
+
+class cv_helper:
+
+    def __init__(self,
+                name: str, # xgb or lgb
+                data_dict: dict,  # index -> date
+                labels: list,  # outcome of clustering
+                group_num: int,  # if -1 means we use all data
+                param: dict,  #  for xgboost or lightgbm
+                cat_list: List[str],  # list of categorical data
+                n_estimators: int,  # num_boost_round
+                nfold: int, 
+                training_func: callable,  # xgb_train or lgb_train
+                predict_func: callable,  # xgb_predict or lgb_predict
+                ts: object,  #  timeSeries_data object
+                metric: object,  # metric object 
+                preserved_cols: List[str], 
+                target: str, 
+                history: int, 
+                lag_bound: tuple, 
+                **kwargs, 
+                ):
+        self.name = name
+        self.data_dict = data_dict
+        self.labels = labels
+        self.group_num = group_num
+        self.param = param
+        self.cat_list = cat_list
+        self.n_estimators = n_estimators
+        self.nfold = nfold
+        self.training_func = training_func
+        self.predict_func = predict_func
+        self.ts = ts
+        self.metric = metric
+        self.preserved_cols = preserved_cols
+        self.target = target
+        self.history = history
+        self.lag_bound = lag_bound
+        self.kwargs = kwargs
+
+    def run_cv(self, df):
+        return cv_helper.CV(df, self.name, self.data_dict, \
+                    self.labels, self.group_num, self.param,\
+                    self.cat_list, self.n_estimators, self.nfold,\
+                    self.training_func, self.predict_func, self.ts,\
+                    self.metric, self.preserved_cols, self.target, self.history,\
+                    self.lag_bound, **self.kwargs)
+
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want
@@ -79,6 +127,10 @@ class helper:
 
         return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
                 pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+
+
+class helper:
+
     
     @staticmethod
     def _average_over_folds(df):
