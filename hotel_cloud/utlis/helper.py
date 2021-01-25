@@ -4,7 +4,6 @@ import datetime
 from typing import List
 from glob2 import glob
 from sklearn.model_selection import KFold
-from collections import OrderedDict
 import os 
 
 class cv_helper:
@@ -14,7 +13,7 @@ class cv_helper:
                 data_dict: dict,  # index -> date
                 labels: list,  # outcome of clustering
                 group_num: int,  # if -1 means we use all data
-                param: OrderedDict,  #  for xgboost or lightgbm; order for tuning
+                param: dict,  #  for xgboost or lightgbm; order for tuning
                 cat_list: List[str],  # list of categorical data
                 n_estimators: int,  # num_boost_round
                 nfold: int, 
@@ -46,6 +45,13 @@ class cv_helper:
         self.lag_bound = lag_bound
         self.train_kwargs = train_kwargs
 
+        # str -> integer-encoded
+        self.booster = {"gbtree": 0,
+                        "gblinear": 1,
+                        "dart":2 , 
+                        }
+
+
     def run_cv(self, df):
         return cv_helper.CV(df, self.name, self.data_dict, \
                     self.labels, self.group_num, self.param,\
@@ -61,10 +67,18 @@ class cv_helper:
             raise ValueError("cannot overwrite param")
         # else:
         #     print("overwrite params")
-        
+
     @property
     def OrderedDict_to_values(self):
-        return [i for i in self.param.values()]  # this preserve order 
+        """WARNINGs: order must be correct"""
+        return [
+                self.booster[self.param["booster"]],  # str -> integer
+                self.param["eta"], \
+                self.param["max_depth"], \
+                self.param["min_child_weight"], \
+                self.param["subsample"], \
+                self.param["lambda"], \
+                ]  
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want
@@ -72,7 +86,7 @@ class cv_helper:
         data_dict: dict,  # index -> date
         labels: list,  # outcome of clustering
         group_num: int,  # if -1 means we use all data
-        param: OrderedDict,  #  for xgboost or lightgbm
+        param: dict ,  #  for xgboost or lightgbm
         cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
         nfold: int, 
