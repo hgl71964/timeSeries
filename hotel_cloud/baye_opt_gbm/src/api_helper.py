@@ -18,7 +18,13 @@ class api_utils:
             neg_rewards = tr.zeros(q, )
             
             # update params
-            cv.update_param(cv.numeric_to_dict(x))
+            print("query: ")
+            print(x)
+            update_dict = cv.numeric_to_dict(x)
+
+            print(update_dict)
+
+            cv.update_param(update_dict)
 
             for _ in range(5): 
                 try:
