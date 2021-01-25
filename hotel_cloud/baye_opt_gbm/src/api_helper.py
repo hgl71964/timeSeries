@@ -11,7 +11,7 @@ class api_utils:
         return x
 
     @staticmethod
-    def api_wrapper(api_func: callable, 
+    def api_wrapper(cv: object,  # provide conversion 
                     metric: str, 
                     ):
 
@@ -29,7 +29,7 @@ class api_utils:
             for _ in range(5): 
                 try:
                     for i in range(q):  
-                        softdtw, mse = api_func(*args, **kwargs)  
+                        softdtw, mse = cv.run_cv(df)
 
                         if metric == "softdtw":
                             score = softdtw["mean"].mean()

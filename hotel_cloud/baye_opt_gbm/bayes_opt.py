@@ -26,7 +26,7 @@ def bayes_loop(bayes_opt: object,
     x0, y0 = tr.from_numpy(x0).to(device), y0.to(device)
 
     #  decorate the api
-    api = api_utils.api_wrapper(loss_func, metric_name)
+    api = api_utils.api_wrapper(cv, metric_name)
 
     return bayes_opt.outer_loop(x0, y0, r0, api)
 
