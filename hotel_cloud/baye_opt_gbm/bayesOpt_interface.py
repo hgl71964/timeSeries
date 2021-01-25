@@ -16,7 +16,7 @@ def bayes_loop(
     """
 
     # TODO
-    x0 = cv.OrderedDict_to_values
+    x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward()
 
     #  format the initial pair
