@@ -10,14 +10,14 @@ def bayes_loop(
             ):
 
     # get x0, y0
-    x0 = api_utils.init_query(q, search_bounds)
-    y0 = api_utils.init_reward(x0, loss_func)
+    x0 = api_utils.init_query()
+    y0 = api_utils.init_reward()
 
     #  format the initial pair
     x0, y0 = tr.from_numpy(x0).to(device), y0.to(device)
 
     #  decorate the api
-    api = api_utils.transform(loss_func, metric)
+    api = api_utils.api_wrapper(loss_func, metric)
 
     return bayes_opt.outer_loop(x0, y0, r0, api)
 

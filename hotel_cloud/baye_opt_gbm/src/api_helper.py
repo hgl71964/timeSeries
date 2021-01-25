@@ -11,15 +11,10 @@ class api_utils:
 
     @staticmethod
     def query_wrapper(x):
-
         return x
 
     @staticmethod
-    def transform(api_func: callable, metric: str):
-        """
-        wrap the api service;
-            api_func acts on cpu, while bayes_opt at GPU
-        """
+    def api_wrapper(api_func: callable, metric: str):
 
         def wrapper(*args, **kwargs):
             """
@@ -30,6 +25,7 @@ class api_utils:
             q = x.shape[0]  # should be 1 for now 
             neg_rewards = tr.zeros(q, )
             
+            # pre-process api
             x = api_utils.query_wrapper(x)
 
             for _ in range(5): 
