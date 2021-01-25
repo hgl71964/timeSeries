@@ -45,7 +45,7 @@ class cv_scores:
         # str -> integer-encoded
         self.booster = {"gbtree": 0,
                         "gblinear": 1,
-                        "dart":2 , 
+                        "dart": 2, 
                         }
 
 
@@ -64,6 +64,27 @@ class cv_scores:
             raise ValueError("cannot overwrite param")
         # else:
         #     print("overwrite params")
+    
+    def numeric_to_dict(self, new_vals):
+
+        """WARNINGs: order must be correct"""
+
+        if self.name == "xgb":
+            return [
+                    self.booster[self.param["booster"]],  # str -> integer
+                    self.param["eta"], \
+                    self.param["max_depth"], \
+                    self.param["min_child_weight"], \
+                    self.param["subsample"], \
+                    self.param["lambda"], \
+                    ]
+        elif self.name == "lgb":
+            return []  # TODO add lightgbm
+        else:
+            raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
+            
+        return new_param
+
 
     @property
     def dict_to_numeric(self):
@@ -80,7 +101,7 @@ class cv_scores:
                     self.param["lambda"], \
                     ]
         elif self.name == "lgb":
-            return []
+            return []  # TODO add lightgbm
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
 

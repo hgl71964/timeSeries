@@ -13,7 +13,10 @@ class api_utils:
     @staticmethod
     def api_wrapper(api_func: callable, metric: str):
 
-        def wrapper(*args, **kwargs):
+        def wrapper(df,
+                    x,  # query in numeric
+                    device, 
+                    ):  
             x = x.cpu()
             q = x.shape[0]  # should be 1 for now 
             neg_rewards = tr.zeros(q, )

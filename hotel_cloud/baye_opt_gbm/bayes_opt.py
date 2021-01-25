@@ -3,10 +3,39 @@ import numpy as np
 import botorch
 import gpytorch
 from src import GPs  #  this script should be imported as packages
+from src.api_helper import api_utils
+
+
+def bayes_loop(bayes_opt: object,
+                cv: object, 
+                df: DataFrame,
+                device: tr.device = tr.device("cpu"), 
+                ):
+    """
+    func:
+        cv.run_cv(df) -> (a, b)
+    """
+
+    # TODO
+    x0 = cv.dict_to_numeric
+
+    y0 = cv.run_cv(df)
+
+    #  format the initial pair
+    x0, y0 = tr.from_numpy(x0).to(device), y0.to(device)
+
+    #  decorate the api
+    api = api_utils.api_wrapper(loss_func, metric)
+
+    return bayes_opt.outer_loop(x0, y0, r0, api)
+
+
+
+
 
 class bayesian_optimiser:
     """
-    data type assume torch.tensor.float()
+    data type assume torch.tensor.float() (float32)
     the optimiser is set to MAXIMISE function!
     """
     def __init__(self, 
