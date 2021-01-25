@@ -41,7 +41,7 @@ class bayesian_optimiser:
     """
     def __init__(self, 
                 T: int, 
-                domain: np.ndarray, # shape(n, 2) [[min, max], ... ]
+                domain: np.ndarray, # shape(2, d) [[min, max].T, ... ]
                 batch_size: int,  
                 gp_name: str, 
                 gp_params: dict, 

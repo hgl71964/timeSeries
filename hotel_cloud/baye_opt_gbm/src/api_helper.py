@@ -47,6 +47,6 @@ class api_utils:
     def init_reward(cv, df, metric_name):
         softdtw, mse = cv.run_cv(df)
         if metric_name == "softdtw":
-            return softdtw["mean"].mean()
+            return -softdtw["mean"].mean()
         elif metric_name == "mse":
-            return mse["mean"].mean()
+            return -mse["mean"].mean()
