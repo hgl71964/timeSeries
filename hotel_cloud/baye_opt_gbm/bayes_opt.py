@@ -31,10 +31,7 @@ def bayes_loop(bayes_opt: object,
     #  decorate the api
     api = api_utils.api_wrapper(cv, metric_name)
 
-    # TODO change this
-    return api
-
-    # return bayes_opt.outer_loop(df, x0, y0, api)
+    return bayes_opt.outer_loop(df, x0, y0, api)
 
 
 class bayesian_optimiser:

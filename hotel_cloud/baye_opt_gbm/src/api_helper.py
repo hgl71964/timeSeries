@@ -24,6 +24,9 @@ class api_utils:
                         update_dict = cv.numeric_to_dict(x[i])
                         cv.update_param(update_dict)
 
+                        print("config: ")
+                        print(cv.param)
+
                         softdtw, mse = cv.run_cv(df)
 
                         if metric_name == "softdtw":
