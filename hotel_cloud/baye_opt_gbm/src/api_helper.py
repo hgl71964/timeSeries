@@ -12,7 +12,7 @@ class api_utils:
 
     @staticmethod
     def api_wrapper(cv: object,  # provide conversion 
-                    metric: str, 
+                    metric_name: str, 
                     ):
 
         def wrapper(df,
@@ -31,9 +31,9 @@ class api_utils:
                     for i in range(q):  
                         softdtw, mse = cv.run_cv(df)
 
-                        if metric == "softdtw":
+                        if metric_name == "softdtw":
                             score = softdtw["mean"].mean()
-                        elif metric == "mse":
+                        elif metric_name == "mse":
                             score = mse["mean"].mean()
 
                         neg_rewards[i] = - score   # record normalised negative margin
@@ -50,5 +50,9 @@ class api_utils:
         return wrapper    
 
     @staticmethod
-    def init_reward(cv, df):
-        return cv.run_cv(df)
+    def init_reward(cv, df, metric_name):
+        softdtw, mse = cv.run_cv(df)
+        if metric_name == "softdtw":
+            return softdtw["mean"].mean()
+        elif metric_name == "mse":
+            return mse["mean"].mean()

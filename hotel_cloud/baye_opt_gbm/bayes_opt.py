@@ -19,7 +19,7 @@ def bayes_loop(bayes_opt: object,
 
     # TODO
     x0 = cv.dict_to_numeric
-    y0 = api_utils.init_reward(cv, df)
+    y0 = api_utils.init_reward(cv, df, metric_name)
 
     #  format the initial pair
     x0, y0 = tr.from_numpy(x0).to(device), y0.to(device)
