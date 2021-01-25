@@ -53,6 +53,13 @@ class cv_helper:
                     self.metric, self.preserved_cols, self.target, self.history,\
                     self.lag_bound, **self.train_kwargs)
 
+    def update_param(self, new_param: dict):
+        try:
+            self.param.update(new_param)
+        except:
+            raise ValueError("cannot overwrite param")
+        # else:
+        #     print("overwrite params")
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want

@@ -8,12 +8,11 @@ dtype = tr.float32
 def bayes_loop(
             bayes_opt: object,
             cv: object, 
-            loss_func: callable,  # decorated as api
-            df: DataFrame,  # df contains all staydates that we want
+            df: DataFrame,
             ):
-
     """
-    cv.run_cv(df) -> (a, b)
+    func:
+        cv.run_cv(df) -> (a, b)
     """
 
     # get x0, y0
