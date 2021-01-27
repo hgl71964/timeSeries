@@ -22,7 +22,7 @@ def bayes_loop(bayes_opt: object,
     x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward(cv, df, metric_name)
 
-    print(f"initial x, y: \n ({x0}, {-y0})")
+    print(f"initial x, y: \n ({x0}, {-y0:.2f})")
 
     #  format the initial pair
     x0, y0 = tr.tensor(x0, dtype=dtype).view(1, -1).to(device), \
