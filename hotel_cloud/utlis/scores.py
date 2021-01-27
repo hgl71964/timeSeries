@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd 
 from typing import List
 from sklearn.model_selection import KFold
+from copy import deepcopy
 
 class cv_scores:
 
@@ -28,7 +29,7 @@ class cv_scores:
         self.data_dict = data_dict
         self.labels = labels
         self.group_num = group_num
-        self.param = param
+        self.param = deepcopy(param)  # mutable 
         self.cat_list = cat_list
         self.n_estimators = n_estimators
         self.nfold = nfold
@@ -40,7 +41,7 @@ class cv_scores:
         self.target = target
         self.history = history
         self.lag_bound = lag_bound
-        self.train_kwargs = train_kwargs
+        self.train_kwargs = deepcopy(train_kwargs) # mutable
 
         """register str -- integerd-coded pairs"""
         self.xgb_booster = {"gbtree": 0,
