@@ -52,6 +52,20 @@ class cv_scores:
                             2: "dart", 
                             }
 
+        self.lgb_booster = {
+                            "gbdt":0, 
+                            "rf": 1, 
+                            "dart": 2, 
+                            "goss": 3, 
+                            }
+        
+        self.lgb_rev_booster = {
+                            0: "gbdt",
+                            1: "rf", 
+                            2: "dart", 
+                            3: "goss",  
+                            }
+
     def update_param(self, new_param: dict):
         try:
             self.param.update(new_param)
@@ -74,7 +88,13 @@ class cv_scores:
             new_param["lambda"] = new_vals[5]
 
         elif self.name == "lgb":
-            raise EnvironmentError("not support lgb yet")  # TODO add lightgbm
+            new_param["boosting"] = self.lgb_rev_booster[int(new_vals[0])]
+            new_param["eta"] = new_vals[1]
+            new_param["num_leaves"] = int(new_vals[2])
+            new_param["feature_fraction"] = int(new_vals[3])
+            new_param["subsample"] = new_vals[4]
+            new_param["lambda"] = new_vals[5]
+            new_param["subsample_freq"] = new_vals[6]
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
         return new_param
@@ -93,7 +113,15 @@ class cv_scores:
                     self.param["lambda"], \
                     ]
         elif self.name == "lgb":
-            raise EnvironmentError("not support lgb yet")  # TODO add lightgbm
+            return [
+                    self.lgb_booster[self.param["boosting"]], # int
+                    self.param["eta"],  # float
+                    self.param["num_leaves"],  # int
+                    self.param["feature_fraction"],  # float 
+                    self.param["subsample"],  # float
+                    self.param["lambda"], 
+                    self.param["subsample_freq"],  # int 
+                    ]
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
 
