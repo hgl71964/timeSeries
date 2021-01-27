@@ -22,7 +22,7 @@ def bayes_loop(bayes_opt: object,
     x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward(cv, df, metric_name)
 
-    print(f"initial x, y: \n ({x0}, {y0})")
+    print(f"initial x, y: \n ({x0}, {-y0})")
 
     #  format the initial pair
     x0, y0 = tr.tensor(x0, dtype=dtype).view(1, -1).to(device), \
@@ -78,7 +78,7 @@ class bayesian_optimiser:
             x, y = tr.cat([x, query]), tr.cat([y, reward])
             mll, model = self.gpr.init_model(x, y, state_dict=model.state_dict())
 
-            print(f"Iter: {t+1}, reward: {(reward.max()).item():,.2f}")
+            print(f"Iter: {t+1}, reward: {-(reward.max()).item():,.2f}")
         
         return x, y
 
