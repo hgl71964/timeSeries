@@ -91,7 +91,7 @@ class cv_scores:
             new_param["boosting"] = self.lgb_rev_booster[int(new_vals[0])]
             new_param["eta"] = new_vals[1]
             new_param["num_leaves"] = int(new_vals[2])
-            new_param["feature_fraction"] = int(new_vals[3])
+            new_param["feature_fraction"] = new_vals[3]
             new_param["subsample"] = new_vals[4]
             new_param["lambda_l2"] = new_vals[5]
             new_param["subsample_freq"] = int(new_vals[6])  
@@ -101,7 +101,6 @@ class cv_scores:
 
     @property
     def dict_to_numeric(self):
-
         """WARNINGs: order must be correct"""
         if self.name == "xgb":
             return [
