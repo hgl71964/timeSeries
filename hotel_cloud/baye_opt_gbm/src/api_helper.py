@@ -3,14 +3,16 @@ import torch as tr
 from time import sleep
 import os
 
-
-# TODO: decorator with args
 class api_utils:
 
     @staticmethod
     def api_wrapper(cv: object,  
                     metric_name: str, 
                     ):
+        """
+        only meant to decorate a specific api_func/object, 
+            such that it returns reward for a provided query
+        """
         def wrapper(df,
                     x,  # query in numeric
                     ):  
