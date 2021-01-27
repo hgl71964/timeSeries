@@ -42,12 +42,12 @@ class cv_scores:
         self.lag_bound = lag_bound
         self.train_kwargs = train_kwargs
 
-        # str -> integer-encoded
-        self.booster = {"gbtree": 0,
+        """register str -- integerd-coded pairs"""
+        self.xgb_booster = {"gbtree": 0,
                         "gblinear": 1,
                         "dart": 2, 
                         }
-        self.rev_booster =  {0: "gbtree",
+        self.xgb_rev_booster =  {0: "gbtree",
                             1: "gblinear",
                             2: "dart", 
                             }
@@ -61,10 +61,12 @@ class cv_scores:
     def numeric_to_dict(self, new_vals):
         """
         WARNINGs: order must be correct
+
+        Categorical variables is int-ed before convert to param_dict
         """
         new_param = {}
         if self.name == "xgb":
-            new_param["booster"] = self.rev_booster[int(new_vals[0])]
+            new_param["booster"] = self.xgb_rev_booster[int(new_vals[0])]
             new_param["eta"] = new_vals[1]
             new_param["max_depth"] = int(new_vals[2])
             new_param["min_child_weight"] = int(new_vals[3])
@@ -83,7 +85,7 @@ class cv_scores:
         """WARNINGs: order must be correct"""
         if self.name == "xgb":
             return [
-                    self.booster[self.param["booster"]],  # str -> integer
+                    self.xgb_booster[self.param["booster"]],  # str -> integer
                     self.param["eta"], \
                     self.param["max_depth"], \
                     self.param["min_child_weight"], \
