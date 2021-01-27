@@ -94,7 +94,7 @@ class cv_scores:
             new_param["feature_fraction"] = int(new_vals[3])
             new_param["subsample"] = new_vals[4]
             new_param["lambda_l2"] = new_vals[5]
-            new_param["subsample_freq"] = new_vals[6]
+            new_param["subsample_freq"] = int(new_vals[6])  
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
         return new_param
