@@ -145,9 +145,8 @@ else:
     print("done saving")
 
 """
-BO
+bayes optimisation 
 """
-
 print("starts bayes_opt: ")
 
 xs, ys = [], []
