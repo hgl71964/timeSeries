@@ -1,22 +1,18 @@
 import os
 import pandas as pd
+import argparse
+
+cli_parser = argparse.ArgumentParser(description='List the content of a folder')
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    INFO_CYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+cli_parser.add_argument('Path',
+                       metavar='path',
+                       type=str,
+                       default="test_path", 
+                       help='the path to list')
+
+args = cli_parser.parse_args()
 
 
-a = {
-    "a":1,
-    "b":2,
-}
-a.pop("a")
-print(a)
+print(args)
+print(args.Path)
