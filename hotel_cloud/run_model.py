@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from utlis.color import bcolors
+import argparse
 
 """data cleansing"""
 from utlis.timeSeries_dataset import timeSeries_data
@@ -14,19 +15,51 @@ from models.lightgbm_ts import lgb_train, lgb_predict
 from utlis.evaluation import forecast_metric
 
 """Args"""
+
+cli = argparse.ArgumentParser(description="config global parameters")
+
+cli.add_argument("--lb",
+                dest="lb",
+                type=int,
+                nargs=2, 
+                default=(1, 3),
+                help="2 args -> lag_bound for lag feats")
+
+cli.add_argument("--target",
+                dest="target",
+                type=str,
+                default="rooms_all",
+                help="forecast target")
+
+cli.add_argument("-k",
+                dest="k",
+                type=int,
+                default=3,
+                help="number of folds for cross-validation")
+
+cli.add_argument("--history",
+                dest="history",
+                type=int,
+                default=100,
+                help="number of history of time series")
+
+args = cli.parse_args()
+
+
+
 HOME = os.path.expanduser("~")  # define home folder 
 YEAR = 2019                     # for check only 
 STAY_DATE = "01-11"             # for check only 
 
-TARGET = "rooms_all"            # target for forecasting 
-HISTORY = 100                   # length of the time series we want to find 
+TARGET = args.target            # target for forecasting 
+HISTORY = args.history                   # length of the time series we want to find 
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
 N_CLUSTER = 5                   # num_clusters are determined by the elbow-point
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
-KFOLD = 3                       # score via 3 fold cross-validation  
-LAG_FEAT = (1, 3)               # the bound for lagged features
+KFOLD = args.k                       # score via 3 fold cross-validation  
+LAG_FEAT = args.lb              # the bound for lagged features
 
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 

@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import datetime
 from copy import deepcopy
 from utlis.color import bcolors
+import argparse
 
 """data cleansing"""
 from utlis.timeSeries_dataset import timeSeries_data
@@ -23,21 +24,69 @@ from utlis.evaluation import forecast_metric
 from baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
 
 """Args"""
+
+cli = argparse.ArgumentParser(description="config global parameters")
+
+cli.add_argument("--nc",
+                dest="nc",
+                type=int,
+                default=5,
+                help="number of clusters")
+
+cli.add_argument("--lb",
+                dest="lb",
+                type=int,
+                nargs=2, 
+                default=(1, 3),
+                help="2 args -> lag_bound for lag feats")
+
+cli.add_argument("--target",
+                dest="target",
+                type=str,
+                default="rooms_all",
+                help="forecast target")
+
+cli.add_argument("-t",
+                dest="t",
+                type=int,
+                default=3,
+                help="number of iteration of bayes_opt")
+
+cli.add_argument("-k",
+                dest="k",
+                type=int,
+                default=3,
+                help="number of folds for cross-validation")
+
+cli.add_argument("--history",
+                dest="history",
+                type=int,
+                default=100,
+                help="number of history of time series")
+
+cli.add_argument("--bm",
+                dest="bm",
+                type=str,
+                default="softdtw",
+                help="metric to use in bayes_opt")
+
+args = cli.parse_args()
+
 HOME = os.path.expanduser("~")  # define home folder 
 YEAR = 2019                     # for check only 
 STAY_DATE = "01-11"             # for check only 
 
 
-TARGET = "rooms_all"            # target for forecasting 
-HISTORY = 100                   # length of the time series we want to find 
+TARGET = args.target        # target for forecasting 
+HISTORY = args.history                   # length of the time series we want to find 
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
-N_CLUSTER = 5                   # num_clusters are determined by the elbow-point
+N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
+
+EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
+KFOLD = args.k                       # score via 3 fold cross-validation  
+LAG_FEAT = args.lb              # the bound for lagged features
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
-EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
-KFOLD = 3                       # score via 3 fold cross-validation  
-LAG_FEAT = (1, 3)               # the bound for lagged features
-
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
             "google_trend_1_staydate", "google_trend_2_staydate", 
@@ -90,8 +139,9 @@ lgb_train_param = {
 
 
 # args for baye_opt 
-T = 3  # time horizon
+T = args.t  # time horizon
 Q = 1  # q-parallelism (if use analytical acq_func, q must be 1)
+BO_METRIC = args.bm
 
 # gp; includes "MA2.5", "SE", "RQ", "LR", "PO"
 gp_name, gp_params = "MA2.5",{
@@ -191,7 +241,7 @@ else:
 
         bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
 
-        x, y = bayes_loop(bayes_opt, cv, df, "softdtw")
+        x, y = bayes_loop(bayes_opt, cv, df, BO_METRIC)
 
         xs.append(x)
         ys.append(y)
@@ -201,7 +251,6 @@ else:
 
     lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
-
 
     optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 
