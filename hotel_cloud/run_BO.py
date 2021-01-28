@@ -138,7 +138,7 @@ data_files = os.listdir(os.path.join(HOME, "data", "log"))
 
 if "preds.npy" in data_files:
     print(f"{bcolors.HEADER}reading from data folder... {bcolors.ENDC}")
-    preds = np.load(os.path.join(HOME, "data", "preds.npy"))
+    preds = np.load(os.path.join(HOME, "data", "log","preds.npy"))
 
 else:
     # euclidean, softdtw, dtw
