@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import datetime
 from copy import deepcopy
 import pickle
+from utlis.color import bcolors
 
 """data cleansing"""
 from utlis.timeSeries_dataset import timeSeries_data
@@ -138,7 +139,7 @@ clustering
 data_files = os.listdir(os.path.join(HOME, "data"))
 
 if "preds.npy" in data_files:
-    print("reading from data folder...")
+    print(f"{bcolors.HEADER}reading from data folder...")
     preds = np.load(os.path.join(HOME, "data", "preds.npy"))
 
 else:
@@ -157,7 +158,7 @@ if "optimal_config.npy" in data_files:
 
 else:
     print("---------------------------------------------")
-    print("starts bayes_opt: ")
+    print(f"{bcolors.HEADER}starts bayes_opt: ")
 
     xs, ys = [], []
     for name in ["xgb", "lgb"]:
@@ -209,4 +210,4 @@ else:
     optimal_config["name"] = name
 
     np.save(os.path.join(HOME, "data", "optimal_config.npy"), optimal_config)
-    print("done bayes_opt for optimal config")
+    print(f"{bcolors.HEADER}done bayes_opt for optimal config")
