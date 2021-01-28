@@ -23,17 +23,7 @@ from utlis.evaluation import forecast_metric
 """BO"""
 from baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
 
-# %run timeSeries/hotel_cloud/utlis/evaluation.py
-# %run timeSeries/hotel_cloud/utlis/helper.py
-# %run timeSeries/hotel_cloud/utlis/scores.py
-# %run timeSeries/hotel_cloud/baye_opt_gbm/bayes_opt.py
-# %run timeSeries/hotel_cloud/models/kMeansTimeSeries.py
-# %run timeSeries/hotel_cloud/models/xgboost_ts.py
-# %run timeSeries/hotel_cloud/models/lightgbm_ts.py
-
-
 """Args"""
-
 HOME = os.path.expanduser("~")  # define home folder 
 YEAR = 2019                     # for check only 
 STAY_DATE = "01-11"             # for check only 
@@ -123,6 +113,7 @@ acq_params = {
 """end of Args"""
 
 # ------------------------------------------------------------------------------------------
+# median_pc_diff = (rateamount_mean - competitor_median_rate) / competitor_median_rate
 # totalrevenue = room revenue + other revenue; 
 # Average Daily Rate (ADR) = revenue/rooms
 
@@ -160,7 +151,6 @@ else:
 """
 bayes optimisation 
 """
-
 data_files = os.listdir(os.path.join(HOME, "data"))
 if "optimal_config.npy" in data_files:
     print("optimal config already exists !!")

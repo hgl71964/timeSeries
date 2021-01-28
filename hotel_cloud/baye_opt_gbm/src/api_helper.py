@@ -27,8 +27,8 @@ class api_utils:
                         update_dict = cv.numeric_to_dict(x[i])
                         cv.update_param(update_dict)
 
-                        print("config: ")
-                        print(cv.param)
+                        print(f"{bcolors.OKCYAN}config: {bcolors.ENDC}")
+                        print(f"{bcolors.OKBLUE}", cv.param)
 
                         softdtw, mse = cv.run_cv(df)
 
@@ -57,3 +57,15 @@ class api_utils:
             return -softdtw["mean"].mean()
         elif metric_name == "mse":
             return -mse["mean"].mean()
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'

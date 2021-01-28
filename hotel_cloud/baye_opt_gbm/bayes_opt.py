@@ -104,7 +104,7 @@ class bayesian_optimiser:
             x, y = tr.cat([x, query]), tr.cat([y, reward])
             mll, model = self.gpr.init_model(x, y, state_dict=model.state_dict())
 
-            print(f"Iter: {t+1}, reward: {-(reward.max()).item():,.2f}")
+            print(f"{bcolors.WARNING}Iter: {t+1}, reward: {-(reward.max()).item():,.2f}{bcolors.ENDC}")
         
         return x, y
 
@@ -176,3 +176,17 @@ class bayesian_optimiser:
 
     def _init_GPs(self,gp_name,gp_params, device):
         return GPs.BOtorch_GP(gp_name, device, **gp_params)
+
+
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
