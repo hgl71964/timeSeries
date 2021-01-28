@@ -178,7 +178,7 @@ else:
         elif name == "lgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes 
             # [0, 3], 
-            [0, 0.7],
+            [1e-2, 0.7],  # lr cannot too small
             [20,50],
             [0.5,1],
             [0.3, 1],
