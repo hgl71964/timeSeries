@@ -97,22 +97,16 @@ if "optimal_config.npy" in data_files:
 
     elif name == "lgb":
         lgb_param.update(opt_config)
-        
+
         training_func = lgb_train
         predict_func = lgb_predict
         param = lgb_param
         training_param = lgb_train_param
 
-    print(f"{bcolors.INFO_CYAN} optimal configuration: ")
-    print(opt_config)
+    print(f"{bcolors.INFO_CYAN} optimal model && configuration: ")
+    print(name)
+    print(param)
     print(f"{bcolors.ENDC}")
 
 else:
     print(f"{bcolors.FAIL} cannot load optimal config, using default setting {bcolors.ENDC}")
-
-
-
-
-
-
-
