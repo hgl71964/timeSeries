@@ -18,6 +18,8 @@ dtype = tr.float32
 
 def BO_post_process(xs: List[tr.Tensor], 
                     ys: List[tr.Tensor],
+                    xgb_cv: object,
+                    lgb_cv: object,
                     ):
 
     """
@@ -38,7 +40,9 @@ def BO_post_process(xs: List[tr.Tensor],
     # TODO log all results
     xgbs, lgbs = [i for i in xs[0]], [i for i in xs[1]]
 
-    return name, optimal_config
+    
+
+    return name, optimal_config, xgb_df, lgb_df
 
 
 def bayes_loop(bayes_opt: object,

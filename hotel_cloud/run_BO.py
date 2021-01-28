@@ -194,16 +194,15 @@ else:
         xs.append(x)
         ys.append(y)
 
-    # post-process the results
-    name, numeric_config = BO_post_process(xs, ys)
-    if name == "xgb":
-        cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
+    xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
 
-    elif name == "lgb":
-        cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
+    lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
 
+    # TODO post-process the results
+    name, numeric_config = BO_post_process(xs, ys, xgb_cv, lgb_cv)
+    
     optimal_config = cv.numeric_to_dict(numeric_config)
     optimal_config["name"] = name
 
