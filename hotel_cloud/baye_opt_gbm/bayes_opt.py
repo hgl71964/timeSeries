@@ -33,7 +33,11 @@ def BO_post_process(xs: List[tr.Tensor],
 
     if isinstance(optimal_config, tr.Tensor):
         optimal_config = optimal_config.numpy()
-        
+    
+
+    # TODO log all results
+    xgbs, lgbs = [i for i in xs[0]], [i for i in xs[1]]
+
     return name, optimal_config
 
 
