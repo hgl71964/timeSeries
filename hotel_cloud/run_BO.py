@@ -34,19 +34,20 @@ from baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimis
 
 """Args"""
 
-HOME = os.path.expanduser("~")
-TARGET = "rooms_all"
-HISTORY = 100
-YEAR = 2019
-DATA_RANGE = (2019, 2019)  # use data from 2018 - 2019
-STAY_DATE = "01-11"
-N_CLUSTER = 5           # num_clusters are determined by the elbow-point
+HOME = os.path.expanduser("~")  # define home folder 
+YEAR = 2019                     # for check only 
+STAY_DATE = "01-11"             # for check only 
+
+
+TARGET = "rooms_all"            # target for forecasting 
+HISTORY = 100                   # length of the time series we want to find 
+DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
+N_CLUSTER = 5                   # num_clusters are determined by the elbow-point
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
-EPOCHS = 256  # train with early stopping 
-KFOLD = 3
-LAG_FEAT = (1, 3)
-
+EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
+KFOLD = 3                       # score via 3 fold cross-validation  
+LAG_FEAT = (1, 3)               # the bound for lagged features
 
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
@@ -99,6 +100,7 @@ lgb_train_param = {
               }
 
 
+# args for baye_opt 
 T = 3  # time horizon
 Q = 1  # q-parallelism (if use analytical acq_func, q must be 1)
 
@@ -203,8 +205,8 @@ else:
         xs.append(x)
         ys.append(y)
 
+    # post-process the results
     name, numeric_config = BO_post_process(xs, ys)
-
     if name == "xgb":
         cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
@@ -213,16 +215,8 @@ else:
         cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
 
-
     optimal_config = cv.numeric_to_dict(numeric_config)
     optimal_config["name"] = name
 
-
-
-
-else:
-    # euclidean, softdtw, dtw
-    print("labels does not exist; start clustering...")
-    _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
-    np.save(os.path.join(HOME, "data", "preds.npy"), preds)
-    print("done saving")
+    np.save(os.path.join(HOME, "data", "optimal_config.npy"), optimal_config)
+    print("done bayes_opt for optimal config")
