@@ -33,7 +33,7 @@ HOME = os.path.expanduser("~")
 TARGET = "rooms_all"
 HISTORY = 100
 YEAR = 2019
-DATA_RANGE = (2018, 2019)  # use data from 2018 - 2019
+DATA_RANGE = (2019, 2019)  # use data from 2018 - 2019
 STAY_DATE = "01-11"
 N_CLUSTER = 5           # num_clusters are determined by the elbow-point
 
@@ -44,12 +44,12 @@ LAG_FEAT = (1, 3)
 
 
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-                  "google_trend_1_reportdate", "google_trend_2_reportdate", 
-                  "google_trend_1_staydate", "google_trend_2_staydate", 
-                  "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
-                  "rateamount_mean", "rateamount",
-                  "median_pc_diff", #"total_roomcount"
-                  ]
+            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+            "google_trend_1_staydate", "google_trend_2_staydate", 
+            "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
+            "rateamount_mean", "rateamount",
+            "median_pc_diff", #"total_roomcount"
+            ]
 
 
 # all params https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
@@ -114,12 +114,14 @@ acq_params = {
                }
 
 """end of Args"""
-
 # totalrevenue = room revenue + other revenue; 
 # Average Daily Rate (ADR) = revenue/rooms
 
 raw_df = pd.read_csv("~/data/hotel-4_12jan2021.csv") 
-raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]"); raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]"); t=raw_df["staydate"].unique().shape[0];print(f"staydate has {t} days")
+raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
+raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
+t = raw_df["staydate"].unique().shape[0]
+print(f"staydate has {t} days")
 
 """
 data cleansing 
@@ -127,11 +129,13 @@ data cleansing
 ts = timeSeries_data(**{"year": YEAR, })
 data, data_dict, df = ts.cleansing(raw_df, DATA_RANGE, TARGET, \
                     HISTORY, True, **{"interpolate_col": [TARGET]})
-# print(data)
+
+print("target shape", data.shape)
 
 """
 clustering 
 """
+
 data_files = os.listdir(os.path.join(HOME, "data"))
 
 if "preds.npy" in data_files:
