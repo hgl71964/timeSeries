@@ -13,18 +13,21 @@ done
 
 
 if [ -e "$name" ]; then
-    echo "File exists"
+    :
 else
-    echo "File does not exist"
+    echo "data folder does not exist"
     exit 1
 fi
 
 
 if [ -e "$name/log" ]; then
-    echo "setup sucessful"
-    exit 0
+    echo "folder setup sucessful"
 else
     mkdir -p "$name/log"
-    echo "setup sucessful"
-    exit 0
+    echo " folder setup sucessful"
 fi
+
+echo 
+echo "installing dependencies"
+echo 
+pip install -r hotel_cloud/requirement.txt
