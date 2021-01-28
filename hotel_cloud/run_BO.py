@@ -140,6 +140,7 @@ if "preds.npy" in data_files:
 
 else:
     # euclidean, softdtw, dtw
+    print("labels does not exist; start clustering...")
     _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
     np.save(os.path.join(HOME, "data", "preds.npy"), preds)
     print("done saving")
