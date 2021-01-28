@@ -129,7 +129,7 @@ class bayesian_optimiser:
             x, y = tr.cat([x, query]), tr.cat([y, reward])
             mll, model = self.gpr.init_model(x, y, state_dict=model.state_dict())
 
-            print(f"{bcolors.OKGREEN}Iter: {t+1}, reward: {-(reward.max()).item():,.2f}{bcolors.ENDC}")
+            print(f"{bcolors.OKGREEN}Iter: {t+1}, reward: {(reward.max()).item():,.2f}{bcolors.ENDC}")
         
         return x, y
 
