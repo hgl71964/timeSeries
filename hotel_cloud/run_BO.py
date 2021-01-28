@@ -134,7 +134,7 @@ print(f"{bcolors.INFO_CYAN}target shape", data.shape)
 """
 clustering 
 """
-data_files = os.listdir(os.path.join(HOME, "data"))
+data_files = os.listdir(os.path.join(HOME, "data", "log"))
 
 if "preds.npy" in data_files:
     print(f"{bcolors.HEADER}reading from data folder... {bcolors.ENDC}")
@@ -144,13 +144,13 @@ else:
     # euclidean, softdtw, dtw
     print("labels does not exist; start clustering...")
     _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
-    np.save(os.path.join(HOME, "data", "preds.npy"), preds)
+    np.save(os.path.join(HOME, "data", "log", "preds.npy"), preds)
     print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
 
 """
 bayes optimisation 
 """
-data_files = os.listdir(os.path.join(HOME, "data"))
+data_files = os.listdir(os.path.join(HOME, "data", "log"))
 if "optimal_config.npy" in data_files:
     print(f"{bcolors.FAIL}optimal config already exists !! {bcolors.ENDC}")
 
@@ -203,6 +203,7 @@ else:
 
     numeric_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 
+    # saving 
     xgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_xgb.csv"))
     lgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_lgb.csv"))
 
