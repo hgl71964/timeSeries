@@ -36,13 +36,27 @@ def BO_post_process(xs: List[tr.Tensor],
     if isinstance(optimal_config, tr.Tensor):
         optimal_config = optimal_config.numpy()
     
+    if name == "lgb":
+        optimal_config = lgb_cv.numeric_to_dict(optimal_config)
+        optimal_config["name"] = name
+    elif name == "xgb":
+        optimal_config = xgb_cv.numeric_to_dict(optimal_config)
+        optimal_config["name"] = name
 
-    # TODO log all results
-    xgbs, lgbs = [i for i in xs[0]], [i for i in xs[1]]
-
+    xgbs, lgbs = [], []
+    for i, item in enumerate(xs[0]):
+        xgb_param = xgb_cv.numeric_to_dict(np.array(item))
+        xgb_param["name"] = "xgb"
+        xgb_param["score"] = float(ys[0][i])
+        xgbs.append(xgb_param)
     
+    for i, item in enumerate(xs[1]):
+        lgb_param = lgb_cv.numeric_to_dict(np.array(item))
+        lgb_param["name"] = "lgb"
+        lgb_param["score"] = float(ys[1][i])
+        lgbs.append(lgb_param)
 
-    return name, optimal_config, xgb_df, lgb_df
+    return optimal_config, DataFrame(xgbs), DataFrame(lgbs)
 
 
 def bayes_loop(bayes_opt: object,

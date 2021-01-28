@@ -200,11 +200,11 @@ else:
     lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
 
-    # TODO post-process the results
-    name, numeric_config = BO_post_process(xs, ys, xgb_cv, lgb_cv)
-    
-    optimal_config = cv.numeric_to_dict(numeric_config)
-    optimal_config["name"] = name
 
-    np.save(os.path.join(HOME, "data", "optimal_config.npy"), optimal_config)
+    numeric_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
+
+    xgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_xgb.csv"))
+    lgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_lgb.csv"))
+
+    np.save(os.path.join(HOME, "data", "log", "optimal_config.npy"), optimal_config)
     print(f"{bcolors.HEADER}done bayes_opt for optimal config {bcolors.ENDC}")
