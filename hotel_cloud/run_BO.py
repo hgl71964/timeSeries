@@ -203,7 +203,7 @@ else:
                 lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
 
 
-    numeric_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
+    optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 
     # saving 
     xgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_xgb.csv"))
