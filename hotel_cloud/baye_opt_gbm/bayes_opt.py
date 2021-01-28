@@ -3,8 +3,17 @@ import numpy as np
 from pandas import DataFrame
 import botorch
 import gpytorch
-from src import GPs  #  this script should be imported as packages
-from src.api_helper import api_utils
+from typing import List
+from troch import Tensor
+
+try:  # __main__
+    from src import GPs  #  this script should be imported as packages
+    from src.api_helper import api_utils
+
+except ImportError:  # import as package
+    from .src import GPs
+    from .src.api_helper import api_utils
+
 dtype = tr.float32
 
 
@@ -32,6 +41,17 @@ def bayes_loop(bayes_opt: object,
     api = api_utils.api_wrapper(cv, metric_name)
 
     return bayes_opt.outer_loop(df, x0, y0, api)
+
+def BO_post_process(xs: List[Tensor], 
+                    ys: List[Tensor],
+                    ):
+
+    """
+    post-process BO results; pick optimal configuration 
+    """    
+
+
+    return None
 
 
 class bayesian_optimiser:
