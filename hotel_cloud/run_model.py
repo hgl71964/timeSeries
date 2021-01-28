@@ -18,7 +18,6 @@ HOME = os.path.expanduser("~")  # define home folder
 YEAR = 2019                     # for check only 
 STAY_DATE = "01-11"             # for check only 
 
-
 TARGET = "rooms_all"            # target for forecasting 
 HISTORY = 100                   # length of the time series we want to find 
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
@@ -81,15 +80,38 @@ data_files = os.listdir(os.path.join(HOME, "data"))
 
 if "optimal_config.npy" in data_files:
     print(f"{bcolors.HEADER} reading optimal configuration {bcolors.ENDC}")
-    opt_config = np.load(os.path.join(HOME, "data", "optimal_config.npy"), 
+    opt_config = np.load(os.path.join(HOME, "data", "optimal_config.npy"), \
                         allow_pickle='TRUE').item()
-    
+
+    name = opt_config["name"]
+    opt_config.pop("name")
+
+    if name == "xgb":
+        xgb_params.update(opt_config)
+
+        # register optimal param
+        training_func = xgb_train
+        predict_func = xgb_predict
+        param = xgb_params
+        training_param = xgb_train_params
+
+    elif name == "lgb":
+        lgb_param.update(opt_config)
+        
+        training_func = lgb_train
+        predict_func = lgb_predict
+        param = lgb_param
+        training_param = lgb_train_param
+
     print(f"{bcolors.INFO_CYAN} optimal configuration: ")
     print(opt_config)
     print(f"{bcolors.ENDC}")
 
 else:
     print(f"{bcolors.FAIL} cannot load optimal config, using default setting {bcolors.ENDC}")
+
+
+
 
 
 

@@ -27,8 +27,8 @@ class api_utils:
                         update_dict = cv.numeric_to_dict(x[i])
                         cv.update_param(update_dict)
 
-                        print(f"{bcolors.OKCYAN}config: {bcolors.ENDC}")
-                        print(f"{bcolors.OKCYAN}", cv.param)
+                        print(f"{bcolors.INFO_CYAN}config: {bcolors.ENDC}")
+                        print(f"{bcolors.INFO_CYAN}", cv.param)
                         print(f"{bcolors.ENDC}")
 
                         softdtw, mse = cv.run_cv(df)
@@ -63,8 +63,8 @@ class api_utils:
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
     OKGREEN = '\033[92m'
+    INFO_CYAN = '\033[96m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'

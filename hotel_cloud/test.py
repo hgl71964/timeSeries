@@ -13,6 +13,10 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-a = {"a": 3}
-print(f"{bcolors.HEADER}config: {bcolors.ENDC}")
-print(f"{bcolors.FAIL}", a)
+
+a = {
+    "a":1,
+    "b":2,
+}
+a.pop("a")
+print(a)

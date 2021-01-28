@@ -137,7 +137,7 @@ clustering
 data_files = os.listdir(os.path.join(HOME, "data"))
 
 if "preds.npy" in data_files:
-    print(f"{bcolors.HEADER}reading from data folder...")
+    print(f"{bcolors.HEADER}reading from data folder... {bcolors.ENDC}")
     preds = np.load(os.path.join(HOME, "data", "preds.npy"))
 
 else:
@@ -145,14 +145,14 @@ else:
     print("labels does not exist; start clustering...")
     _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
     np.save(os.path.join(HOME, "data", "preds.npy"), preds)
-    print("done saving")
+    print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
 
 """
 bayes optimisation 
 """
 data_files = os.listdir(os.path.join(HOME, "data"))
 if "optimal_config.npy" in data_files:
-    print(f"{bcolors.WARNING}optimal config already exists !!")
+    print(f"{bcolors.FAIL}optimal config already exists !! {bcolors.ENDC}")
 
 else:
     print("---------------------------------------------")
