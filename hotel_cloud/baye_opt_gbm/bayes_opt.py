@@ -4,7 +4,6 @@ from pandas import DataFrame
 import botorch
 import gpytorch
 from typing import List
-from troch import Tensor
 
 try:  # __main__
     from src import GPs  #  this script should be imported as packages
@@ -42,8 +41,8 @@ def bayes_loop(bayes_opt: object,
 
     return bayes_opt.outer_loop(df, x0, y0, api)
 
-def BO_post_process(xs: List[Tensor], 
-                    ys: List[Tensor],
+def BO_post_process(xs: List[tr.Tensor], 
+                    ys: List[tr.Tensor],
                     ):
 
     """
