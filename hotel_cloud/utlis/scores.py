@@ -81,21 +81,21 @@ class cv_scores:
         """
         new_param = {}
         if self.name == "xgb":
+            new_param["eta"] = new_vals[0]
+            new_param["max_depth"] = int(new_vals[1])
+            new_param["min_child_weight"] = int(new_vals[2])
+            new_param["subsample"] = new_vals[3]
+            new_param["lambda"] = new_vals[4]
             # new_param["booster"] = self.xgb_rev_booster[int(new_vals[0])]
-            new_param["eta"] = new_vals[1]
-            new_param["max_depth"] = int(new_vals[2])
-            new_param["min_child_weight"] = int(new_vals[3])
-            new_param["subsample"] = new_vals[4]
-            new_param["lambda"] = new_vals[5]
 
         elif self.name == "lgb":
+            new_param["eta"] = new_vals[0]
+            new_param["num_leaves"] = int(new_vals[1])
+            new_param["feature_fraction"] = new_vals[2]
+            new_param["subsample"] = new_vals[3]
+            new_param["lambda_l2"] = new_vals[4]
+            new_param["subsample_freq"] = int(new_vals[5])  
             # new_param["boosting"] = self.lgb_rev_booster[int(new_vals[0])]
-            new_param["eta"] = new_vals[1]
-            new_param["num_leaves"] = int(new_vals[2])
-            new_param["feature_fraction"] = new_vals[3]
-            new_param["subsample"] = new_vals[4]
-            new_param["lambda_l2"] = new_vals[5]
-            new_param["subsample_freq"] = int(new_vals[6])  
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
         return new_param
@@ -105,22 +105,22 @@ class cv_scores:
         """WARNINGs: order must be correct"""
         if self.name == "xgb":
             return [
-                    # self.xgb_booster[self.param["booster"]],  # str -> integer
                     self.param["eta"], \
                     self.param["max_depth"], \
                     self.param["min_child_weight"], \
                     self.param["subsample"], \
                     self.param["lambda"], \
+                    # self.xgb_booster[self.param["booster"]],  # str -> integer
                     ]
         elif self.name == "lgb":
             return [
-                    # self.lgb_booster[self.param["boosting"]], # int
                     self.param["eta"],  # float
                     self.param["num_leaves"],  # int
                     self.param["feature_fraction"],  # float 
                     self.param["subsample"],  # float
                     self.param["lambda_l2"], 
                     self.param["subsample_freq"],  # int 
+                    # self.lgb_booster[self.param["boosting"]], # int
                     ]
         else:
             raise AttributeError(f"{self.name} must be xgb or lgb to generate correct numerical list")
