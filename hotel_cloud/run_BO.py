@@ -114,6 +114,8 @@ acq_params = {
                }
 
 """end of Args"""
+
+# ------------------------------------------------------------------------------------------
 # totalrevenue = room revenue + other revenue; 
 # Average Daily Rate (ADR) = revenue/rooms
 
@@ -135,7 +137,6 @@ print("target shape", data.shape)
 """
 clustering 
 """
-
 data_files = os.listdir(os.path.join(HOME, "data"))
 
 if "preds.npy" in data_files:
@@ -152,6 +153,7 @@ else:
 """
 bayes optimisation 
 """
+print("---------------------------------------------")
 print("starts bayes_opt: ")
 
 xs, ys = [], []
@@ -179,7 +181,7 @@ for name in ["xgb", "lgb"]:
           [1, 5]]).T  
 
         cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
-            lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_params)
+            lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
 
     bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
 
