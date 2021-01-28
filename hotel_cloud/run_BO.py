@@ -1,11 +1,9 @@
 import os 
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 from copy import deepcopy
-import pickle
 from utlis.color import bcolors
 
 """data cleansing"""
@@ -122,7 +120,7 @@ raw_df = pd.read_csv("~/data/hotel-4_12jan2021.csv")
 raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
 raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
 t = raw_df["staydate"].unique().shape[0]
-print(f"staydate has {t} days")
+print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
 
 """
 data cleansing 
@@ -131,7 +129,7 @@ ts = timeSeries_data(**{"year": YEAR, })
 data, data_dict, df = ts.cleansing(raw_df, DATA_RANGE, TARGET, \
                     HISTORY, True, **{"interpolate_col": [TARGET]})
 
-print("target shape", data.shape)
+print(f"{bcolors.INFO_CYAN}target shape", data.shape)
 
 """
 clustering 
@@ -154,11 +152,11 @@ bayes optimisation
 """
 data_files = os.listdir(os.path.join(HOME, "data"))
 if "optimal_config.npy" in data_files:
-    print("optimal config already exists !!")
+    print(f"{bcolors.WARNING}optimal config already exists !!")
 
 else:
     print("---------------------------------------------")
-    print(f"{bcolors.HEADER}starts bayes_opt: ")
+    print(f"{bcolors.HEADER}starts bayes_opt: {bcolors.ENDC}")
 
     xs, ys = [], []
     for name in ["xgb", "lgb"]:
@@ -210,4 +208,4 @@ else:
     optimal_config["name"] = name
 
     np.save(os.path.join(HOME, "data", "optimal_config.npy"), optimal_config)
-    print(f"{bcolors.HEADER}done bayes_opt for optimal config")
+    print(f"{bcolors.HEADER}done bayes_opt for optimal config {bcolors.ENDC}")

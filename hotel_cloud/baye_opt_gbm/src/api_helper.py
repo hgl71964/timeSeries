@@ -28,7 +28,8 @@ class api_utils:
                         cv.update_param(update_dict)
 
                         print(f"{bcolors.OKCYAN}config: {bcolors.ENDC}")
-                        print(f"{bcolors.OKBLUE}", cv.param)
+                        print(f"{bcolors.OKCYAN}", cv.param)
+                        print(f"{bcolors.ENDC}")
 
                         softdtw, mse = cv.run_cv(df)
 

@@ -31,6 +31,9 @@ def BO_post_process(xs: List[tr.Tensor],
         name = "xgb"
         optimal_config = xs[0][ys[0].argmax()]
 
+    if isinstance(optimal_config, tr.Tensor):
+        optimal_config = optimal_config.numpy()
+        
     return name, optimal_config
 
 
@@ -48,7 +51,7 @@ def bayes_loop(bayes_opt: object,
     x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward(cv, df, metric_name)
 
-    print(f"initial x, y: \n ({x0}, {-y0:.2f})")
+    print(f"{bcolors.INFO_CYAN}initial x, y: \n ({x0}, {-y0:.2f}) {bcolors.ENDC}")
 
     #  format the initial pair
     x0, y0 = tr.tensor(x0, dtype=dtype).view(1, -1).to(device), \
@@ -183,7 +186,7 @@ class bayesian_optimiser:
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
+    INFO_CYAN = '\033[96m'
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
