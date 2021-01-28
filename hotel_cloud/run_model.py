@@ -76,11 +76,11 @@ lgb_train_param = {
               }
 """end of Args"""
 
-data_files = os.listdir(os.path.join(HOME, "data"))
+data_files = os.listdir(os.path.join(HOME, "data", "log"))
 
 if "optimal_config.npy" in data_files:
     print(f"{bcolors.HEADER} reading optimal configuration {bcolors.ENDC}")
-    opt_config = np.load(os.path.join(HOME, "data", "optimal_config.npy"), \
+    opt_config = np.load(os.path.join(HOME, "data", "log", "optimal_config.npy"), \
                         allow_pickle='TRUE').item()
 
     name = opt_config["name"]
@@ -109,4 +109,4 @@ if "optimal_config.npy" in data_files:
     print(f"{bcolors.ENDC}")
 
 else:
-    print(f"{bcolors.FAIL} cannot load optimal config, using default setting {bcolors.ENDC}")
+    print(f"{bcolors.FAIL} cannot load optimal config, using default params \n {bcolors.ENDC}")
