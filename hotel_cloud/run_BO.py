@@ -5,8 +5,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 from copy import deepcopy
-from tslearn.clustering import TimeSeriesKMeans
+import pickle
+
+"""data cleansing"""
 from utlis.timeSeries_dataset import timeSeries_data
+
+"""clustering"""
+from tslearn.clustering import TimeSeriesKMeans
 from models.kMeansTimeSeries import Kmeans_predict
 
 """GBM"""
@@ -16,7 +21,7 @@ from models.lightgbm_ts import lgb_train, lgb_predict
 from utlis.evaluation import forecast_metric
 
 """BO"""
-from baye_opt_gbm.bayes_opt import bayes_loop, bayesian_optimiser
+from baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
 
 # %run timeSeries/hotel_cloud/utlis/evaluation.py
 # %run timeSeries/hotel_cloud/utlis/helper.py
@@ -153,44 +158,71 @@ else:
 """
 bayes optimisation 
 """
-print("---------------------------------------------")
-print("starts bayes_opt: ")
 
-xs, ys = [], []
-for name in ["xgb", "lgb"]:
+data_files = os.listdir(os.path.join(HOME, "data"))
+if "optimal_config.npy" in data_files:
+    print("optimal config already exists !!")
+
+else:
+    print("---------------------------------------------")
+    print("starts bayes_opt: ")
+
+    xs, ys = [], []
+    for name in ["xgb", "lgb"]:
+        if name == "xgb":
+            domain = np.array([  # -> (2, d) this will change as search variale changes 
+                # [0,2],
+                [0, 0.7],
+                [1,10],
+                [1,5],
+                [0.3, 1],
+                [1, 7],
+                ]).T  
+
+            cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
+                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
+
+        elif name == "lgb":
+            domain = np.array([  # -> (2, d) this will change as search variale changes 
+            # [0, 3], 
+            [0, 0.7],
+            [20,50],
+            [0.5,1],
+            [0.3, 1],
+            [1, 7],
+            [1, 5],
+            ]).T  
+
+            cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
+                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
+
+        bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
+
+        x, y = bayes_loop(bayes_opt, cv, df, "softdtw")
+
+        xs.append(x)
+        ys.append(y)
+
+    name, numeric_config = BO_post_process(xs, ys)
+
     if name == "xgb":
-        domain = np.array([  # -> (2, d) this will change as search variale changes 
-            # [0,2],
-            [0,1],
-            [1,10],
-            [1,5],
-            [0.1, 1],
-            [1, 10],]).T  
-
         cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
-            xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
+                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
 
     elif name == "lgb":
-        domain = np.array([  # -> (2, d) this will change as search variale changes 
-          # [0, 3], 
-          [1e-2, 1],
-          [20,50],
-          [0.5,1],
-          [0.2, 1],
-          [1, 10],
-          [1, 5]]).T  
-
         cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
-            lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
-
-    bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
-
-    x, y = bayes_loop(bayes_opt, cv, df, "softdtw")
-
-    xs.append(x)
-    ys.append(y)
+                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
 
 
-print(xs)
+    optimal_config = cv.numeric_to_dict(numeric_config)
+    optimal_config["name"] = name
 
-print(ys)
+
+
+
+else:
+    # euclidean, softdtw, dtw
+    print("labels does not exist; start clustering...")
+    _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
+    np.save(os.path.join(HOME, "data", "preds.npy"), preds)
+    print("done saving")

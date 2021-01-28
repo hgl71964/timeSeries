@@ -16,6 +16,24 @@ except ImportError:  # import as package
 dtype = tr.float32
 
 
+def BO_post_process(xs: List[tr.Tensor], 
+                    ys: List[tr.Tensor],
+                    ):
+
+    """
+    post-process BO results; pick optimal configuration 
+    """    
+
+    if ys[1].max() >= ys[0].max():
+        name = "lgb"
+        optimal_config = xs[1][ys[1].argmax()]
+    else:
+        name = "xgb"
+        optimal_config = xs[0][ys[0].argmax()]
+
+    return name, optimal_config
+
+
 def bayes_loop(bayes_opt: object,
                 cv: object, 
                 df: DataFrame,
@@ -40,17 +58,6 @@ def bayes_loop(bayes_opt: object,
     api = api_utils.api_wrapper(cv, metric_name)
 
     return bayes_opt.outer_loop(df, x0, y0, api)
-
-def BO_post_process(xs: List[tr.Tensor], 
-                    ys: List[tr.Tensor],
-                    ):
-
-    """
-    post-process BO results; pick optimal configuration 
-    """    
-
-
-    return None
 
 
 class bayesian_optimiser:
