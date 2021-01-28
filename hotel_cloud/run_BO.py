@@ -152,8 +152,8 @@ print("starts bayes_opt: ")
 
 xs, ys = [], []
 for name in ["xgb", "lgb"]:
-  if name == "xgb":
-    domain = np.array([  # -> (2, d) this will change as search variale changes 
+    if name == "xgb":
+        domain = np.array([  # -> (2, d) this will change as search variale changes 
             # [0,2],
             [0,1],
             [1,10],
@@ -161,11 +161,11 @@ for name in ["xgb", "lgb"]:
             [0.1, 1],
             [1, 10],]).T  
 
-    cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
+        cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
             xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
 
-  elif name == "lgb":
-    domain = np.array([  # -> (2, d) this will change as search variale changes 
+    elif name == "lgb":
+        domain = np.array([  # -> (2, d) this will change as search variale changes 
           # [0, 3], 
           [1e-2, 1],
           [20,50],
@@ -173,13 +173,16 @@ for name in ["xgb", "lgb"]:
           [0.2, 1],
           [1, 10],
           [1, 5]]).T  
-    cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
+
+        cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
             lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_params)
 
-  bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
+    bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
 
-  x, y = bayes_loop(bayes_opt, cv, df, "softdtw")
-  xs.append(x); ys.append(y)
+    x, y = bayes_loop(bayes_opt, cv, df, "softdtw")
+
+    xs.append(x)
+    ys.append(y)
 
 
 print(xs)
