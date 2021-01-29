@@ -31,6 +31,18 @@ cli.add_argument("--target",
                 default="rooms_all",
                 help="forecast target")
 
+cli.add_argument("--gn",
+                dest="gn",
+                type=int,
+                default=-1,
+                help="group number to use, -1 means use all available data")
+
+cli.add_argument("--ts",
+                dest="ts",
+                type=float,
+                default=0.2,
+                help="testset size")
+
 cli.add_argument("-k",
                 dest="k",
                 type=int,
@@ -52,9 +64,10 @@ YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only 
 
 TARGET = args.target            # target for forecasting 
-HISTORY = args.history                   # length of the time series we want to find 
+HISTORY = args.history          # length of the time series we want to find 
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
-N_CLUSTER = 5                   # num_clusters are determined by the elbow-point
+TEST_SIZE = args.ts
+GROUP_NUM = args.gn
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
@@ -138,10 +151,56 @@ if "optimal_config.npy" in data_files:
         param = lgb_param
         training_param = lgb_train_param
 
-    print(f"{bcolors.INFO_CYAN} optimal model && configuration: ")
+    print(f"{bcolors.OKGREEN} optimal model && configuration: ")
     print(name)
     print(param)
     print(f"{bcolors.ENDC}")
 
 else:
     print(f"{bcolors.FAIL} cannot load optimal config, using default params \n {bcolors.ENDC}")
+
+
+"""
+data reading
+"""
+raw_df = pd.read_csv("~/data/hotel-4_12jan2021.csv") 
+raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
+raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
+t = raw_df["staydate"].unique().shape[0]
+print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
+
+"""
+data cleansing 
+"""
+ts = timeSeries_data(**{"year": YEAR, })
+data, data_dict, df = ts.cleansing(raw_df, DATA_RANGE, TARGET, \
+                    HISTORY, True, **{"interpolate_col": [TARGET]})
+
+print(f"{bcolors.INFO_CYAN}target shape", data.shape)
+
+
+"""
+reading clustering file
+"""
+data_files = os.listdir(os.path.join(HOME, "data", "log"))
+if "preds.npy" in data_files:
+    print(f"{bcolors.HEADER}reading from data folder... {bcolors.ENDC}")
+    preds = np.load(os.path.join(HOME, "data", "log","preds.npy"))
+
+
+"""
+"""
+
+print(TEST_SIZE)
+print(GROUP_NUM)
+print(preds.shape)
+print(len(data_dict.keys()))
+
+train_dates, test_dates = ts.train_test_dates(preds, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
+
+print(train_dates)
+
+print(f"{bcolors.INFO_CYAN}, trainset size: {len(train_dates)} \t \
+                        testset size: {len(test_dates)} {bcolors.ENDC}")
+
+

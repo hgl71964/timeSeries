@@ -142,7 +142,7 @@ class timeSeries_data:
                         labels: np.ndarray,  # outcome of clustering 
                         data_dict: dict,
                         test_size: float = 0.2, 
-                        group_num: int = 0,                    
+                        group_num: int = -1,                    
                         ):
 
         all_indices = np.where(labels==group_num)[0].flatten()
