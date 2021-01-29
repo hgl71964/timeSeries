@@ -6,7 +6,6 @@ import os
 
 
 class helper:
-
     
     @staticmethod
     def _average_over_folds(df):
@@ -32,7 +31,6 @@ class helper:
         fraction = size_recorder/size_recorder.sum()
         df[f"{metric_name}_weighted_mean"] = np.multiply(fraction, mean_recorder).sum()
         return df
-
 
     @staticmethod
     def post_process(num_groups: int,  # numbers of group in total 
@@ -117,3 +115,7 @@ class logger:
                 metric_df.append(pd.read_csv(full_path))
 
         return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0).reset_index(drop=True).drop(columns=["Unnamed: 0"])
+
+
+class plotter:
+    pass

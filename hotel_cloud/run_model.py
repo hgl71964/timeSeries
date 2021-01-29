@@ -202,7 +202,9 @@ train_df, test_df = ts.make_lag_from_dates(df, train_dates, ALL_FEAT,\
                         ts.make_lag_from_dates(df, test_dates, ALL_FEAT,\
                         target=TARGET, history=HISTORY, lag_bound=LAG_FEAT)
 
-if False:
-    bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
-    # print(predict_func(test_df, CAT_LIST, TARGET, bst).shape)
+bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+
+if False:
+    predict_func(test_df, CAT_LIST, TARGET, bst).shape
+
