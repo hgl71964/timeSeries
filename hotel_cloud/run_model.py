@@ -16,7 +16,6 @@ from models.lightgbm_ts import lgb_train, lgb_predict
 from utlis.evaluation import forecast_metric
 
 """Args"""
-
 cli = argparse.ArgumentParser(description="config global parameters")
 
 cli.add_argument("--lb",
@@ -58,21 +57,19 @@ cli.add_argument("--history",
 
 args = cli.parse_args()
 
+HOME = os.path.expanduser("~")  # define home folder
+YEAR = 2019                     # for check only
+STAY_DATE = "01-11"             # for check only
 
-
-HOME = os.path.expanduser("~")  # define home folder 
-YEAR = 2019                     # for check only 
-STAY_DATE = "01-11"             # for check only 
-
-TARGET = args.target            # target for forecasting 
-HISTORY = args.history          # length of the time series we want to find 
-DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
+TARGET = args.target            # target for forecasting
+HISTORY = args.history          # length of the time series we want to find
+DATA_RANGE = (2019, 2019)       # use data from (0 - 1)
 TEST_SIZE = args.ts
 GROUP_NUM = args.gn
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
-EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
-KFOLD = args.k                       # score via 3 fold cross-validation  
+EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
+KFOLD = args.k                       # score via 3 fold cross-validation
 LAG_FEAT = args.lb              # the bound for lagged features
 
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  

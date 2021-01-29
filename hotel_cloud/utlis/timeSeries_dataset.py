@@ -24,7 +24,7 @@ class timeSeries_data:
         dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
         data = np.empty((365, history), dtype=np.float32)
 
-        for i in range(1, 365):
+        for _ in range(1, 365):
             start_date += datetime.timedelta(days=1)
             dates[i] = start_date.strftime("%m-%d")
 
@@ -61,7 +61,7 @@ class timeSeries_data:
         
         # deque with O(1) complexity to append
         all_booking_curve, clean_df = deque(), deque()
-        for i in range(num_days):
+        for _ in range(num_days):
 
             full_date = start_date.strftime("%Y-%m-%d")
             start_date += datetime.timedelta(days=1)

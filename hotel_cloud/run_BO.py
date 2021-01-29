@@ -16,9 +16,9 @@ from models.kMeansTimeSeries import Kmeans_predict
 
 """GBM"""
 from utlis.scores import cv_scores
+from utlis.evaluation import forecast_metric
 from models.xgboost_ts import xgb_train, xgb_predict
 from models.lightgbm_ts import lgb_train, lgb_predict
-from utlis.evaluation import forecast_metric
 
 """BO"""
 from baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
@@ -72,12 +72,12 @@ cli.add_argument("--bm",
 
 args = cli.parse_args()
 
-HOME = os.path.expanduser("~")  # define home folder 
-YEAR = 2019                     # for check only 
-STAY_DATE = "01-11"             # for check only 
+HOME = os.path.expanduser("~")  # define home folder
+YEAR = 2019                     # for check only
+STAY_DATE = "01-11"             # for check only
 
 
-TARGET = args.target        # target for forecasting 
+TARGET = args.target        # target for forecasting
 HISTORY = args.history                   # length of the time series we want to find
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
 N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
