@@ -192,7 +192,6 @@ if "preds.npy" in data_files:
 """
 train test
 """
-
 if GROUP_NUM == -1:  # use all data 
     train_dates, test_dates = ts.train_test_dates(np.zeros_like(preds)-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 else:
@@ -206,11 +205,7 @@ train_df, test_df = ts.make_lag_from_dates(df, train_dates, ALL_FEAT,\
                         ts.make_lag_from_dates(df, test_dates, ALL_FEAT,\
                         target=TARGET, history=HISTORY, lag_bound=LAG_FEAT)
 
-
 if False:
     bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
-
-    # print(predict_func(test_df, CAT_LIST, TARGET, bst))
-
-    
+    # print(predict_func(test_df, CAT_LIST, TARGET, bst).shape)

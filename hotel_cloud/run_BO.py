@@ -173,7 +173,7 @@ t = raw_df["staydate"].unique().shape[0]
 print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
 
 """
-data cleansing 
+data cleansing
 """
 ts = timeSeries_data(**{"year": YEAR, })
 data, data_dict, df = ts.cleansing(raw_df, DATA_RANGE, TARGET, \
