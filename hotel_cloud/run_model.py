@@ -1,9 +1,10 @@
 import os 
+import argparse
+import logging
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from utlis.color import bcolors
-import argparse
 
 """data cleansing"""
 from utlis.timeSeries_dataset import timeSeries_data
@@ -189,7 +190,7 @@ if "preds.npy" in data_files:
 
 
 """
-train test split
+train test
 """
 
 if GROUP_NUM == -1:  # use all data 
@@ -197,8 +198,15 @@ if GROUP_NUM == -1:  # use all data
 else:
     train_dates, test_dates = ts.train_test_dates(preds, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 
-print(f"{bcolors.INFO_CYAN}, trainset size: {len(train_dates)} \t \
+print(f"{bcolors.INFO_CYAN}trainset size: {len(train_dates)} \t \
                         testset size: {len(test_dates)} {bcolors.ENDC}")
+
+train_df, test_df = ts.make_lag_from_dates(df, train_dates, ALL_FEAT,\
+                        target=TARGET, history=HISTORY, lag_bound=LAG_FEAT), \
+                        ts.make_lag_from_dates(df, test_dates, ALL_FEAT,\
+                        target=TARGET, history=HISTORY, lag_bound=LAG_FEAT)
+
+bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 
 
