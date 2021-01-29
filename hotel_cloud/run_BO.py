@@ -78,12 +78,12 @@ STAY_DATE = "01-11"             # for check only
 
 
 TARGET = args.target        # target for forecasting 
-HISTORY = args.history                   # length of the time series we want to find 
+HISTORY = args.history                   # length of the time series we want to find
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
 N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 
-EPOCHS = 256                    # train iterations; early stopping to prevent overfitting 
-KFOLD = args.k                       # score via 3 fold cross-validation  
+EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
+KFOLD = args.k                       # score via 3 fold cross-validation
 LAG_FEAT = args.lb              # the bound for lagged features
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
