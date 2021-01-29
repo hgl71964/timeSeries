@@ -189,18 +189,17 @@ if "preds.npy" in data_files:
 
 
 """
+train test split
 """
 
-print(TEST_SIZE)
-print(GROUP_NUM)
-print(preds.shape)
-print(len(data_dict.keys()))
-
-train_dates, test_dates = ts.train_test_dates(preds, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
-
-print(train_dates)
+if GROUP_NUM == -1:  # use all data 
+    train_dates, test_dates = ts.train_test_dates(np.zeros_like(preds)-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
+else:
+    train_dates, test_dates = ts.train_test_dates(preds, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 
 print(f"{bcolors.INFO_CYAN}, trainset size: {len(train_dates)} \t \
                         testset size: {len(test_dates)} {bcolors.ENDC}")
+
+
 
 
