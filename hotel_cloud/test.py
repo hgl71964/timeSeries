@@ -1,18 +1,8 @@
-import os
-import pandas as pd
-import argparse
-
-cli_parser = argparse.ArgumentParser(description='List the content of a folder')
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 
-cli_parser.add_argument('Path',
-                       metavar='path',
-                       type=str,
-                       default="test_path", 
-                       help='the path to list')
-
-args = cli_parser.parse_args()
-
-
-print(args)
-print(args.Path)
+_, ax = plt.subplots(figsize=(10, 8))
+ax.plot([1,2,3], label="trash")
+plt.show()

@@ -205,6 +205,20 @@ train_df, test_df = ts.make_lag_from_dates(df, train_dates, ALL_FEAT,\
 
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
+# feature scores
+d = bst.get_score(importance_type="weight")
+print(sorted([(key, val) for key, val in d.items()], key=lambda x:x[-1], reverse=True))
+
+# cor features
+corr_df = train_df.corr().abs()
+upper = corr_df.where(np.triu(np.ones(corr_df.shape), k=1).astype(np.bool))
+
+for i in range(5):
+    print(upper.iloc[i])
+
+
+
+
 if False:
     predict_func(test_df, CAT_LIST, TARGET, bst).shape
 
