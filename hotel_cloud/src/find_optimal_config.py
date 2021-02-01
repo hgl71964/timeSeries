@@ -206,6 +206,8 @@ else:
 
 """
 bayes optimisation 
+
+    notice tree model is in-variant to scale so no normalisation
 """
 data_files = os.listdir(os.path.join(HOME, "data", "log"))
 if "optimal_config.npy" in data_files:
