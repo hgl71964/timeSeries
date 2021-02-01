@@ -251,6 +251,7 @@ else:
         xs.append(x)
         ys.append(y)
 
+    # post-process the results 
     xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
 
