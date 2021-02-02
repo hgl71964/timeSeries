@@ -71,6 +71,7 @@ class logger:
         
         zidx = str(index).zfill(3)  # 3 figs naming
 
+        # TODO the file structure has changed!
         file_present = glob(f"./data/log/{zidx}_param.csv") or \
                     glob(f"./data/log/{zidx}_metric.csv")
         
