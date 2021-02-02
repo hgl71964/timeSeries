@@ -1,33 +1,20 @@
 #! /bin/bash
 
 file=()
-name=$HOME"/data"
 
-echo "search name: $name"
+# one-liner to get script's pwd
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"/data
 
-for entry in "$HOME"/*
-do 
-    files+=("$entry")
-done
-
-
-
-if [ -e "$name" ]; then
-    :
+if [ -e "$DIR/log" ]; then
+    echo "log folder setup successful"
 else
-    echo "data folder does not exist"
-    exit 1
+    mkdir -p "$DIR/log"
+    echo "set up log folder"
 fi
 
 
-if [ -e "$name/log" ]; then
-    echo "folder setup sucessful"
-else
-    mkdir -p "$name/log"
-    echo " folder setup sucessful"
-fi
-
-echo 
+echo
 echo "installing dependencies"
-echo 
-pip install -r hotel_cloud/requirement.txt
+PARENT=$(dirname $DIR)
+
+pip install -r "$PARENT"/requirement.txt
