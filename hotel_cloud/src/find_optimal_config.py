@@ -5,6 +5,7 @@ the results are store -> ?/optimal_config.npy
 logs are store -> ?/data/log/bo*
 """
 import os 
+from os.path import dirname
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -78,7 +79,11 @@ cli.add_argument("--bm",
 
 args = cli.parse_args()
 
-HOME = os.path.expanduser("~")  # define home folder
+temp = dirname(os.path.realpath(__file__))
+DIR = dirname(temp)             # define working dir folder
+
+del temp
+
 YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only
 
@@ -171,7 +176,7 @@ acq_params = {
 # totalrevenue = room revenue + other revenue; 
 # Average Daily Rate (ADR) = revenue/rooms
 
-raw_df = pd.read_csv("~/data/hotel-4_12jan2021.csv") 
+raw_df = pd.read_csv(f"{DIR}/data/hotel-4_12jan2021.csv") 
 raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
 raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
 t = raw_df["staydate"].unique().shape[0]
@@ -189,11 +194,11 @@ print(f"{bcolors.INFO_CYAN}target shape", data.shape)
 """
 clustering 
 """
-data_files = os.listdir(os.path.join(HOME, "data", "log"))
+data_files = os.listdir(os.path.join(DIR, "data", "log"))
 
 if "preds.npy" in data_files:
     print(f"{bcolors.HEADER}reading from data folder... {bcolors.ENDC}")
-    preds = np.load(os.path.join(HOME, "data", "log","preds.npy"))
+    preds = np.load(os.path.join(DIR, "data", "log","preds.npy"))
 
 else:
     # euclidean, softdtw, dtw
@@ -201,7 +206,7 @@ else:
     _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
 
     # save clustering results
-    np.save(os.path.join(HOME, "data", "log", "preds.npy"), preds)
+    np.save(os.path.join(DIR, "data", "log", "preds.npy"), preds)
     print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
 
 """
@@ -209,7 +214,7 @@ bayes optimisation
 
     notice tree model is in-variant to scale so no normalisation
 """
-data_files = os.listdir(os.path.join(HOME, "data", "log"))
+data_files = os.listdir(os.path.join(DIR, "data", "log"))
 if "optimal_config.npy" in data_files:
     print(f"{bcolors.FAIL}optimal config already exists !! {bcolors.ENDC}")
 
@@ -263,8 +268,8 @@ else:
     optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 
     # saving 
-    xgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_xgb.csv"))
-    lgb_df.to_csv(os.path.join(HOME, "data", "log", "bo_lgb.csv"))
+    xgb_df.to_csv(os.path.join(DIR, "data", "log", "bo_xgb.csv"))
+    lgb_df.to_csv(os.path.join(DIR, "data", "log", "bo_lgb.csv"))
 
-    np.save(os.path.join(HOME, "data", "log", "optimal_config.npy"), optimal_config)
+    np.save(os.path.join(DIR, "data", "log", "optimal_config.npy"), optimal_config)
     print(f"{bcolors.HEADER}done bayes_opt for optimal config {bcolors.ENDC}")

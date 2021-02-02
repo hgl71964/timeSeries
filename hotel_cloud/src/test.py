@@ -1,8 +1,21 @@
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+import os 
+
+a = os.path.realpath(__file__)
+
+print(a)
+
+print(a.split("/"))
 
 
-_, ax = plt.subplots(figsize=(10, 8))
-ax.plot([1,2,3], label="trash")
-plt.show()
+paths = []
+for i in a.split("/"):
+    if i:
+        if i != "hotel_cloud":
+            paths.append(i)
+        else:
+            paths.append(i)
+            break
+
+print(paths)
+
+print(os.path.join("/", *paths))
