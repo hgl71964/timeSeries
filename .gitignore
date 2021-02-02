@@ -4,4 +4,5 @@ __pycache__
 
 .DS_Store
 
-hotel_cloud/data
+hotel_cloud/data/*
+!hotel_cloud/data/README.md
