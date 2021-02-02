@@ -61,7 +61,7 @@ cli.add_argument("-t",
 cli.add_argument("-k",
                 dest="k",
                 type=int,
-                default=3,
+                default=5,
                 help="number of folds for cross-validation")
 
 cli.add_argument("--history",
