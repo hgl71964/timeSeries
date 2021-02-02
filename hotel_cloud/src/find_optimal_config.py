@@ -5,14 +5,14 @@ the results are store -> ?/optimal_config.npy
 logs are store -> ?/data/log/bo*
 """
 import os 
-from os.path import dirname
+import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 from copy import deepcopy
 from utlis.color import bcolors
-import argparse
+from utlis.folder import folder
 
 """data cleansing"""
 from utlis.timeSeries_dataset import timeSeries_data
@@ -79,14 +79,10 @@ cli.add_argument("--bm",
 
 args = cli.parse_args()
 
-temp = dirname(os.path.realpath(__file__))
-DIR = dirname(temp)             # define working dir folder
-
-del temp
+DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
 
 YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only
-
 
 TARGET = args.target        # target for forecasting
 HISTORY = args.history                   # length of the time series we want to find
@@ -168,7 +164,6 @@ acq_params = {
     "num_fantasies": 128,        # number of fantasies used by KG
     "beta":1.,                   # used by UCB/qUCB
                }
-
 """end of Args"""
 
 # ------------------------------------------------------------------------------------------
