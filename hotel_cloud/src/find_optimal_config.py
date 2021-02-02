@@ -1,8 +1,8 @@
 """
 this script runs bayes_opt to find optimal hyperparameter for (xg, light)gbm models
 
-the results are store -> ?/optimal_config.npy
-logs are store -> ?/data/log/bo*
+the results are store -> ${work_dir}/data/optimal_config.npy
+logs are store -> ${work_dir}/data/log/bo*
 """
 import os 
 import argparse
