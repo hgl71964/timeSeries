@@ -14,13 +14,6 @@ from src.utlis.color import bcolors
 from src.utlis.folder import folder
 from src.component.preprocess import pre_process
 
-# """data cleansing"""
-# from utlis.timeSeries_dataset import timeSeries_data
-
-# """clustering"""
-# from tslearn.clustering import TimeSeriesKMeans
-# from models.kMeansTimeSeries import Kmeans_predict
-
 """GBM"""
 from src.utlis.scores import cv_scores
 from src.utlis.evaluation import forecast_metric
@@ -144,7 +137,7 @@ lgb_train_param = {
               "early_stopping_rounds": 20, 
               }
 
-# args for baye_opt 
+# args for baye_opt
 T = args.t  # time horizon
 Q = 1  # q-parallelism (if use analytical acq_func, q must be 1)
 BO_METRIC = args.bm
@@ -156,10 +149,10 @@ gp_name, gp_params = "MA2.5",{
                           "epochs":128,       # epoch to run, if chosen ADAM
                           "lr":1e-1,          # learning rate for ADAM
                          }
-acq_params = { 
+acq_params = {
     "acq_name" : "UCB",          # acqu func; includes: "EI", "UCB", "qEI", "qUCB", "qKG"
     "N_start": 32,               # number of starts for multi-start SGA
-    "raw_samples" :512,          # heuristic initialisation 
+    "raw_samples" :512,          # heuristic initialisation
     "N_MC_sample" : 256,         # number of samples for Monte Carlo simulation
     "num_fantasies": 128,        # number of fantasies used by KG
     "beta":1.,                   # used by UCB/qUCB
@@ -175,10 +168,12 @@ df, data_dict, preds, ts = pre_process(DIR, os.path.join(DIR, "data", "hotel-4_1
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER)
 
 """
-bayes optimisation 
+bayes optimisation
 
     notice tree model is in-variant to scale so no normalisation
 """
+
+
 data_files = os.listdir(os.path.join(DIR, "data", "log"))
 if "optimal_config.npy" in data_files:
     print(f"{bcolors.FAIL}optimal config already exists !! {bcolors.ENDC}")
@@ -223,7 +218,7 @@ else:
         xs.append(x)
         ys.append(y)
 
-    # post-process the results 
+    # post-process the results
     xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
 
@@ -232,7 +227,7 @@ else:
 
     optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 
-    # saving 
+    # saving
     xgb_df.to_csv(os.path.join(DIR, "data", "log", "bo_xgb.csv"))
     lgb_df.to_csv(os.path.join(DIR, "data", "log", "bo_lgb.csv"))
 
