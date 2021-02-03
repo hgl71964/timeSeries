@@ -171,46 +171,8 @@ acq_params = {
 # totalrevenue = room revenue + other revenue; 
 # Average Daily Rate (ADR) = revenue/rooms
 
-# raw_df = pd.read_csv(f"{DIR}/data/hotel-4_12jan2021.csv") 
-# raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
-# raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
-# t = raw_df["staydate"].unique().shape[0]
-# print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
-
-# """
-# data cleansing
-# """
-# ts = timeSeries_data(**{"year": YEAR, })
-# data, data_dict, df = ts.cleansing(raw_df, DATA_RANGE, TARGET, \
-#                     HISTORY, True, **{"interpolate_col": [TARGET]})
-
-# print(f"{bcolors.INFO_CYAN}target shape", data.shape)
-
-# """
-# clustering 
-# """
-# data_files = os.listdir(os.path.join(DIR, "data", "log"))
-
-# if "preds.npy" in data_files:
-#     print(f"{bcolors.HEADER}reading from data folder... {bcolors.ENDC}")
-#     preds = np.load(os.path.join(DIR, "data", "log","preds.npy"))
-
-# else:
-#     # euclidean, softdtw, dtw
-#     print(f"{bcolors.INFO_CYAN}labels does not exist; start clustering... {bcolors.ENDC}")
-#     _, preds = Kmeans_predict(data, N_CLUSTER, **{"metric": "softdtw"})  
-
-#     # save clustering results
-#     np.save(os.path.join(DIR, "data", "log", "preds.npy"), preds)
-#     print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
-
 df, data_dict, preds, ts = pre_process(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER)
-
-print(df)
-print(data_dict)
-print(preds)
-raise RuntimeError("a")
 
 """
 bayes optimisation 

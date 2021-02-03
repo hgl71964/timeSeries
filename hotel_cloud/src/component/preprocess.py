@@ -5,12 +5,10 @@ the results are store -> ${work_dir}/data/optimal_config.npy
 logs are store -> ${work_dir}/data/log/bo*
 """
 
-print(__name__)
 import os 
 import numpy as np
 import pandas as pd
 from ..utlis.color import bcolors
-# from . import utlis.folder 
 
 """data cleansing"""
 from ..utlis.timeSeries_dataset import timeSeries_data
@@ -18,9 +16,6 @@ from ..utlis.timeSeries_dataset import timeSeries_data
 """clustering"""
 from tslearn.clustering import TimeSeriesKMeans
 from ..models.kMeansTimeSeries import Kmeans_predict
-"""Args"""
-
-
 
 def pre_process(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
@@ -30,7 +25,6 @@ def pre_process(working_dir: str,  # path of the working dir
                 target,
                 n_cluster, 
                 ):
-
 
     raw_df = pd.read_csv(data_full_path) 
     raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
