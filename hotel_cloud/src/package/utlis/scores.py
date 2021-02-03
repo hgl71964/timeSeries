@@ -147,7 +147,7 @@ class cv_scores:
         training_func: callable,  # xgb_train or lgb_train
         predict_func: callable,  # xgb_predict or lgb_predict
         ts: object,  #  timeSeries_data object
-        metric: object,  # metric object 
+        metric: object,  # metric object
         preserved_cols: List[str], 
         target: str, 
         history: int, 
@@ -165,7 +165,7 @@ class cv_scores:
         group_size = len(all_indices)
 
         kf = KFold(n_splits=nfold, shuffle=False)
-        softdtw_collector, mse_collector = [[None]*8]*nfold, [[None]*8]*nfold  # [["name", "metric", "group_label", "group_size","nfold","min", "max", "mean"], ...]
+        softdtw_collector, mse_collector = [[None]*9]*nfold, [[None]*9]*nfold  # [["name", "metric", "group_label", "group_size","nfold","min", "max", "mean", "std"], ...]
 
         for index, (train_keys, test_keys) in enumerate(kf.split(all_indices)):  # CV
 
@@ -199,8 +199,8 @@ class cv_scores:
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
 
-            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, group_size, nfold, min(temp_softdtw), max(temp_softdtw), sum(temp_softdtw)/len(temp_softdtw)], \
-                                                            [name, "mse", group_num, group_size, nfold, min(temp_mse), max(temp_mse), sum(temp_mse)/len(temp_mse)]
+            softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, group_size, nfold, min(temp_softdtw), max(temp_softdtw), np.mean(temp_softdtw), np.std(temp_softdtw)], \
+                                                            [name, "mse", group_num, group_size, nfold, min(temp_mse), max(temp_mse), np.mean(temp_mse), np.std(temp_mse)]
 
-        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
-                pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean"], index=[f"cv_{i}" for i in range(len(mse_collector))])
+        return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean", "std"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
+                pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean", "std"], index=[f"cv_{i}" for i in range(len(mse_collector))])

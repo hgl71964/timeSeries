@@ -142,13 +142,27 @@ class timeSeries_data:
             train_dates[i] = data_dict[int(key)] 
         return train_dates, test_dates
 
+    def make_lag_for_df(self,
+                        df,  # consists of all staydates we want
+                        preserved_col: List[str],  # feats in the modelling
+                        target: str,
+                        history, 
+                        lag_range: tuple, 
+                        ):
+        """
+        add lag feature for every 'staydate' of the df
+        """
+        dates = df["staydate"].unique().astype(str)
+        return self.make_lag_from_dates(df, dates, preserved_col, \
+                    target, history, lag_range)
+
     def make_lag_from_dates(self,
                         df,
                         dates: List[str], 
                         preserved_col: List[str], 
                         target: str,         
                         history: int = 100, 
-                        lag_bound: tuple = (2, 4),  # this means we forecast 2 days ahead
+                        lag_range: tuple = (2, 4),  # this means we forecast 2 days ahead
                         ):
 
         """make lag feature for a single staydate"""
@@ -160,7 +174,7 @@ class timeSeries_data:
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
                         .sum().reset_index().drop(columns=["lead_in"])\
                                             .filter(preserved_col)
-            s_df = self._add_lag_features(s_df, features + [target] , lag_bound)
+            s_df = self._add_lag_features(s_df, features + [target] , lag_range)
             s_df = s_df.iloc[:history]
             s_df = s_df.drop(columns = features)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
@@ -172,10 +186,10 @@ class timeSeries_data:
     def _add_lag_features(self, 
                     df, 
                     features, 
-                    lag_bound,
+                    lag_range,
                     ):
         for feat in features:
-            for lag in range(lag_bound[0], lag_bound[1]+1):
+            for lag in range(lag_range[0], lag_range[1]+1):
                 df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
         return df
  

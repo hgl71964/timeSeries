@@ -188,8 +188,8 @@ train_df, test_df = ts.make_lag_from_dates(df, train_dates, ALL_FEAT,\
                         ts.make_lag_from_dates(df, test_dates, ALL_FEAT,\
                         target=TARGET, history=HISTORY, lag_bound=LAG_RANGE)
 
-print(helper.post_process(N_CLUSTER ,*cv_scores.CV(df, "xgb", data_dict, np.zeros_like(preds)-1, -1, param, CAT_LIST, EPOCHS, KFOLD, \
-          training_func, predict_func, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **training_param)))
+print(cv_scores.CV(df, "xgb", data_dict, np.zeros_like(preds)-1, -1, param, CAT_LIST, EPOCHS, KFOLD, \
+          training_func, predict_func, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **training_param))
 
 # bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 

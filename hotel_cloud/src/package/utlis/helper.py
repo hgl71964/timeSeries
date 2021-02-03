@@ -33,7 +33,7 @@ class helper:
         return df
 
     @staticmethod
-    def post_process(num_groups: int,  # numbers of group in total 
+    def post_process(num_groups: int,  # numbers of group in total
                     *args):
 
         """
