@@ -204,6 +204,16 @@ class timeSeries_data:
         # df["day_of_year"] = day_of_year  # this val is unique for every data point in 2019
         return df
 
+    def dataset_from_dates(self,
+                            df,
+                            dates: List[str],
+                            ):
+                            
+        df_list = [None] * len(dates)
+        for i, date in enumerate(dates):
+            df_list[i] = df[df["staydate"]==date]
+        return pd.concat(df_list, axis=0, ignore_index=True)
+
     def adjust_prices(self,
                     df: pd.DataFrame,
                     percentage: float,  # 0.1 -> raise by 10%; -0.1 -> reduce by 10%

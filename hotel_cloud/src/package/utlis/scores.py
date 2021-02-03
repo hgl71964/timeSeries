@@ -19,10 +19,7 @@ class cv_scores:
                 predict_func: callable,  # xgb_predict or lgb_predict
                 ts: object,  #  timeSeries_data object
                 metric: object,  # metric object 
-                preserved_cols: List[str], 
                 target: str, 
-                history: int, 
-                lag_bound: tuple, 
                 **train_kwargs, 
                 ):
         self.name = name
@@ -37,10 +34,7 @@ class cv_scores:
         self.predict_func = predict_func
         self.ts = ts
         self.metric = metric
-        self.preserved_cols = preserved_cols
         self.target = target
-        self.history = history
-        self.lag_bound = lag_bound
         self.train_kwargs = deepcopy(train_kwargs) # mutable
 
         """register str -- integerd-coded pairs"""
@@ -131,8 +125,7 @@ class cv_scores:
                     self.labels, self.group_num, self.param,\
                     self.cat_list, self.n_estimators, self.nfold,\
                     self.training_func, self.predict_func, self.ts,\
-                    self.metric, self.preserved_cols, self.target, self.history,\
-                    self.lag_bound, **self.train_kwargs)
+                    self.metric, self.target, **self.train_kwargs)
 
     @staticmethod
     def CV(df: pd.DataFrame,  # df contains all staydates that we want
@@ -148,10 +141,7 @@ class cv_scores:
         predict_func: callable,  # xgb_predict or lgb_predict
         ts: object,  #  timeSeries_data object
         metric: object,  # metric object
-        preserved_cols: List[str], 
         target: str, 
-        history: int, 
-        lag_bound: tuple, 
         **train_kwargs, 
         ):
         """
@@ -173,10 +163,8 @@ class cv_scores:
 
             train_dates, test_dates = [data_dict[i] for i in train_indices], \
                                         [data_dict[i] for i in test_indices]
-            train_df = ts.make_lag_from_dates(df, train_dates, preserved_cols, \
-                                            target, history, lag_bound)
-            test_df = ts.make_lag_from_dates(df, test_dates, preserved_cols,\
-                                            target, history,lag_bound)
+            train_df = ts.dataset_from_dates(df, train_dates)
+            test_df = ts.dataset_from_dates(df, test_dates)
 
             """here test_df is added to watchlist"""
             bst = training_func(train_df, test_df, target, param, \
@@ -188,8 +176,7 @@ class cv_scores:
             # TODO find worst date
             for test_date in test_dates:
 
-                ivd_test_df = ts.make_lag_from_dates(df, [test_date], preserved_cols,\
-                                            target, history,lag_bound)
+                ivd_test_df = ts.dataset_from_dates(df, [test_date])
                 
                 preds = predict_func(ivd_test_df, cat_list, target, bst)
                 
