@@ -142,7 +142,7 @@ class timeSeries_data:
         return train_dates, test_dates
 
     def make_lag_from_dates(self,
-                        df, 
+                        df,
                         dates: List[str], 
                         preserved_col: List[str], 
                         target: str,         
