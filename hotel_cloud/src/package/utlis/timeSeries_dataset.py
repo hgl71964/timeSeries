@@ -66,6 +66,7 @@ class timeSeries_data:
             full_date = start_date.strftime("%Y-%m-%d")
             start_date += datetime.timedelta(days=1)
 
+            # s_df -> df of a specific stay_date
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history]
 
             if filter_all_zero and len(s_df[target]) < history:  # all_booking_curve less than history are dicarded
@@ -76,7 +77,7 @@ class timeSeries_data:
 
             # add feats
             s_df["staydate"] = full_date
-            d = s_df[target].to_numpy()  
+            d = s_df[target].to_numpy()
 
             # collect
             data_dict[idx] = full_date

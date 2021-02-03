@@ -38,7 +38,7 @@ cli.add_argument("--lb",
                 type=int,
                 nargs=2, 
                 default=(1, 3),
-                help="2 args -> lag_bound for lag feats")
+                help="2 args -> lag range for lag feats")
 
 cli.add_argument("--target",
                 dest="target",
@@ -84,7 +84,7 @@ N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
 KFOLD = args.k                       # score via 3 fold cross-validation
-LAG_FEAT = args.lb              # the bound for lagged features
+LAG_RANGE = args.lb              # the bound for lagged features
 
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
@@ -195,7 +195,7 @@ else:
                 ]).T  
 
             cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
-                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
+                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **xgb_train_params)
 
         elif name == "lgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes 
@@ -209,7 +209,7 @@ else:
             ]).T  
 
             cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
-                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
+                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **lgb_train_param)
 
         bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
 
@@ -220,10 +220,10 @@ else:
 
     # post-process the results
     xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
-                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **xgb_train_params)
+                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **xgb_train_params)
 
     lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
-                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_FEAT, **lgb_train_param)
+                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **lgb_train_param)
 
     optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 

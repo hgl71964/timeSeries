@@ -39,7 +39,6 @@ class helper:
         """
         make sure feature names are consistent (do not rename existing feature...)
         """
-
         softdtw_df, mse_df = [], []
 
         for df in args:
