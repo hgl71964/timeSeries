@@ -9,6 +9,7 @@ import os
 import numpy as np
 import pandas as pd
 from ..utlis.color import bcolors
+from typing import List
 
 """data cleansing"""
 from ..utlis.timeSeries_dataset import timeSeries_data
@@ -20,18 +21,16 @@ from ..models.kMeansTimeSeries import Kmeans_predict
 def preprocessing(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
-                data_range,
-                history,
-                target,
-                n_cluster,
-                all_feats,  # all feats involved in modelling
-                lag_range,
+                data_range: tuple,
+                history: int,
+                target: str,
+                n_cluster: int,
+                all_feats: List[str],  # all feats involved in modelling
+                lag_range: tuple,
                 ):
     """
     Returns:
-        df: clean and sorted by staydate; contain info that we want
-            df does not include lag feature here
-                because xgboost and lightgbm encode categorical features differently
+        df: clean and sorted by staydate; contain all info that we want
     """
 
     raw_df = pd.read_csv(data_full_path)
@@ -40,7 +39,7 @@ def preprocessing(working_dir: str,  # path of the working dir
     t = raw_df["staydate"].unique().shape[0]
     print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
 
-    """ data cleansing """
+    """ data cleansing && add lag features"""
     ts = timeSeries_data(**{"year": year, })
     data, data_dict, df = ts.cleansing(raw_df, data_range, target, \
                         history, True, **{"interpolate_col": [target]})
