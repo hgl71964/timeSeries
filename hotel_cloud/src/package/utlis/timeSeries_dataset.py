@@ -24,7 +24,7 @@ class timeSeries_data:
         dates = [None]*365; dates[0] = start_date.strftime("%m-%d")
         data = np.empty((365, history), dtype=np.float32)
 
-        for _ in range(1, 365):
+        for i in range(1, 365):
             start_date += datetime.timedelta(days=1)
             dates[i] = start_date.strftime("%m-%d")
 
@@ -42,12 +42,12 @@ class timeSeries_data:
                 df, 
                 years: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
-                history: int = 100,  # length of the booking curve to be used 
-                filter_all_zero=True,  # whether to filter ts that is shorter than history 
+                history: int = 100,  # length of the booking curve to be used
+                filter_all_zero=True,  # whether to filter ts that is shorter than history
                 **kwargs,  # handle interpolation method
                 ):
         """
-        cleanse the dataFrame and return 
+        cleanse the dataFrame and return
 
         Return: 
             data: np.ndarray; each row is a booking curve for a staydate
@@ -86,7 +86,7 @@ class timeSeries_data:
 
         # type conversion & post-cleansing
         all_booking_curve = np.flip(np.array(all_booking_curve).reshape(idx, -1), axis=1)
-        all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation 
+        all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation
 
         assert (np.all(np.isfinite(all_booking_curve)) and not np.any(np.isnan(all_booking_curve))), \
                                         "data contain NAN or INF"
@@ -100,7 +100,7 @@ class timeSeries_data:
         if not feats:
             return df
 
-        # TODO interpolate logic can be improved 
+        # TODO interpolate logic can be improved
         inter_method, inter_order = interpolate_param
 
         if isinstance(feats, str):  # prevent keyError
@@ -112,8 +112,8 @@ class timeSeries_data:
             if df[feat].eq(0).iloc[0]:
                 df[feat].iat[0] = df[feat].iloc[1]  # direct assignment
 
-            # only iterpolate if the last 20 dates contain 0 
-            if any(df[feat].iloc[:20].eq(0)):  
+            # only iterpolate if the last 20 dates contain 0
+            if any(df[feat].iloc[:20].eq(0)):
                 df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
         return df
 
