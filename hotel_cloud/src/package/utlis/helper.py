@@ -8,7 +8,7 @@ import os
 class helper:
     
     @staticmethod
-    def _average_over_folds(df):
+    def _CV_average_over_folds(df):
         df["max_of_maxes"] = df.max()["max"]
         df["min_of_mines"] = df.min()["min"]
         df["mean_of_means"] = df.mean()["mean"]
@@ -16,7 +16,7 @@ class helper:
         return df
     
     @staticmethod
-    def _add_weighted_mean(df, num_groups, metric_name):
+    def _CV_add_weighted_mean(df, num_groups, metric_name):
 
         size_recorder, mean_recorder = [], []        
         temp_df = df[df["metric"]==f"{metric_name}"]
@@ -33,7 +33,7 @@ class helper:
         return df
 
     @staticmethod
-    def post_process(num_groups: int,  # numbers of group in total
+    def CV_post_process(num_groups: int,  # numbers of group in total
                     *args):
 
         """
@@ -44,7 +44,7 @@ class helper:
         for df in args:
 
             # add stats over folds, -> pd.series
-            series = helper._average_over_folds(df)
+            series = helper._CV_average_over_folds(df)
 
             if series["metric"] == "softdtw":
                 softdtw_df.append(series)
@@ -54,11 +54,19 @@ class helper:
         if len(softdtw_df) == 1:  # on the unclustered data, i.e. group_num = -1
             return pd.concat(softdtw_df+mse_df, axis=1).T
         else:
-            df1 = helper._add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
-            df2 = helper._add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
+            df1 = helper._CV_add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
+            df2 = helper._CV_add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
             return pd.concat([df1, df2], axis=0)
 
-
+    @staticmethod
+    def feature_important(bst, name):
+        if name == "xgb":
+            scores = bst.get_score(importance_type="weight")
+            return sorted([(key, val) for key, val in scores.items()], key=lambda x:x[-1], reverse=True)
+        elif name == "lgb":
+            names = bst.feature_name()
+            scores = bst.feature_importance(importance_type="split")
+            return sorted([(i, j) for i,j in zip(names, scores) ], key=lambda x:x[-1], reverse=True)
 
 class logger:
 
