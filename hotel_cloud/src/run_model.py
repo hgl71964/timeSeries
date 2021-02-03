@@ -6,7 +6,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from package.utlis.color import bcolors
 from package.utlis.folder import folder
-
 from package.component.preprocess import preprocessing
 
 """GBM"""
@@ -191,11 +190,11 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(preds)-1, -1, param, CAT_L
 
 """ performance evaluation """
 
-# bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
-# # feature scores
-# d = bst.get_score(importance_type="weight")
-# print(sorted([(key, val) for key, val in d.items()], key=lambda x:x[-1], reverse=True))
+# feature scores
+d = bst.get_score(importance_type="weight")
+print(sorted([(key, val) for key, val in d.items()], key=lambda x:x[-1], reverse=True))
 
 # # cor features
 # corr_df = train_df.corr().abs()
