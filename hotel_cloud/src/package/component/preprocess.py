@@ -20,7 +20,7 @@ from ..models.kMeansTimeSeries import Kmeans_predict
 def pre_process(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
-                data_range,
+                data_range,  
                 history,
                 target,
                 n_cluster,
@@ -28,7 +28,7 @@ def pre_process(working_dir: str,  # path of the working dir
     """
     Returns:
         df: clean and sorted by staydate; contain info that we want
-                however we have not added lagged feature 
+                however we have not added lagged feature
     """
 
     raw_df = pd.read_csv(data_full_path)

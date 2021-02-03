@@ -189,7 +189,6 @@ class timeSeries_data:
         # df["day_of_year"] = day_of_year  # this val is unique for every data point in 2019
         return df
 
-
     def adjust_prices(self,
                     df: pd.DataFrame,
                     percentage: float,  # 0.1 -> raise by 10%; -0.1 -> reduce by 10%
