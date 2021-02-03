@@ -38,8 +38,8 @@ class timeSeries_data:
                 data[i,:] = np.zeros((history, ))
         return data
 
-    def cleansing(self, 
-                df, 
+    def cleansing(self,
+                df,
                 years: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
                 history: int = 100,  # length of the booking curve to be used
@@ -119,7 +119,7 @@ class timeSeries_data:
         return df
 
     def train_test_dates(self, 
-                        labels: np.ndarray,  # outcome of clustering 
+                        labels: np.ndarray,  # outcome of clustering
                         data_dict: dict,
                         test_size: float = 0.2, 
                         group_num: int = -1,                    
@@ -139,7 +139,7 @@ class timeSeries_data:
 
         train_dates = [None] * int(n - testSize)
         for i, key in enumerate(train_indices):
-            train_dates[i] = data_dict[int(key)] 
+            train_dates[i] = data_dict[int(key)]
         return train_dates, test_dates
 
     def make_lag_for_df(self,
