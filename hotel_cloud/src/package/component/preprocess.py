@@ -4,7 +4,6 @@ this script runs bayes_opt to find optimal hyperparameter for (xg, light)gbm mod
 the results are store -> ${work_dir}/data/optimal_config.npy
 logs are store -> ${work_dir}/data/log/bo*
 """
-
 import os 
 import numpy as np
 import pandas as pd
@@ -39,7 +38,7 @@ def preprocessing(working_dir: str,  # path of the working dir
     t = raw_df["staydate"].unique().shape[0]
     print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
 
-    """ data cleansing && add lag features"""
+    """ data cleansing && add lag features """
     ts = timeSeries_data(**{"year": year, })
     data, data_dict, df = ts.cleansing(raw_df, data_range, target, \
                         history, True, **{"interpolate_col": [target]})

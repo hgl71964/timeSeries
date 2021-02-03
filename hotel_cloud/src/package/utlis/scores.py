@@ -18,7 +18,7 @@ class cv_scores:
                 training_func: callable,  # xgb_train or lgb_train
                 predict_func: callable,  # xgb_predict or lgb_predict
                 ts: object,  #  timeSeries_data object
-                metric: object,  # metric object 
+                metric: object,  # metric object
                 target: str, 
                 **train_kwargs, 
                 ):
@@ -26,7 +26,7 @@ class cv_scores:
         self.data_dict = data_dict
         self.labels = labels
         self.group_num = group_num
-        self.param = deepcopy(param)  # mutable 
+        self.param = deepcopy(param)  # mutable
         self.cat_list = cat_list
         self.n_estimators = n_estimators
         self.nfold = nfold
