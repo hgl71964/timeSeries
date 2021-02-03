@@ -165,7 +165,12 @@ if "optimal_config.npy" in data_files:
     print(f"{bcolors.ENDC}")
 
 else:
-    print(f"{bcolors.FAIL} cannot load optimal config, using default params \n {bcolors.ENDC}")
+    print(f"{bcolors.FAIL} cannot load optimal config, using default XGboost \n {bcolors.ENDC}")
+    name = "xgb"
+    training_func = xgb_train
+    predict_func = xgb_predict
+    param = xgb_params
+    training_param = xgb_train_params
 
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
