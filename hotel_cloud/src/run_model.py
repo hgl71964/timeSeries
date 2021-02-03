@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from package.utlis.color import bcolors
 from package.utlis.folder import folder
 
-from package.component.preprocess import pre_process
+from package.component.preprocess import preprocessing
 
 """GBM"""
 from package.utlis.scores import cv_scores
@@ -169,8 +169,8 @@ else:
     print(f"{bcolors.FAIL} cannot load optimal config, using default params \n {bcolors.ENDC}")
 
 
-df, data_dict, preds, ts = pre_process(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER)
+df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
+                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_RANGE)
 
 """
 train test

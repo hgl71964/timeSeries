@@ -17,13 +17,15 @@ from ..utlis.timeSeries_dataset import timeSeries_data
 from tslearn.clustering import TimeSeriesKMeans
 from ..models.kMeansTimeSeries import Kmeans_predict
 
-def pre_process(working_dir: str,  # path of the working dir
+def preprocessing(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
                 data_range,
                 history,
                 target,
                 n_cluster,
+                all_feats,  # all feats involved in modelling
+                lag_range,
                 ):
     """
     Returns:
@@ -38,18 +40,17 @@ def pre_process(working_dir: str,  # path of the working dir
     t = raw_df["staydate"].unique().shape[0]
     print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
 
-    """
-    data cleansing
-    """
+    """ data cleansing """
     ts = timeSeries_data(**{"year": year, })
     data, data_dict, df = ts.cleansing(raw_df, data_range, target, \
                         history, True, **{"interpolate_col": [target]})
 
+    lag_df = ts.make_lag_for_df(df, all_feats, target, history, lag_range)
+    del df
+
     print(f"{bcolors.INFO_CYAN}target shape", data.shape)
 
-    """
-    clustering 
-    """
+    """ clustering """
     data_files = os.listdir(os.path.join(working_dir, "data", "log"))
 
     if "preds.npy" in data_files:
@@ -65,7 +66,7 @@ def pre_process(working_dir: str,  # path of the working dir
         np.save(os.path.join(working_dir, "data", "log", "preds.npy"), preds)
         print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
     
-    return (df, 
-            data_dict, 
-            preds, 
+    return (lag_df,
+            data_dict,
+            preds,
             ts)

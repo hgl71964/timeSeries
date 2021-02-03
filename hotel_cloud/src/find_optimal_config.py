@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 from package.utlis.color import bcolors
 from package.utlis.folder import folder
-from package.component.preprocess import pre_process
+from package.component.preprocess import preprocessing
 
 """GBM"""
 from package.utlis.scores import cv_scores
@@ -164,8 +164,8 @@ acq_params = {
 # totalrevenue = room revenue + other revenue; 
 # Average Daily Rate (ADR) = revenue/rooms
 
-df, data_dict, preds, ts = pre_process(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER)
+df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
+                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, lag_range)
 
 """
 bayes optimisation
