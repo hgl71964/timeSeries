@@ -4,16 +4,16 @@ import logging
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from utlis.color import bcolors
+from package.utlis.color import bcolors
 
 """data cleansing"""
-from utlis.timeSeries_dataset import timeSeries_data
+from package.utlis.timeSeries_dataset import timeSeries_data
 
 """GBM"""
-from utlis.scores import cv_scores
-from models.xgboost_ts import xgb_train, xgb_predict
-from models.lightgbm_ts import lgb_train, lgb_predict
-from utlis.evaluation import forecast_metric
+from package.utlis.scores import cv_scores
+from package.models.xgboost_ts import xgb_train, xgb_predict
+from package.models.lightgbm_ts import lgb_train, lgb_predict
+from package.utlis.evaluation import forecast_metric
 
 """Args"""
 cli = argparse.ArgumentParser(description="config global parameters")

@@ -10,18 +10,18 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from copy import deepcopy
-from src.utlis.color import bcolors
-from src.utlis.folder import folder
-from src.component.preprocess import pre_process
+from package.utlis.color import bcolors
+from package.utlis.folder import folder
+from package.component.preprocess import pre_process
 
 """GBM"""
-from src.utlis.scores import cv_scores
-from src.utlis.evaluation import forecast_metric
-from src.models.xgboost_ts import xgb_train, xgb_predict
-from src.models.lightgbm_ts import lgb_train, lgb_predict
+from package.utlis.scores import cv_scores
+from package.utlis.evaluation import forecast_metric
+from package.models.xgboost_ts import xgb_train, xgb_predict
+from package.models.lightgbm_ts import lgb_train, lgb_predict
 
 """BO"""
-from src.baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
+from package.baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
 
 """Args"""
 
