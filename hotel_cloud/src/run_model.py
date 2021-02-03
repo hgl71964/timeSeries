@@ -168,13 +168,12 @@ if "optimal_config.npy" in data_files:
 else:
     print(f"{bcolors.FAIL} cannot load optimal config, using default params \n {bcolors.ENDC}")
 
-
+""" pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_RANGE)
 
-"""
-train test
-"""
+""" train && test"""
+
 if GROUP_NUM == -1:  # use all data
     train_dates, test_dates = ts.train_test_dates(np.zeros_like(preds)-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 else:
@@ -188,6 +187,8 @@ train_df, test_df = ts.dataset_from_dates(df, train_dates),  \
 
 print(cv_scores.CV(df, name, data_dict, np.zeros_like(preds)-1, -1, param, CAT_LIST, EPOCHS, KFOLD, \
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
+
+""" performance evaluation """
 
 # bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
