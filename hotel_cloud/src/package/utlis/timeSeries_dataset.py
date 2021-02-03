@@ -197,7 +197,7 @@ class timeSeries_data:
                            df,
                            date):
         date_time = datetime.datetime.strptime(date, "%Y-%m-%d")
-        _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
+        _, month, day_of_month, _, _, _, day_of_week, _, _ = date_time.timetuple()
         df["month"] = month
         df["day_of_month"] = day_of_month
         df["day_of_week"] = day_of_week
@@ -208,7 +208,6 @@ class timeSeries_data:
                             df,
                             dates: List[str],
                             ):
-                            
         df_list = [None] * len(dates)
         for i, date in enumerate(dates):
             df_list[i] = df[df["staydate"]==date]

@@ -165,7 +165,7 @@ acq_params = {
 # Average Daily Rate (ADR) = revenue/rooms
 
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, lag_range)
+                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_RANGE)
 
 """
 bayes optimisation
@@ -195,7 +195,7 @@ else:
                 ]).T  
 
             cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
-                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **xgb_train_params)
+                xgb_train, xgb_predict, ts, forecast_metric, TARGET, **xgb_train_params)
 
         elif name == "lgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes 
@@ -209,7 +209,7 @@ else:
             ]).T  
 
             cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
-                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **lgb_train_param)
+                lgb_train, lgb_predict, ts, forecast_metric, TARGET, **lgb_train_param)
 
         bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
 
@@ -220,10 +220,10 @@ else:
 
     # post-process the results
     xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
-                xgb_train, xgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **xgb_train_params)
+                xgb_train, xgb_predict, ts, forecast_metric, TARGET, **xgb_train_params)
 
     lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
-                lgb_train, lgb_predict, ts, forecast_metric, ALL_FEAT, TARGET, HISTORY, LAG_RANGE, **lgb_train_param)
+                lgb_train, lgb_predict, ts, forecast_metric, TARGET, **lgb_train_param)
 
     optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
 
