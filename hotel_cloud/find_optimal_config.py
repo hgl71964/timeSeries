@@ -10,9 +10,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from copy import deepcopy
-# from utlis.color import bcolors
-# from utlis.folder import folder
-import component.preprocess
+from src.utlis.color import bcolors
+from src.utlis.folder import folder
+from src.component.preprocess import pre_process
 
 # """data cleansing"""
 # from utlis.timeSeries_dataset import timeSeries_data
@@ -22,13 +22,13 @@ import component.preprocess
 # from models.kMeansTimeSeries import Kmeans_predict
 
 """GBM"""
-from utlis.scores import cv_scores
-from utlis.evaluation import forecast_metric
-from models.xgboost_ts import xgb_train, xgb_predict
-from models.lightgbm_ts import lgb_train, lgb_predict
+from src.utlis.scores import cv_scores
+from src.utlis.evaluation import forecast_metric
+from src.models.xgboost_ts import xgb_train, xgb_predict
+from src.models.lightgbm_ts import lgb_train, lgb_predict
 
 """BO"""
-from baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
+from src.baye_opt_gbm.bayes_opt import bayes_loop, BO_post_process, bayesian_optimiser
 
 """Args"""
 

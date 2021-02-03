@@ -13,11 +13,11 @@ from ..utlis.color import bcolors
 # from . import utlis.folder 
 
 """data cleansing"""
-from .utlis.timeSeries_dataset import timeSeries_data
+from ..utlis.timeSeries_dataset import timeSeries_data
 
 """clustering"""
 from tslearn.clustering import TimeSeriesKMeans
-from .models.kMeansTimeSeries import Kmeans_predict
+from ..models.kMeansTimeSeries import Kmeans_predict
 """Args"""
 
 
