@@ -61,8 +61,27 @@ class helper:
     @staticmethod
     def feature_important(bst, name):
         if name == "xgb":
+            
+            one_hot_feats = ["day_of_week", "month", "day_of_month"]
+            one_hot_dict = {i:0 for i in one_hot_feats}
             scores = bst.get_score(importance_type="weight")
-            return sorted([(key, val) for key, val in scores.items()], key=lambda x:x[-1], reverse=True)
+
+            temp = [(key, val) for key, val in scores.items()]
+            pop_index = set()
+
+            for i, item in enumerate(temp):
+                for feat in one_hot_feats:  # one-hot-feat needs to sum up
+                    if item[0].startswith(feat):
+                        one_hot_dict[feat]+=item[1]
+                        pop_index.add(i)
+                        break
+
+            for feat in one_hot_feats:
+                temp.append((feat, one_hot_dict[feat]))
+
+            return sorted([x for i, x in enumerate(temp) if i not in pop_index], \
+                                    key=lambda x: x[-1], reverse=True)
+
         elif name == "lgb":
             names = bst.feature_name()
             scores = bst.feature_importance(importance_type="split")
