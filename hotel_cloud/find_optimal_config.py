@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 # from utlis.color import bcolors
 # from utlis.folder import folder
-from src.component import preprocess
+import component.preprocess
 
 # """data cleansing"""
 # from utlis.timeSeries_dataset import timeSeries_data
