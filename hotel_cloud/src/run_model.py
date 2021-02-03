@@ -166,18 +166,24 @@ if "optimal_config.npy" in data_files:
 
 else:
     print(f"{bcolors.FAIL} cannot load optimal config, using default XGboost \n {bcolors.ENDC}")
-    name = "xgb"
-    training_func = xgb_train
-    predict_func = xgb_predict
-    param = xgb_params
-    training_param = xgb_train_params
+    name = "lgb"
+    training_func = lgb_train
+    predict_func = lgb_predict
+    param = lgb_param
+    training_param = lgb_train_param
+    # name = "xgb"
+    # training_func = xgb_train
+    # predict_func = xgb_predict
+    # param = xgb_params
+    # training_param = xgb_train_params
 
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_RANGE)
 
-""" train && test"""
+df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
 
+""" train && test"""
 if GROUP_NUM == -1:  # use all data
     train_dates, test_dates = ts.train_test_dates(np.zeros_like(preds)-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 else:
@@ -185,8 +191,6 @@ else:
 
 print(f"{bcolors.INFO_CYAN}trainset size: {len(train_dates)} \t \
                         testset size: {len(test_dates)} {bcolors.ENDC}")
-
-
 
 train_df, test_df = ts.dataset_from_dates(df, train_dates), ts.dataset_from_dates(df, test_dates) 
 
@@ -198,8 +202,12 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(preds)-1, -1, param, CAT_L
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 # feature scores
-d = bst.get_score(importance_type="weight")
-print(sorted([(key, val) for key, val in d.items()], key=lambda x:x[-1], reverse=True))
+# d = bst.get_score(importance_type="weight")
+# print(sorted([(key, val) for key, val in d.items()], key=lambda x:x[-1], reverse=True))
+
+n = bst.feature_name()
+d = bst.feature_importance(importance_type="split")
+print(sorted([(i, j) for i,j in zip(n,d) ], key=lambda x:x[-1], reverse=True))
 
 # # cor features
 # corr_df = train_df.corr().abs()
