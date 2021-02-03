@@ -117,27 +117,6 @@ class timeSeries_data:
                 df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
         return df
 
-    def _add_lag_features(self, 
-                    df, 
-                    features, 
-                    lag_bound,
-                    ):
-        for feat in features:
-            for lag in range(lag_bound[0], lag_bound[1]+1):
-                df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
-        return df
-    
-    def _add_temporal_info(self, 
-                           df,
-                           date):
-        date_time = datetime.datetime.strptime(date, "%Y-%m-%d")
-        _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
-        df["month"] = month
-        df["day_of_month"] = day_of_month
-        df["day_of_week"] = day_of_week
-        # df["day_of_year"] = day_of_year  # this val is unique for every data point in 2019
-        return df
-
     def train_test_dates(self, 
                         labels: np.ndarray,  # outcome of clustering 
                         data_dict: dict,
@@ -188,6 +167,27 @@ class timeSeries_data:
             df_list[i] = s_df
 
         return pd.concat(df_list, axis=0, ignore_index=True)
+
+    def _add_lag_features(self, 
+                    df, 
+                    features, 
+                    lag_bound,
+                    ):
+        for feat in features:
+            for lag in range(lag_bound[0], lag_bound[1]+1):
+                df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
+        return df
+ 
+    def _add_temporal_info(self, 
+                           df,
+                           date):
+        date_time = datetime.datetime.strptime(date, "%Y-%m-%d")
+        _, month, day_of_month, _, _, _, day_of_week, day_of_year, _ = date_time.timetuple()
+        df["month"] = month
+        df["day_of_month"] = day_of_month
+        df["day_of_week"] = day_of_week
+        # df["day_of_year"] = day_of_year  # this val is unique for every data point in 2019
+        return df
 
 
     def adjust_prices(self,

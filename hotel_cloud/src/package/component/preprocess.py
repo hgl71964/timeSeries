@@ -20,13 +20,18 @@ from ..models.kMeansTimeSeries import Kmeans_predict
 def pre_process(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
-                data_range,  
+                data_range,
                 history,
                 target,
-                n_cluster, 
+                n_cluster,
                 ):
+    """
+    Returns:
+        df: clean and sorted by staydate; contain info that we want
+                however we have not added lagged feature 
+    """
 
-    raw_df = pd.read_csv(data_full_path) 
+    raw_df = pd.read_csv(data_full_path)
     raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
     raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
     t = raw_df["staydate"].unique().shape[0]
@@ -53,7 +58,7 @@ def pre_process(working_dir: str,  # path of the working dir
     else:
         # euclidean, softdtw, dtw
         print(f"{bcolors.INFO_CYAN}labels does not exist; start clustering... {bcolors.ENDC}")
-        _, preds = Kmeans_predict(data, n_cluster, **{"metric": "softdtw"})  
+        _, preds = Kmeans_predict(data, n_cluster, **{"metric": "softdtw"})
 
         # save clustering results
         np.save(os.path.join(working_dir, "data", "log", "preds.npy"), preds)
