@@ -149,9 +149,7 @@ class timeSeries_data:
                         history, 
                         lag_range: tuple, 
                         ):
-        """
-        add lag feature for every 'staydate' of the df
-        """
+        """ add lag feature for every 'staydate' of the df """
         dates = df["staydate"].unique().astype(str)
         return self.make_lag_from_dates(df, dates, preserved_col, \
                     target, history, lag_range)
@@ -165,7 +163,11 @@ class timeSeries_data:
                         lag_range: tuple = (2, 4),  # this means we forecast 2 days ahead
                         ):
 
-        """make lag feature for a single staydate"""
+        """
+        make lag feature for a single staydate; 
+                ensure 'staydate' is a unit
+        """
+        df_timing = "staydate"  
         features = [i for i in preserved_col if i != target]  # list of features
         df_list = [None] * len(dates)
 
@@ -179,6 +181,7 @@ class timeSeries_data:
             s_df = s_df.drop(columns = features)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
+            s_df[df_timing] = date  
             df_list[i] = s_df
 
         return pd.concat(df_list, axis=0, ignore_index=True)
