@@ -141,7 +141,7 @@ class timeSeries_data:
             train_dates[i] = data_dict[int(key)] 
         return train_dates, test_dates
 
-    def make_lag_from_dates(self, 
+    def make_lag_from_dates(self,
                         df, 
                         dates: List[str], 
                         preserved_col: List[str], 
