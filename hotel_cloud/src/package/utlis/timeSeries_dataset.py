@@ -158,9 +158,9 @@ class timeSeries_data:
 
     def make_lag_from_dates(self,
                         df,
-                        dates: List[str], 
-                        preserved_col: List[str], 
-                        target: str,         
+                        dates: List[str],
+                        preserved_col: List[str],
+                        target: str,
                         history: int = 100, 
                         lag_range: tuple = (2, 4),  # this means we forecast 2 days ahead
                         ):

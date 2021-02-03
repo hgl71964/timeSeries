@@ -27,7 +27,9 @@ def pre_process(working_dir: str,  # path of the working dir
                 ):
     """
     Returns:
-        df: clean and sorted by staydate; contain all info that we want
+        df: clean and sorted by staydate; contain info that we want
+            df does not include lag feature here
+                because xgboost and lightgbm encode categorical features differently
     """
 
     raw_df = pd.read_csv(data_full_path)
