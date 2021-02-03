@@ -213,7 +213,7 @@ class timeSeries_data:
                             ):
         df_list = [None] * len(dates)
         for i, date in enumerate(dates):
-            df_list[i] = df[df["staydate"]==date]
+            df_list[i] = df[df["staydate"]==date].drop(columns=["staydate"])  #  actual dates info is dropped 
         return pd.concat(df_list, axis=0, ignore_index=True)
 
     def adjust_prices(self,
