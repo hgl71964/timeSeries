@@ -10,14 +10,14 @@ import os
 import numpy as np
 import pandas as pd
 from ..utlis.color import bcolors
-from ..utlis.folder import folder
+# from . import utlis.folder 
 
 """data cleansing"""
-from ..utlis.timeSeries_dataset import timeSeries_data
+from .utlis.timeSeries_dataset import timeSeries_data
 
 """clustering"""
 from tslearn.clustering import TimeSeriesKMeans
-from ..models.kMeansTimeSeries import Kmeans_predict
+from .models.kMeansTimeSeries import Kmeans_predict
 """Args"""
 
 
