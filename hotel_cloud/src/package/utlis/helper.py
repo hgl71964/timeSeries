@@ -59,10 +59,10 @@ class helper:
             return pd.concat([df1, df2], axis=0)
 
     @staticmethod
-    def feature_important(bst, name):
+    def feature_important(bst, name, cat_list):
         if name == "xgb":
             
-            one_hot_feats = ["day_of_week", "month", "day_of_month"]
+            one_hot_feats = cat_list
             one_hot_dict = {i:0 for i in one_hot_feats}
             scores = bst.get_score(importance_type="weight")
 

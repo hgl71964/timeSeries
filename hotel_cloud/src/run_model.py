@@ -201,7 +201,7 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(preds)-1, -1, param, CAT_L
 
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
-print(helper.feature_important(bst, name))
+print(helper.feature_important(bst, name, CAT_LIST))
 
 
 # # cor features
