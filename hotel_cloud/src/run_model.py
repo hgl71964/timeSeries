@@ -184,6 +184,10 @@ else:
     training_param = xgb_train_params
     print(f"{bcolors.FAIL} cannot load optimal config, using default {name} \n {bcolors.ENDC}")
 
+# finish reading
+# ------------------------------------------------------------------------------------------
+
+
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_FEAT, LAG_RANGE)
