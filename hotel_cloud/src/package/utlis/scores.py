@@ -163,8 +163,8 @@ class cv_scores:
 
             train_dates, test_dates = [data_dict[i] for i in train_indices], \
                                         [data_dict[i] for i in test_indices]
-            train_df = ts.dataset_from_dates(df, train_dates)
-            test_df = ts.dataset_from_dates(df, test_dates)
+            train_df = ts.df_from_dates(df, train_dates)
+            test_df = ts.df_from_dates(df, test_dates)
 
             """here test_df is added to watchlist"""
             bst = training_func(train_df, test_df, target, param, \
@@ -175,7 +175,7 @@ class cv_scores:
 
             for test_date in test_dates:
 
-                ivd_test_df = ts.dataset_from_dates(df, [test_date])
+                ivd_test_df = ts.df_from_dates(df, [test_date])
                 
                 preds = predict_func(ivd_test_df, cat_list, target, bst)
                 

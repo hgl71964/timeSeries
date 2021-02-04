@@ -196,10 +196,10 @@ class timeSeries_data:
         # df["day_of_year"] = day_of_year  # this val is unique for every data point in 2019
         return df
 
-    def dataset_from_dates(self,
-                            df,
-                            dates: List[str],
-                            ):
+    def df_from_dates(self,
+                    df,
+                    dates: List[str],
+                    ):
         """ the staydate col is dropped here"""
         df_list = [None] * len(dates)
         for i, date in enumerate(dates):
