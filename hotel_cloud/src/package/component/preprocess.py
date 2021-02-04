@@ -29,25 +29,26 @@ def preprocessing(working_dir: str,  # path of the working dir
                 lag_range: tuple,
                 ):
     """
-    Returns:
-        df: clean and sorted by staydate; contain all info that we want
+    takes in raw data,
+        return cleansed, lagged features, rolling features dataframe
+
+    also perform clustering in this function, return group label
+                    and a dict index -> date
     """
 
     raw_df = pd.read_csv(data_full_path)
     raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
     raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
-    t = raw_df["staydate"].unique().shape[0]
-    print(f"{bcolors.INFO_CYAN}staydate has {t} days {bcolors.ENDC}")
 
     """ data cleansing && add lag features """
+    print(f"{bcolors.INFO_CYAN}start data cleansing {bcolors.ENDC}")
+
     ts = timeSeries_data(**{"year": year, })
+
     data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
-                        history, True, **{"interpolate_col": [target]})
+                        history, True, lag_feats, lag_range, **{"interpolate_col": [target]})
 
-    lag_df = ts.make_lag_for_df(df, target, lag_range, lag_feats)
-    del df
-    print(f"{bcolors.INFO_CYAN}target shape", data.shape)
-
+    # ----------------------------------------------------------------------------------------
     """ clustering """
     data_files = os.listdir(os.path.join(working_dir, "data", "log"))
 
@@ -64,7 +65,7 @@ def preprocessing(working_dir: str,  # path of the working dir
         np.save(os.path.join(working_dir, "data", "log", "preds.npy"), preds)
         print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
     
-    return (lag_df,
+    return (df,
             data_dict,
             preds,
             ts)

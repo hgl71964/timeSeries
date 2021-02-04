@@ -41,10 +41,12 @@ class timeSeries_data:
     def cleansing(self,
                 df,
                 preserved_col: List[str],  # feats in the modelling
-                years: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
+                data_range: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
-                history: int = 100,  # length of the booking curve to be used
-                filter_all_zero=True,  # whether to filter ts that is shorter than history
+                history: int,  # length of the booking curve to be used
+                filter_all_zero: bool,  # whether to filter ts that is shorter than history
+                lag_feats,
+                lag_range,
                 **kwargs,  # handle interpolation method
                 ):
         """
@@ -56,7 +58,8 @@ class timeSeries_data:
             df
         """
 
-        start_date, end_data = datetime.datetime(years[0], 1, 1, 0, 0), datetime.datetime(years[1]+1, 1, 1, 0, 0)
+        start_date, end_data = datetime.datetime(data_range[0], 1, 1, 0, 0), \
+                                    datetime.datetime(data_range[1]+1, 1, 1, 0, 0)
         num_days = (end_data - start_date).days
         data_dict, idx = {}, 0
         
@@ -69,7 +72,7 @@ class timeSeries_data:
 
             # s_df -> df of a specific stay_date
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum()\
-                                        .iloc[:history].filter(preserved_col)
+                                        .filter(preserved_col)
 
             if filter_all_zero and len(s_df[target]) < history:  # all_booking_curve less than history are dicarded
                 continue
@@ -79,12 +82,18 @@ class timeSeries_data:
 
             # add feats
             s_df["staydate"] = full_date
-            d = s_df[target].to_numpy()
+
+            # make lag && temporal info
+            s_df = self.make_lag_for_df(s_df, target, lag_range, lag_feats)
+
+            # select history
+            s_df = s_df.iloc[:history]
 
             # collect
             data_dict[idx] = full_date
             idx+=1
             clean_df.append(s_df)
+            d = s_df[target].to_numpy()
             all_booking_curve.append(d)
 
         # type conversion & post-cleansing
@@ -120,30 +129,6 @@ class timeSeries_data:
                 df[feat] = df[feat].replace(0, np.nan)\
                             .interpolate(method=inter_method, order=inter_order)
         return df
-
-    def train_test_dates(self, 
-                        labels: np.ndarray,  # outcome of clustering
-                        data_dict: dict,
-                        test_size: float = 0.2, 
-                        group_num: int = -1,                    
-                        ):
-
-        all_indices = np.where(labels==group_num)[0].flatten()
-
-        n = len(all_indices)
-        testSize = int(n * test_size)
-
-        test_indices = np.random.choice(all_indices, testSize, replace=False)
-        train_indices = [i for i in all_indices if i not in test_indices]
-
-        test_dates=[None] * testSize
-        for i, key in enumerate(test_indices):
-            test_dates[i] = data_dict[int(key)]
-
-        train_dates = [None] * int(n - testSize)
-        for i, key in enumerate(train_indices):
-            train_dates[i] = data_dict[int(key)]
-        return train_dates, test_dates
 
     def make_lag_for_df(self,
                         df,  # consists of all staydates we want
@@ -234,3 +219,27 @@ class timeSeries_data:
             df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
                              / df["competitor_median_rate"], axis=1)
         return df
+
+    def train_test_dates(self, 
+                        labels: np.ndarray,  # outcome of clustering
+                        data_dict: dict,
+                        test_size: float = 0.2, 
+                        group_num: int = -1,                    
+                        ):
+
+        all_indices = np.where(labels==group_num)[0].flatten()
+
+        n = len(all_indices)
+        testSize = int(n * test_size)
+
+        test_indices = np.random.choice(all_indices, testSize, replace=False)
+        train_indices = [i for i in all_indices if i not in test_indices]
+
+        test_dates=[None] * testSize
+        for i, key in enumerate(test_indices):
+            test_dates[i] = data_dict[int(key)]
+
+        train_dates = [None] * int(n - testSize)
+        for i, key in enumerate(train_indices):
+            train_dates[i] = data_dict[int(key)]
+        return train_dates, test_dates

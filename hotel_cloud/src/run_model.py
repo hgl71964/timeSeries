@@ -194,7 +194,7 @@ df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4
 
 
 
-# print(df.columns)
+print(df.columns)
 # df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
 
 """ train && test"""
@@ -212,7 +212,6 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(preds)-1, -1, param, CAT_L
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
 
 """ performance evaluation """
-
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 print(helper.feature_important(bst, name, CAT_LIST))
