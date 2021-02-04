@@ -192,6 +192,9 @@ else:
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_FEAT, LAG_RANGE)
 
+
+
+# print(df.columns)
 # df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
 
 """ train && test"""

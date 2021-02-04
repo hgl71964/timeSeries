@@ -179,8 +179,8 @@ class timeSeries_data:
         for i, date in enumerate(dates):
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
-                        .sum().reset_index().drop(columns=["lead_in"])\
-                                            .filter(full_feats)
+                        .sum().reset_index().drop(columns=["lead_in"])
+
             s_df = self._add_lag_features(s_df, full_feats , lag_range)
             s_df = s_df.drop(columns=lag_feats)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
@@ -215,9 +215,10 @@ class timeSeries_data:
                             df,
                             dates: List[str],
                             ):
+        """ the staydate col is dropped here"""
         df_list = [None] * len(dates)
         for i, date in enumerate(dates):
-            df_list[i] = df[df["staydate"]==date].drop(columns=["staydate"])  #  actual dates info is dropped 
+            df_list[i] = df[df["staydate"]==date].drop(columns=["staydate"])
         return pd.concat(df_list, axis=0, ignore_index=True)
 
     def adjust_prices(self,
