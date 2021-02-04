@@ -21,7 +21,7 @@ class helper:
                         ):
         res = []
         for test_date in test_dates:
-            ivd_test_df =  ts.dataset_from_dates(df, [test_date])
+            ivd_test_df =  ts.df_from_dates(df, [test_date])
             preds = predict_func(ivd_test_df, cat_list, target, bst)
 
             if metric_name == "softdtw":
@@ -33,9 +33,8 @@ class helper:
 
         maxpos = res.index(max(res))  # worst date index
         worst_date = test_dates[maxpos]
-        ivd_test_df =  ts.dataset_from_dates(df, [worst_date])
+        ivd_test_df =  ts.df_from_dates(df, [worst_date])
         preds = predict_func(ivd_test_df, cat_list, target, bst)
-
         return preds, ivd_test_df[target]
 
     @staticmethod

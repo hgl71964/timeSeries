@@ -74,6 +74,7 @@ class timeSeries_data:
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum()\
                                         .filter(preserved_col)
 
+            # filter
             if filter_all_zero and len(s_df[target]) < history:  # all_booking_curve less than history are dicarded
                 continue
 
@@ -85,6 +86,9 @@ class timeSeries_data:
 
             # make lag && temporal info
             s_df = self.make_lag_for_df(s_df, target, lag_range, lag_feats)
+
+
+            # s_df = self.make_rolling
 
             # select history
             s_df = s_df.iloc[:history]
@@ -129,6 +133,16 @@ class timeSeries_data:
                 df[feat] = df[feat].replace(0, np.nan)\
                             .interpolate(method=inter_method, order=inter_order)
         return df
+
+    def make_rolling_for_df(self,
+                            df,
+                            target,
+                            rolling_feats,
+                            rolling_window: int):
+        
+
+        return 
+
 
     def make_lag_for_df(self,
                         df,  # consists of all staydates we want
