@@ -230,7 +230,7 @@ class cv_scores:
         for df in args:
 
             # add stats over folds, -> pd.series
-            series = helper._CV_average_over_folds(df)
+            series = cv_scores._CV_average_over_folds(df)
 
             if series["metric"] == "softdtw":
                 softdtw_df.append(series)
@@ -240,6 +240,6 @@ class cv_scores:
         if len(softdtw_df) == 1:  # on the unclustered data, i.e. group_num = -1
             return pd.concat(softdtw_df+mse_df, axis=1).T
         else:
-            df1 = helper._CV_add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
-            df2 = helper._CV_add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
+            df1 = cv_scores._CV_add_weighted_mean(pd.concat(softdtw_df,axis=1).T, num_groups, "softdtw")
+            df2 = cv_scores._CV_add_weighted_mean(pd.concat(mse_df,axis=1).T, num_groups, "mse")
             return pd.concat([df1, df2], axis=0)
