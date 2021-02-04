@@ -125,5 +125,4 @@ class logger:
 
 
 class plotter:
-    
     pass

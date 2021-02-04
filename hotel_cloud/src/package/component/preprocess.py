@@ -25,6 +25,7 @@ def preprocessing(working_dir: str,  # path of the working dir
                 target: str,
                 n_cluster: int,
                 all_feats: List[str],  # all feats involved in modelling
+                lag_feats: List[str],  # the feats that need to make lag
                 lag_range: tuple,
                 ):
     """
@@ -40,10 +41,10 @@ def preprocessing(working_dir: str,  # path of the working dir
 
     """ data cleansing && add lag features """
     ts = timeSeries_data(**{"year": year, })
-    data, data_dict, df = ts.cleansing(raw_df, data_range, target, \
+    data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
                         history, True, **{"interpolate_col": [target]})
 
-    lag_df = ts.make_lag_for_df(df, all_feats, target, history, lag_range)
+    lag_df = ts.make_lag_for_df(df, target, lag_range, lag_feats)
     del df
 
     print(f"{bcolors.INFO_CYAN}target shape", data.shape)

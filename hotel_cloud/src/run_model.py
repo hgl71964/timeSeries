@@ -179,7 +179,7 @@ else:
 
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_RANGE)
+                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, ALL_FEAT, LAG_RANGE)
 
 df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
 
@@ -202,6 +202,9 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(preds)-1, -1, param, CAT_L
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 print(helper.feature_important(bst, name, CAT_LIST))
+
+print(helper.worst_day_res(test_dates, df, ts, predict_func, CAT_LIST, \
+                            TARGET, bst, "softdtw", forecast_metric))
 
 
 # # cor features

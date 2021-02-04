@@ -165,7 +165,8 @@ acq_params = {
 # Average Daily Rate (ADR) = revenue/rooms
 
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_RANGE)
+                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, \
+                                ALL_FEAT, LAG_RANGE)
 
 """
 bayes optimisation

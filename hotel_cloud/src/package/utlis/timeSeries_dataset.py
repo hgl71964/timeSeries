@@ -40,6 +40,7 @@ class timeSeries_data:
 
     def cleansing(self,
                 df,
+                preserved_col: List[str],  # feats in the modelling
                 years: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
                 history: int = 100,  # length of the booking curve to be used
@@ -67,7 +68,8 @@ class timeSeries_data:
             start_date += datetime.timedelta(days=1)
 
             # s_df -> df of a specific stay_date
-            s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum().iloc[:history]
+            s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum()\
+                                        .iloc[:history].filter(preserved_col)
 
             if filter_all_zero and len(s_df[target]) < history:  # all_booking_curve less than history are dicarded
                 continue
@@ -115,7 +117,8 @@ class timeSeries_data:
 
             # only iterpolate if the last 20 dates contain 0
             if any(df[feat].iloc[:20].eq(0)):
-                df[feat] = df[feat].replace(0, np.nan).interpolate(method=inter_method, order=inter_order)
+                df[feat] = df[feat].replace(0, np.nan)\
+                            .interpolate(method=inter_method, order=inter_order)
         return df
 
     def train_test_dates(self, 
@@ -144,41 +147,42 @@ class timeSeries_data:
 
     def make_lag_for_df(self,
                         df,  # consists of all staydates we want
-                        preserved_col: List[str],  # feats in the modelling
                         target: str,
-                        history, 
                         lag_range: tuple, 
+                        lag_feats: List[str],  # feature that needs to make lag
                         ):
         """ add lag feature for every 'staydate' of the df """
         dates = df["staydate"].unique().astype(str)
-        return self.make_lag_from_dates(df, dates, preserved_col, \
-                    target, history, lag_range)
+        return self.make_lag_from_dates(df, dates, lag_feats, \
+                    target, lag_range)
 
     def make_lag_from_dates(self,
                         df,
                         dates: List[str],
-                        preserved_col: List[str],
+                        lag_feats: List[str],
                         target: str,
-                        history: int = 100, 
                         lag_range: tuple = (2, 4),  # this means we forecast 2 days ahead
                         ):
-
         """
         make lag feature for a single staydate; 
                 ensure 'staydate' is a unit
         """
         df_timing = "staydate"  
-        features = [i for i in preserved_col if i != target]  # list of features
         df_list = [None] * len(dates)
+
+        if target not in lag_feats:
+            full_feats = lag_feats + [target]
+        else:
+            lag_feats.remove(target)
+            full_feats = lag_feats + [target]
 
         for i, date in enumerate(dates):
 
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
                         .sum().reset_index().drop(columns=["lead_in"])\
-                                            .filter(preserved_col)
-            s_df = self._add_lag_features(s_df, features + [target] , lag_range)
-            s_df = s_df.iloc[:history]
-            s_df = s_df.drop(columns = features)  # drop no lag features
+                                            .filter(full_feats)
+            s_df = self._add_lag_features(s_df, full_feats , lag_range)
+            s_df = s_df.drop(columns=lag_feats)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
             s_df[df_timing] = date  
