@@ -46,7 +46,6 @@ def preprocessing(working_dir: str,  # path of the working dir
 
     lag_df = ts.make_lag_for_df(df, target, lag_range, lag_feats)
     del df
-
     print(f"{bcolors.INFO_CYAN}target shape", data.shape)
 
     """ clustering """

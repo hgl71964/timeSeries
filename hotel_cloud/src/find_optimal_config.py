@@ -94,7 +94,13 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
             ]
-
+            
+LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
+            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+            "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
+            "rateamount_mean", "rateamount",
+            "median_pc_diff", #"total_roomcount"
+            ]
 
 # all params https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
 xgb_params = {
@@ -166,7 +172,7 @@ acq_params = {
 
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, \
-                                ALL_FEAT, LAG_RANGE)
+                                LAG_EAT, LAG_RANGE)
 
 """
 bayes optimisation

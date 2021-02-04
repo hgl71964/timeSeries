@@ -90,6 +90,13 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "median_pc_diff", #"total_roomcount"
             ]
 
+LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
+            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+            "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
+            "rateamount_mean", "rateamount",
+            "median_pc_diff", #"total_roomcount"
+            ]
+
 xgb_params = {
         # General parameters
         "booster": "gbtree",
@@ -179,9 +186,9 @@ else:
 
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, ALL_FEAT, LAG_RANGE)
+                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_FEAT, LAG_RANGE)
 
-df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
+# df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
 
 """ train && test"""
 if GROUP_NUM == -1:  # use all data
