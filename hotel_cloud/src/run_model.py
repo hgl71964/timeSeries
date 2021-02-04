@@ -212,6 +212,6 @@ print(helper.feature_important(bst, name, CAT_LIST))
 #     print(upper.iloc[i])
 
 
-# if False:
-#     predict_func(test_df, CAT_LIST, TARGET, bst).shape
+if False:
+    predict_func(test_df, CAT_LIST, TARGET, bst).shape
 

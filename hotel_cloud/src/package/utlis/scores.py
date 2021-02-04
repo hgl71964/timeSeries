@@ -173,7 +173,6 @@ class cv_scores:
             """apply metric"""
             temp_softdtw, temp_mse = [], []
 
-            # TODO find worst date
             for test_date in test_dates:
 
                 ivd_test_df = ts.dataset_from_dates(df, [test_date])

@@ -1,12 +1,43 @@
 import numpy as np
 import pandas as pd 
+from typing import List
 import datetime
 from glob2 import glob
 import os 
 
 
 class helper:
-    
+
+    @staticmethod
+    def worst_day_res(test_dates: List[str],
+                        df,  
+                        ts: object,                        
+                        predict_func: callable,
+                        cat_list, 
+                        target, 
+                        bst,  # trained bst
+                        metric_name: str, 
+                        metric: object, 
+                        ):
+        res = []
+        for test_date in test_dates:
+            ivd_test_df =  ts.dataset_from_dates(df, [test_date])
+            preds = predict_func(ivd_test_df, cat_list, target, bst)
+
+            if metric_name == "softdtw":
+                temp = metric.softdtw(preds, ivd_test_df[target])
+            elif metric_name == "mse":
+                temp = metric.mse(preds, ivd_test_df[target])
+
+            res.append(temp)
+
+        maxpos = res.index(max(res))  # worst date index
+        worst_date = test_dates[maxpos]
+        ivd_test_df =  ts.dataset_from_dates(df, [worst_date])
+        preds = predict_func(ivd_test_df, cat_list, target, bst)
+
+        return preds, ivd_test_df[target]
+
     @staticmethod
     def feature_important(bst, name, cat_list):
         if name == "xgb":
@@ -94,4 +125,5 @@ class logger:
 
 
 class plotter:
+    
     pass
