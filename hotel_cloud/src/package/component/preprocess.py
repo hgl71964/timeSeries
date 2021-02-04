@@ -41,6 +41,7 @@ def preprocessing(working_dir: str,  # path of the working dir
     raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
 
     """ data cleansing && add lag features """
+    
     print(f"{bcolors.INFO_CYAN}start data cleansing {bcolors.ENDC}")
 
     ts = timeSeries_data(**{"year": year, })
