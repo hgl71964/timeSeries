@@ -21,9 +21,9 @@ cli = argparse.ArgumentParser(description="config global parameters")
 cli.add_argument("--lb",
                 dest="lb",
                 type=int,
-                nargs=2, 
-                default=(1, 3),
-                help="2 args -> lag_bound for lag feats")
+                nargs="+", 
+                default=[1, 7, 14], 
+                help="2 args -> lag range for lag feats")
 
 cli.add_argument("--nc",
                 dest="nc",

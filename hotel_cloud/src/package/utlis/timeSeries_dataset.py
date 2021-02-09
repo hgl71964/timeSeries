@@ -7,6 +7,10 @@ from typing import List
 from collections import deque 
 from tslearn.clustering import TimeSeriesKMeans
 
+"""
+specific for hotel cloud data
+"""
+
 class timeSeries_data:
 
     def __init__(self, **kwargs):
@@ -160,7 +164,7 @@ class timeSeries_data:
                         dates: List[str],
                         lag_feats: List[str],
                         target: str,
-                        lag_range: tuple = (2, 4),  # this means we forecast 2 days ahead
+                        lag_range: List[int], 
                         ):
         """
         make lag feature for a single staydate; 
@@ -192,10 +196,10 @@ class timeSeries_data:
     def _add_lag_features(self, 
                     df, 
                     features, 
-                    lag_range,
+                    lag_range: List[int],
                     ):
         for feat in features:
-            for lag in range(lag_range[0], lag_range[1]+1):
+            for lag in lag_range: 
                 df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
         return df
  

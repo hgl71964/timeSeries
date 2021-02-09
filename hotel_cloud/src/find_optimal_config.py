@@ -36,8 +36,8 @@ cli.add_argument("--nc",
 cli.add_argument("--lb",
                 dest="lb",
                 type=int,
-                nargs=2, 
-                default=(1, 3),
+                nargs="+", 
+                default=[1, 7, 14], 
                 help="2 args -> lag range for lag feats")
 
 cli.add_argument("--target",

@@ -35,7 +35,7 @@ class helper:
         worst_date = test_dates[maxpos]
         ivd_test_df =  ts.df_from_dates(df, [worst_date])
         preds = predict_func(ivd_test_df, cat_list, target, bst)
-        return preds, ivd_test_df[target]
+        return preds, ivd_test_df[target].values
 
     @staticmethod
     def feature_important(bst, name, cat_list):
