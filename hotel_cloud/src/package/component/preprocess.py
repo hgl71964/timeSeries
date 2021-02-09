@@ -26,7 +26,7 @@ def preprocessing(working_dir: str,  # path of the working dir
                 n_cluster: int,
                 all_feats: List[str],  # all feats involved in modelling
                 lag_feats: List[str],  # the feats that need to make lag
-                lag_range: tuple,
+                lag_days: List[int],
                 ):
     """
     takes in raw data,
@@ -47,7 +47,7 @@ def preprocessing(working_dir: str,  # path of the working dir
     ts = timeSeries_data(**{"year": year, })
 
     data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
-                        history, True, lag_feats, lag_range, **{"interpolate_col": [target]})
+                        history, lag_feats, lag_days, **{"interpolate_col": [target]})
 
     # ----------------------------------------------------------------------------------------
     """ clustering """

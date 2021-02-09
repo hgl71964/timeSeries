@@ -49,12 +49,15 @@ class timeSeries_data:
                 target: str,  # the target to model
                 history: int,  # length of the booking curve to be used
                 filter_all_zero: bool,  # whether to filter ts that is shorter than history
-                lag_feats,
-                lag_range,
+                lag_feats: List[str],
+                lag_days: List[int],  # a list of num to make lag
+                rolling_feats: List[str], 
+                rolling_windows: List[int], 
                 **kwargs,  # handle interpolation method
                 ):
         """
-        cleanse the dataFrame and return
+        core cleansing function
+            -> break down to individual staydate df to preprocess
 
         Return: 
             data: np.ndarray; each row is a booking curve for a staydate
@@ -78,9 +81,10 @@ class timeSeries_data:
             s_df = df[(df["staydate"] == full_date)].groupby("lead_in").sum()\
                                         .filter(preserved_col)
 
-            # filter
-            if filter_all_zero and len(s_df[target]) < history:  # all_booking_curve less than history are dicarded
-                continue
+            # find minimum valid len
+            valid_len = self._minimum_valid_len(s_df)
+            
+            
 
             # apply interpolation
             s_df = self._interpolate(s_df, **kwargs)
@@ -89,10 +93,11 @@ class timeSeries_data:
             s_df["staydate"] = full_date
 
             # make lag && temporal info
-            s_df = self.make_lag_for_df(s_df, target, lag_range, lag_feats)
+            s_df = self.make_lag_for_df(s_df, target, lag_days, lag_feats) 
 
 
-            # s_df = self.make_rolling
+            s_df = self.make_rolling_for_df(s_df, target, rolling_feats, rolling_windows)
+
 
             # select history
             s_df = s_df.iloc[:history]
@@ -112,6 +117,11 @@ class timeSeries_data:
                                         "data contain NAN or INF"
 
         return all_booking_curve, data_dict, pd.concat(clean_df, axis=0)
+
+    def _minimum_valid_len(self, df):
+        df_len = len(df)
+        return df
+
 
     def _interpolate(self, df, **kwargs):
 
@@ -141,11 +151,10 @@ class timeSeries_data:
     def make_rolling_for_df(self,
                             df,
                             target,
-                            rolling_feats,
+                            rolling_feats: List[str],
                             rolling_window: int):
         
-
-        return 
+        return df
 
 
     def make_lag_for_df(self,
