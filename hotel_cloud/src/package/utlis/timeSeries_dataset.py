@@ -48,7 +48,6 @@ class timeSeries_data:
                 data_range: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
                 history: int,  # length of the booking curve to be used
-                filter_all_zero: bool,  # whether to filter ts that is shorter than history
                 lag_feats: List[str],
                 lag_days: List[int],  # a list of num to make lag
                 rolling_feats: List[str], 
@@ -83,23 +82,19 @@ class timeSeries_data:
 
             # find minimum valid len
             valid_len = self._minimum_valid_len(s_df)
-            
-            
 
+            # add staydate
+            s_df["staydate"] = full_date
+
+            # TODO
             # apply interpolation
             s_df = self._interpolate(s_df, **kwargs)
 
-            # add feats
-            s_df["staydate"] = full_date
-
             # make lag && temporal info
             s_df = self.make_lag_for_df(s_df, target, lag_days, lag_feats) 
-
-
             s_df = self.make_rolling_for_df(s_df, target, rolling_feats, rolling_windows)
 
-
-            # select history
+            # TODO select valid length && delete history
             s_df = s_df.iloc[:history]
 
             # collect
@@ -119,8 +114,10 @@ class timeSeries_data:
         return all_booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
     def _minimum_valid_len(self, df):
+        """ min valid len for all cols """
         df_len = len(df)
-        return df
+        maxi = df.replace(0, np.nan).isna().sum(axis=0).max()  # TODO can this address missing values?
+        return int(df_len - maxi)
 
 
     def _interpolate(self, df, **kwargs):
