@@ -21,7 +21,7 @@ def preprocessing(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
                 data_range: tuple,
-                history: int, 
+                history: int,
                 ndays_ahead: int,
                 target: str,
                 n_cluster: int,

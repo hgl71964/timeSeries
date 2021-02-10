@@ -198,6 +198,9 @@ class timeSeries_data:
 
         #  make lag_days valid
         valid_lag_days = [i for i in lag_days if i >= ndays_ahead]
+        if len(valid_lag_days) != len(lag_days):
+            print(f"WARNING: lag days < {ndays_ahead} days ahead")
+        
 
         if target not in lag_feats:
             full_feats = lag_feats + [target]
