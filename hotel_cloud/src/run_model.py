@@ -229,11 +229,11 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
 """ performance evaluation """
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
-print(helper.feature_important(bst, name, CAT_LIST))
-
 print(helper.worst_day_res(test_dates, df, ts, predict_func, CAT_LIST, \
                             TARGET, bst, "softdtw", forecast_metric))
 
+if False:
+    print(helper.feature_important(bst, name, CAT_LIST))
 
 # # cor features
 # corr_df = train_df.corr().abs()
