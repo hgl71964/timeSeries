@@ -93,7 +93,7 @@ class timeSeries_data:
             s_df = self._interpolate(s_df, **kwargs)
 
             # make lag && temporal info
-            s_df = self.make_lag_for_df(s_df, target, lag_days, lag_feats) 
+            s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats) 
             s_df = self.make_rolling_for_df(s_df, target, rolling_feats, rolling_windows)
 
             # TODO select valid length && delete history
@@ -156,20 +156,22 @@ class timeSeries_data:
     def make_lag_for_df(self,
                         df,  # consists of all staydates we want
                         target: str,
-                        lag_range: tuple, 
+                        ndays_ahead: int, 
+                        lag_days: tuple, 
                         lag_feats: List[str],  # feature that needs to make lag
                         ):
         """ add lag feature for every 'staydate' of the df """
         dates = df["staydate"].unique().astype(str)
-        return self.make_lag_from_dates(df, dates, lag_feats, \
-                    target, lag_range)
+        return self.make_lag_from_dates(df, dates, ndays_ahead, lag_feats, \
+                    target, lag_days)
 
     def make_lag_from_dates(self,
                         df,
                         dates: List[str],
+                        ndays_ahead: int, 
                         lag_feats: List[str],
                         target: str,
-                        lag_range: List[int], 
+                        lag_days: List[int], 
                         ):
         """
         make lag feature for a single staydate; 
@@ -177,6 +179,9 @@ class timeSeries_data:
         """
         df_timing = "staydate"  
         df_list = [None] * len(dates)
+
+        #  make lag_days valid
+        valid_lag_days = [i for i in lag_days if i >= ndays_ahead]
 
         if target not in lag_feats:
             full_feats = lag_feats + [target]
@@ -189,7 +194,7 @@ class timeSeries_data:
             s_df = df[(df["staydate"] == date)].groupby("lead_in")\
                         .sum().reset_index().drop(columns=["lead_in"])
 
-            s_df = self._add_lag_features(s_df, full_feats , lag_range)
+            s_df = self._add_lag_features(s_df, full_feats , valid_lag_days)
             s_df = s_df.drop(columns=lag_feats)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
@@ -201,10 +206,10 @@ class timeSeries_data:
     def _add_lag_features(self, 
                     df, 
                     features, 
-                    lag_range: List[int],
+                    lag_days: List[int],
                     ):
         for feat in features:
-            for lag in lag_range: 
+            for lag in lag_days: 
                 df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
         return df
  
