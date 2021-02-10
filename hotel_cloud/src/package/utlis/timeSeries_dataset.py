@@ -103,6 +103,7 @@ class timeSeries_data:
             # rollings come from lag
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats)
             s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
+            s_df = self._add_temporal_info(s_df, full_date)
 
             #  only select data from history
             s_df = s_df.iloc[:history]
@@ -166,10 +167,13 @@ class timeSeries_data:
         if target in rolling_feats:
             rolling_feats.remove(target)
 
-        for df_feat in list(df):
-            for feat in rolling_feats:
-                for window in rolling_window:
-                    if ("lag" in feat) and 
+        for window in rolling_window:
+            for df_feat in list(df):                
+                
+                if df
+
+                if ("lag" in feat) and ??:
+                    pass
 
         return df
 
@@ -215,12 +219,10 @@ class timeSeries_data:
                         .sum().reset_index().drop(columns=["lead_in"])
 
             s_df = self._add_lag_features(s_df, full_feats , valid_lag_days)
-            s_df = s_df.drop(columns=lag_feats)  # drop no lag features
-            s_df = self._add_temporal_info(s_df, date)
-            s_df = s_df.dropna()  # remove row has NA
+            s_df = s_df.drop(columns=lag_feats)  # drop no lag features            
+            # s_df = s_df.dropna()  # remove row has NA
             s_df[df_timing] = date
             df_list[i] = s_df
-
         return pd.concat(df_list, axis=0, ignore_index=True)
 
     def _add_lag_features(self, 
