@@ -47,6 +47,7 @@ class timeSeries_data:
                 preserved_col: List[str],  # feats in the modelling
                 data_range: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
+                history: int, 
                 ndays_ahead: int,  # forecast n headers ahead
                 lag_feats: List[str],
                 lag_days: List[int],  # a list of num to make lag
@@ -64,9 +65,15 @@ class timeSeries_data:
             data_dict: dict; index -> staydate
             df
         """
+        if isinstance(data_range[0], int):
+            start_date, end_data = datetime.datetime(data_range[0], 1, 1, 0, 0), \
+                                        datetime.datetime(data_range[1]+1, 1, 1, 0, 0)
 
-        start_date, end_data = datetime.datetime(data_range[0], 1, 1, 0, 0), \
-                                    datetime.datetime(data_range[1]+1, 1, 1, 0, 0)
+        elif isinstance(data_range[0], datetime.datetime):
+            start_date, end_data = data_range[0], data_range[1]
+        else:
+            raise TypeError("data range format is not valid")
+
         num_days = (end_data - start_date).days
         data_dict, idx = {}, 0
 
@@ -93,7 +100,7 @@ class timeSeries_data:
             # apply interpolation
             s_df = self._interpolate(s_df, inter_feats, inter_methods)
 
-            # make lag && temporal info
+            # rollings come from lag
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats)
             s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
 
@@ -110,12 +117,9 @@ class timeSeries_data:
             idx+=1
             clean_df.append(s_df)
             d = s_df[target].to_numpy().astype(np.int64)
-
             all_booking_curve.append(d)
 
-
         # TODO need to address variable length sequence -> then we can do clustering 
-        # flatten
         all_booking_curve = [j for i in all_booking_curve for j in i]
 
         # type conversion & post-cleansing
@@ -157,8 +161,13 @@ class timeSeries_data:
                             target,
                             ndays_ahead, 
                             rolling_feats: List[str],
-                            rolling_window: int):
-        
+                            rolling_window: List[int]):
+
+        if target not in rolling_feats:
+            full_feats = rolling_feats + [target]
+        else:
+            rolling_feats.remove(target)
+            full_feats = rolling_feats + [target]
         return df
 
     def make_lag_for_df(self,

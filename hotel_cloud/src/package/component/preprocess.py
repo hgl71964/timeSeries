@@ -22,6 +22,7 @@ def preprocessing(working_dir: str,  # path of the working dir
                 year,  # only for check
                 data_range: tuple,
                 ndays_ahead: int,
+                history: int, 
                 target: str,
                 n_cluster: int,
                 all_feats: List[str],  # all feats involved in modelling
@@ -50,7 +51,7 @@ def preprocessing(working_dir: str,  # path of the working dir
 
     """ core cleansing function"""
     data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
-                        ndays_ahead, lag_feats, lag_days, \
+                        history, ndays_ahead, lag_feats, lag_days, \
                         rolling_feats, rolling_windows, \
                         inter_feats, inter_methods)
 

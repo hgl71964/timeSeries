@@ -36,6 +36,12 @@ cli.add_argument("--target",
                 default="rooms_all",
                 help="forecast target")
 
+cli.add_argument("--history",
+                dest="history",
+                type=int,
+                default=60,
+                help="forecast target")
+
 cli.add_argument("--gn",
                 dest="gn",
                 type=int,
@@ -55,7 +61,6 @@ cli.add_argument("-k",
                 help="number of folds for cross-validation")
 
 
-
 args = cli.parse_args()
 
 DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
@@ -73,6 +78,7 @@ N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
 KFOLD = args.k                       # score via 3 fold cross-validation
+HISTORY = args.history
 
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
@@ -196,7 +202,7 @@ else:
 
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, NDAYS_AHED, TARGET, N_CLUSTER, \
+                YEAR, DATA_RANGE, HISTORY, NDAYS_AHED, TARGET, N_CLUSTER, \
                 ALL_FEAT, LAG_FEAT, LAG_DAYS, ROLLING_FEAT, ROLLING_WINDOWS,\
                 INTER_FEAT, INTER_METHODS)
 
