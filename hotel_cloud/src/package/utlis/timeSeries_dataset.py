@@ -52,7 +52,8 @@ class timeSeries_data:
                 lag_days: List[int],  # a list of num to make lag
                 rolling_feats: List[str], 
                 rolling_windows: List[int], 
-                **kwargs,  # handle interpolation method
+                inter_feats, 
+                inter_methods, 
                 ):
         """
         core cleansing function
@@ -90,7 +91,7 @@ class timeSeries_data:
             s_df["staydate"] = full_date
 
             # apply interpolation
-            s_df = self._interpolate(s_df, **kwargs)
+            s_df = self._interpolate(s_df, inter_feats, inter_methods)
 
             # make lag && temporal info
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats) 
@@ -99,9 +100,9 @@ class timeSeries_data:
             #  only select data from valid range
             s_df = s_df.iloc[:valid_len]
 
-            # make lead_in as a feature 
+            # make lead_in as a feature
             s_df["lead_in"] = s_df
-            s_df["lead_in"] = s_df["lead_in"].transform(lambda x:x+1)
+            s_df["lead_in"] = s_df["lead_in"].transform(lambda x: x+1)
             s_df = s_df.reset_index(drop=True)
 
             # collect
@@ -127,19 +128,16 @@ class timeSeries_data:
         return int(df_len - maxi)
 
 
-    def _interpolate(self, df, **kwargs):
-
-        # TODO interpolate logic can be improved
-        feats, interpolate_param = kwargs.get("interpolate_col", []), \
-                                kwargs.get("interpolate_param", ("linear", 3))
-        if not feats:
+    def _interpolate(self, df, inter_feats, inter_methods):
+        # TODO interpolate logic?
+        if not inter_feats:
             return df
 
-        inter_method, inter_order = interpolate_param
-        if isinstance(feats, str):  # prevent keyError
-            feats = [feats]
+        inter_method, inter_order = inter_methods
+        if isinstance(inter_feats, str):  # prevent keyError
+            inter_feats = [inter_feats]
         
-        for feat in feats:  # interpolate "0" for all feats in the list
+        for feat in inter_feats:  # interpolate "0" for all inter_feats in the list
 
             # interpolation algorithm cannot handle last entry
             if df[feat].eq(0).iloc[0]:
@@ -204,7 +202,7 @@ class timeSeries_data:
             s_df = s_df.drop(columns=lag_feats)  # drop no lag features
             s_df = self._add_temporal_info(s_df, date)
             s_df = s_df.dropna()  # remove row has NA
-            s_df[df_timing] = date  
+            s_df[df_timing] = date
             df_list[i] = s_df
 
         return pd.concat(df_list, axis=0, ignore_index=True)

@@ -29,6 +29,8 @@ def preprocessing(working_dir: str,  # path of the working dir
                 lag_days: List[int],
                 rolling_feats: List[str],  # features to be applied to rolling
                 rolling_windows: List[int],  # windows for rolling features
+                inter_feats: List[str],  # features to be interpolated
+                inter_methods: tuple = ("linear", 1),  # (inter_method, inter_order)
                 ):
     """
     takes in raw data,
@@ -41,16 +43,16 @@ def preprocessing(working_dir: str,  # path of the working dir
     raw_df = pd.read_csv(data_full_path)
     raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
     raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
-
-    """ data cleansing && add lag features """
     
     print(f"{bcolors.INFO_CYAN}start data cleansing {bcolors.ENDC}")
 
     ts = timeSeries_data(**{"year": year, })
 
-    # TODO add rolling 
+    """ core cleansing function"""
     data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
-                        ndays_ahead, lag_feats, lag_days, **{"interpolate_col": all_feats})
+                        ndays_ahead, lag_feats, lag_days, \
+                        rolling_feats, rolling_windows, \
+                        inter_feats, inter_methods)
 
     # ----------------------------------------------------------------------------------------
     """ clustering """
