@@ -191,11 +191,11 @@ else:
     # predict_func = lgb_predict
     # param = lgb_param
     # training_param = lgb_train_param
-    name = "xgb"
-    training_func = xgb_train
-    predict_func = xgb_predict
-    param = xgb_params
-    training_param = xgb_train_params
+    name = "lgb"
+    training_func = lgb_train
+    predict_func = lgb_predict
+    param = lgb_param
+    training_param = lgb_train_param
     print(f"{bcolors.FAIL} cannot load optimal config, using default {name} \n {bcolors.ENDC}")
 
 # finish reading
