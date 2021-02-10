@@ -67,6 +67,7 @@ DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
 YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only
 
+NDAYS_AHED = args.nd
 TARGET = args.target            # target for forecasting
 HISTORY = args.history          # length of the time series we want to find
 DATA_RANGE = (2019, 2019)       # use data from (0 - 1)
