@@ -43,7 +43,7 @@ def preprocessing(working_dir: str,  # path of the working dir
     raw_df = pd.read_csv(data_full_path)
     raw_df["reportdate"] = raw_df["reportdate"].astype("datetime64[ns]")
     raw_df["staydate"] = raw_df["staydate"].astype("datetime64[ns]")
-    
+
     print(f"{bcolors.INFO_CYAN}start data cleansing {bcolors.ENDC}")
 
     ts = timeSeries_data(**{"year": year, })
@@ -53,6 +53,12 @@ def preprocessing(working_dir: str,  # path of the working dir
                         ndays_ahead, lag_feats, lag_days, \
                         rolling_feats, rolling_windows, \
                         inter_feats, inter_methods)
+
+
+    print(data_dict)
+    print(df.columns)
+
+    raise RuntimeError("a")
 
     # ----------------------------------------------------------------------------------------
     """ clustering """

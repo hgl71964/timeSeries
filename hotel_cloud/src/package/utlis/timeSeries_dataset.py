@@ -101,7 +101,7 @@ class timeSeries_data:
             s_df = s_df.iloc[:valid_len]
 
             # make lead_in as a feature
-            s_df["lead_in"] = s_df
+            s_df["lead_in"] = s_df.index
             s_df["lead_in"] = s_df["lead_in"].transform(lambda x: x+1)
             s_df = s_df.reset_index(drop=True)
 
@@ -109,15 +109,21 @@ class timeSeries_data:
             data_dict[idx] = full_date
             idx+=1
             clean_df.append(s_df)
-            d = s_df[target].to_numpy()
+            d = s_df[target].to_numpy().astype(np.int64)
+
             all_booking_curve.append(d)
 
-        # type conversion & post-cleansing
-        all_booking_curve = np.flip(np.array(all_booking_curve).reshape(idx, -1), axis=1)
-        all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation
 
-        assert (np.all(np.isfinite(all_booking_curve)) and not np.any(np.isnan(all_booking_curve))), \
-                                        "data contain NAN or INF"
+        # TODO need to address variable length sequence -> then we can do clustering 
+        # flatten
+        all_booking_curve = [j for i in all_booking_curve for j in i]
+
+        # type conversion & post-cleansing
+        # all_booking_curve = np.flip(np.array(all_booking_curve).reshape(idx, -1), axis=1)
+        # all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation
+
+        # assert (np.all(np.isfinite(all_booking_curve)) and not np.any(np.isnan(all_booking_curve))), \
+        #                                 "data contain NAN or INF"
 
         return all_booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
@@ -206,8 +212,8 @@ class timeSeries_data:
         return pd.concat(df_list, axis=0, ignore_index=True)
 
     def _add_lag_features(self, 
-                    df, 
-                    features, 
+                    df,
+                    features,
                     lag_days: List[int],
                     ):
         for feat in features:

@@ -202,9 +202,6 @@ df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4
 
 
 
-print(df.columns)
-# df = df.drop(columns=["rooms_all_lag_2", "rooms_all_lag_3"])
-
 """ train && test"""
 if GROUP_NUM == -1:  # use all data
     train_dates, test_dates = ts.train_test_dates(np.zeros_like(preds)-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
