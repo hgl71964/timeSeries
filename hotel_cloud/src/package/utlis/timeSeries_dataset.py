@@ -94,10 +94,15 @@ class timeSeries_data:
 
             # make lag && temporal info
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats) 
-            s_df = self.make_rolling_for_df(s_df, target, rolling_feats, rolling_windows)
+            s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
 
-            # TODO select valid length && delete history
+            #  only select data from valid range
             s_df = s_df.iloc[:valid_len]
+
+            # make lead_in as a feature 
+            s_df["lead_in"] = s_df
+            s_df["lead_in"] = s_df["lead_in"].transform(lambda x:x+1)
+            s_df = s_df.reset_index(drop=True)
 
             # collect
             data_dict[idx] = full_date
@@ -147,6 +152,7 @@ class timeSeries_data:
     def make_rolling_for_df(self,
                             df,
                             target,
+                            ndays_ahead, 
                             rolling_feats: List[str],
                             rolling_window: int):
         

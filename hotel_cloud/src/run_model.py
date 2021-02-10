@@ -81,6 +81,7 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
+            "lead_in"
             ]
 
 LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
