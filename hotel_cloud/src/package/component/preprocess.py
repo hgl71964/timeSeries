@@ -54,12 +54,6 @@ def preprocessing(working_dir: str,  # path of the working dir
                         rolling_feats, rolling_windows, \
                         inter_feats, inter_methods)
 
-
-    print(data_dict)
-    print(df.columns)
-
-    raise RuntimeError("a")
-
     # ----------------------------------------------------------------------------------------
     """ clustering """
     data_files = os.listdir(os.path.join(working_dir, "data", "log"))
