@@ -60,7 +60,6 @@ cli.add_argument("-k",
                 default=5,
                 help="number of folds for cross-validation")
 
-
 args = cli.parse_args()
 
 DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
@@ -86,7 +85,7 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
-            "lead_in"
+            "lead_in", 
             ]
 
 LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
@@ -97,8 +96,8 @@ LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             ]
 LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
 
-ROLLING_FEAT = ["rooms_all", ]  # "revenue_all", "adr_all"
-ROLLING_WINDOWS = [3, 7, 14]              # the bound for lagged features
+
+ROLLING_WINDOWS = [3, 7, 14]              
 
 INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
@@ -201,11 +200,11 @@ else:
 
 
 """ pre-processing """
-print(f"{bcolors.INFO_CYAN} {NDAYS_AHED} forecasting {bcolors.ENDC}")
+print(f"{bcolors.INFO_CYAN} forecasting {NDAYS_AHED} days ahead {bcolors.ENDC}")
 
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, NDAYS_AHED, TARGET, N_CLUSTER, \
-                ALL_FEAT, LAG_FEAT, LAG_DAYS, ROLLING_FEAT, ROLLING_WINDOWS,\
+                ALL_FEAT, LAG_FEAT, LAG_DAYS, ROLLING_WINDOWS,\
                 INTER_FEAT, INTER_METHODS)
 
 """ train && test"""

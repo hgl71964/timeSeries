@@ -51,7 +51,6 @@ class timeSeries_data:
                 ndays_ahead: int,  # forecast n headers ahead
                 lag_feats: List[str],
                 lag_days: List[int],  # a list of num to make lag
-                rolling_feats: List[str],
                 rolling_windows: List[int],
                 inter_feats,
                 inter_methods,
@@ -102,7 +101,7 @@ class timeSeries_data:
 
             # rollings come from lag
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats)
-            s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
+            s_df = self.make_rolling_for_df(s_df, target, rolling_windows)
             s_df = s_df.drop(columns=[i for i in lag_feats if i != target])  # drop no lag features
             s_df = self._add_temporal_info(s_df, full_date)
 
@@ -161,18 +160,13 @@ class timeSeries_data:
     def make_rolling_for_df(self,
                             df,
                             target,
-                            ndays_ahead, 
-                            rolling_feats: List[str],
                             rolling_window: List[int]):
-        if target in rolling_feats:
-            rolling_feats.remove(target)
-
-        for window in rolling_window:
-            for df_feat in list(df):           
-                for rolling_feat in rolling_feats:
-                    if rolling_feat in df_feat and "lag" in df_feat:  # only make rolling from lag
-                        df[df_feat+"_mean"] = df[df_feat].rolling(window).mean().shift((-window) + 1)
-                        df[df_feat+"_std"] = df[df_feat].rolling(window).std().shift((-window) + 1)
+        """ from lag feat we can make rolling """
+        for df_feat in list(df):
+            if "lag" in df_feat:
+                for window in rolling_window:
+                    df[df_feat+"_rolling_mean"] = df[df_feat].rolling(window).mean().shift((-window) + 1)
+                    df[df_feat+"_rolling_std"] = df[df_feat].rolling(window).std().shift((-window) + 1)
         return df
 
     def make_lag_for_df(self,
@@ -219,7 +213,7 @@ class timeSeries_data:
             s_df = self._add_lag_features(s_df, full_feats , valid_lag_days)
 
             # s_df = s_df.dropna()  # remove row has NA
-            if df_timing not in df:
+            if df_timing not in s_df:
                 s_df[df_timing] = date
             df_list[i] = s_df
         return pd.concat(df_list, axis=0, ignore_index=True)
@@ -231,7 +225,7 @@ class timeSeries_data:
                     ):
         for feat in features:
             for lag in lag_days: 
-                df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag) 
+                df[f"{feat}_lag_{lag}"] = df[feat].shift(-lag)
         return df
  
     def _add_temporal_info(self, 

@@ -21,14 +21,13 @@ def preprocessing(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
                 data_range: tuple,
-                ndays_ahead: int,
                 history: int, 
+                ndays_ahead: int,
                 target: str,
                 n_cluster: int,
                 all_feats: List[str],  # all feats involved in modelling
                 lag_feats: List[str],  # the feats that need to make lag
                 lag_days: List[int],
-                rolling_feats: List[str],  # features to be applied to rolling
                 rolling_windows: List[int],  # windows for rolling features
                 inter_feats: List[str],  # features to be interpolated
                 inter_methods: tuple = ("linear", 1),  # (inter_method, inter_order)
@@ -52,9 +51,7 @@ def preprocessing(working_dir: str,  # path of the working dir
     """ core cleansing function"""
     data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
                         history, ndays_ahead, lag_feats, lag_days, \
-                        rolling_feats, rolling_windows, \
-                        inter_feats, inter_methods)
-
+                        rolling_windows, inter_feats, inter_methods)
     # ----------------------------------------------------------------------------------------
     """ clustering """
     data_files = os.listdir(os.path.join(working_dir, "data", "log"))
