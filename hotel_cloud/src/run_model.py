@@ -201,12 +201,12 @@ else:
 
 
 """ pre-processing """
+print(f"{bcolors.INFO_CYAN} {NDAYS_AHED} forecasting {bcolors.ENDC}")
+
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
                 YEAR, DATA_RANGE, HISTORY, NDAYS_AHED, TARGET, N_CLUSTER, \
                 ALL_FEAT, LAG_FEAT, LAG_DAYS, ROLLING_FEAT, ROLLING_WINDOWS,\
                 INTER_FEAT, INTER_METHODS)
-
-
 
 """ train && test"""
 if GROUP_NUM == -1:  # use all data
