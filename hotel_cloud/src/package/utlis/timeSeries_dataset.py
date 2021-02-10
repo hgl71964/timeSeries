@@ -47,20 +47,20 @@ class timeSeries_data:
                 preserved_col: List[str],  # feats in the modelling
                 data_range: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
-                history: int, 
+                history: int,  # the maximum length we will consider
                 ndays_ahead: int,  # forecast n headers ahead
                 lag_feats: List[str],
                 lag_days: List[int],  # a list of num to make lag
-                rolling_feats: List[str], 
-                rolling_windows: List[int], 
-                inter_feats, 
-                inter_methods, 
+                rolling_feats: List[str],
+                rolling_windows: List[int],
+                inter_feats,
+                inter_methods,
                 ):
         """
         core cleansing function
             -> break down to individual staydate df to preprocess
 
-        Return: 
+        Return:
             data: np.ndarray; each row is a booking curve for a staydate
             data_dict: dict; index -> staydate
             df
@@ -91,7 +91,7 @@ class timeSeries_data:
             # find minimum valid len
             valid_len = self._minimum_valid_len(s_df)
 
-            if valid_len < ndays_ahead:
+            if valid_len < history:
                 continue  # this staydate does not have enough data to be a valid sample
 
             # add staydate
@@ -104,8 +104,8 @@ class timeSeries_data:
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats)
             s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
 
-            #  only select data from valid range
-            s_df = s_df.iloc[:valid_len]
+            #  only select data from history
+            s_df = s_df.iloc[:history]
 
             # make lead_in as a feature
             s_df["lead_in"] = s_df.index
@@ -119,15 +119,15 @@ class timeSeries_data:
             d = s_df[target].to_numpy().astype(np.int64)
             all_booking_curve.append(d)
 
-        # TODO need to address variable length sequence -> then we can do clustering 
+        # flatten
         all_booking_curve = [j for i in all_booking_curve for j in i]
 
-        # type conversion & post-cleansing
-        # all_booking_curve = np.flip(np.array(all_booking_curve).reshape(idx, -1), axis=1)
-        # all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation
+        # conversion & post-cleansing
+        all_booking_curve = np.flip(np.array(all_booking_curve).reshape(idx, -1), axis=1)
+        all_booking_curve = np.where(all_booking_curve < 0, 0, all_booking_curve)  # if there exists negative term due to interpolation
 
-        # assert (np.all(np.isfinite(all_booking_curve)) and not np.any(np.isnan(all_booking_curve))), \
-        #                                 "data contain NAN or INF"
+        assert (np.all(np.isfinite(all_booking_curve)) and not np.any(np.isnan(all_booking_curve))), \
+                                        "data contain NAN or INF"
 
         return all_booking_curve, data_dict, pd.concat(clean_df, axis=0)
 
@@ -163,11 +163,14 @@ class timeSeries_data:
                             rolling_feats: List[str],
                             rolling_window: List[int]):
 
-        if target not in rolling_feats:
-            full_feats = rolling_feats + [target]
-        else:
+        if target in rolling_feats:
             rolling_feats.remove(target)
-            full_feats = rolling_feats + [target]
+
+        for df_feat in list(df):
+            for feat in rolling_feats:
+                for window in rolling_window:
+                    if ("lag" in feat) and 
+
         return df
 
     def make_lag_for_df(self,
@@ -191,10 +194,10 @@ class timeSeries_data:
                         lag_days: List[int], 
                         ):
         """
-        make lag feature for a single staydate; 
+        make lag feature for a single staydate;
                 ensure 'staydate' is a unit
         """
-        df_timing = "staydate"  
+        df_timing = "staydate" 
         df_list = [None] * len(dates)
 
         #  make lag_days valid

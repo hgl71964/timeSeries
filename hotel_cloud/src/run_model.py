@@ -27,7 +27,7 @@ cli.add_argument("--nc",
 cli.add_argument("--nd",
                 dest="nd",
                 type=int,
-                default=10,
+                default=28,
                 help="n days ahead forecasting")
 
 cli.add_argument("--target",
@@ -95,7 +95,7 @@ LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
             ]
-LAG_DAYS = [1, 7, 14]              # the bound for lagged features
+LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
 
 ROLLING_FEAT = ["rooms_all", ]  # "revenue_all", "adr_all"
 ROLLING_WINDOWS = [3, 7, 14]              # the bound for lagged features
