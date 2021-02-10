@@ -67,9 +67,8 @@ def xgb_predict(df: DataFrame,
 def _one_hot_encoding(df, names: List[str]):
     """names a list of feature names that need to be one hot encoding"""
 
-    feats = df.columns.to_list()
     for name in names:
-        if name in feats:  # if name in df.cloumns then one-hot encoding
+        if name in list(df):  # if name in df.cloumns then one-hot encoding
 
         # add transform so that one hot encoding allows missing values
             if name == "month":
@@ -78,7 +77,10 @@ def _one_hot_encoding(df, names: List[str]):
                 full_list = [f"{name}_{i}" for i in range(0, 7)]
             elif name == "day_of_month":
                 full_list = [f"{name}_{i}" for i in range(1, 32)]
+            elif name == "lead_in":
+                full_list = [f"{name}_{i}" for i in df["lead_in"].unique()]
 
             dummies = get_dummies(df[name], prefix=f"{name}")
             df = df.join(dummies.T.reindex(full_list).T.fillna(0)).drop(columns=[name])
+            
     return df
