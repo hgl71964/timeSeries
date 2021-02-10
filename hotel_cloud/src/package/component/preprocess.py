@@ -21,7 +21,7 @@ def preprocessing(working_dir: str,  # path of the working dir
                 data_full_path: str,  # path to get original dataset
                 year,  # only for check
                 data_range: tuple,
-                history: int,
+                ndays_ahead: int,
                 target: str,
                 n_cluster: int,
                 all_feats: List[str],  # all feats involved in modelling
@@ -50,7 +50,7 @@ def preprocessing(working_dir: str,  # path of the working dir
 
     # TODO add rolling 
     data, data_dict, df = ts.cleansing(raw_df, all_feats, data_range, target, \
-                        history, lag_feats, lag_days, **{"interpolate_col": [target]})
+                        ndays_ahead, lag_feats, lag_days, **{"interpolate_col": all_feats})
 
     # ----------------------------------------------------------------------------------------
     """ clustering """

@@ -47,7 +47,7 @@ class timeSeries_data:
                 preserved_col: List[str],  # feats in the modelling
                 data_range: tuple,  #  e.g. (2018, 2020) -> use staydate in 2018-2020
                 target: str,  # the target to model
-                history: int,  # length of the booking curve to be used
+                ndays_ahead: int,  # forecast n headers ahead
                 lag_feats: List[str],
                 lag_days: List[int],  # a list of num to make lag
                 rolling_feats: List[str], 
@@ -83,10 +83,12 @@ class timeSeries_data:
             # find minimum valid len
             valid_len = self._minimum_valid_len(s_df)
 
+            if valid_len < ndays_ahead:  
+                continue  # this staydate does not have enough data to be a valid sample
+
             # add staydate
             s_df["staydate"] = full_date
 
-            # TODO
             # apply interpolation
             s_df = self._interpolate(s_df, **kwargs)
 
@@ -95,7 +97,7 @@ class timeSeries_data:
             s_df = self.make_rolling_for_df(s_df, target, rolling_feats, rolling_windows)
 
             # TODO select valid length && delete history
-            s_df = s_df.iloc[:history]
+            s_df = s_df.iloc[:valid_len]
 
             # collect
             data_dict[idx] = full_date
@@ -122,14 +124,13 @@ class timeSeries_data:
 
     def _interpolate(self, df, **kwargs):
 
+        # TODO interpolate logic can be improved
         feats, interpolate_param = kwargs.get("interpolate_col", []), \
-                                kwargs.get("interpolate_param", ("spline", 3))
+                                kwargs.get("interpolate_param", ("linear", 3))
         if not feats:
             return df
 
-        # TODO interpolate logic can be improved
         inter_method, inter_order = interpolate_param
-
         if isinstance(feats, str):  # prevent keyError
             feats = [feats]
         
@@ -139,10 +140,8 @@ class timeSeries_data:
             if df[feat].eq(0).iloc[0]:
                 df[feat].iat[0] = df[feat].iloc[1]  # direct assignment
 
-            # only iterpolate if the last 20 dates contain 0
-            if any(df[feat].iloc[:20].eq(0)):
-                df[feat] = df[feat].replace(0, np.nan)\
-                            .interpolate(method=inter_method, order=inter_order)
+            df[feat] = df[feat].replace(0, np.nan)\
+                        .interpolate(method=inter_method, order=inter_order)
         return df
 
     def make_rolling_for_df(self,

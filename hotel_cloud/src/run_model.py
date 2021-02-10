@@ -18,13 +18,6 @@ from package.utlis.evaluation import forecast_metric
 """Args"""
 cli = argparse.ArgumentParser(description="config global parameters")
 
-cli.add_argument("--lb",
-                dest="lb",
-                type=int,
-                nargs="+", 
-                default=[1, 7, 14], 
-                help="2 args -> lag range for lag feats")
-
 cli.add_argument("--nc",
                 dest="nc",
                 type=int,
@@ -66,6 +59,7 @@ args = cli.parse_args()
 
 
 DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
+LAG_RANGE = [1, 7, 14]              # the bound for lagged features
 
 YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only
@@ -80,7 +74,6 @@ N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
 KFOLD = args.k                       # score via 3 fold cross-validation
-LAG_RANGE = args.lb              # the bound for lagged features
 
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
