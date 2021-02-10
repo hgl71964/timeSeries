@@ -133,9 +133,9 @@ lgb_train_param = {
 
 
 # ------------------------------------------------------------------------------------------
-data_files = os.listdir(os.path.join(DIR, "data", "log"))
+log_files = os.listdir(os.path.join(DIR, "data", "log"))
 
-if "optimal_config.npy" in data_files:
+if "optimal_config.npy" in log_files:
     print(f"{bcolors.HEADER} reading optimal configuration {bcolors.ENDC}")
     opt_config = np.load(os.path.join(DIR, "data", "log", "optimal_config.npy"), \
                         allow_pickle='TRUE').item()

@@ -84,7 +84,7 @@ class timeSeries_data:
             # find minimum valid len
             valid_len = self._minimum_valid_len(s_df)
 
-            if valid_len < ndays_ahead:  
+            if valid_len < ndays_ahead:
                 continue  # this staydate does not have enough data to be a valid sample
 
             # add staydate
@@ -127,7 +127,6 @@ class timeSeries_data:
         maxi = df.replace(0, np.nan).isna().sum(axis=0).max()  # TODO can this address missing values?
         return int(df_len - maxi)
 
-
     def _interpolate(self, df, inter_feats, inter_methods):
         # TODO interpolate logic?
         if not inter_feats:
@@ -155,7 +154,6 @@ class timeSeries_data:
                             rolling_window: int):
         
         return df
-
 
     def make_lag_for_df(self,
                         df,  # consists of all staydates we want
