@@ -113,10 +113,10 @@ CAT_LIST = ["month", "day_of_month", "day_of_week", "lead_in"]  # list to catego
 
 xgb_params = {
         # General parameters
-        "booster": "gbtree",
+        "booster": "gblinear",
         "verbosity": 0,  # 0 (silent), 1 (warning), 2 (info), and 3 (debug)
         # Booster parameters
-        "eta": 1e-1,  # aka learning rate
+        "eta": e-1,  # aka learning rate
         "max_depth": 6,
         "min_child_weight": 1,
         "subsample": 1, 
@@ -133,7 +133,7 @@ xgb_train_params = {
 
 lgb_param = {
     "boosting": "gbdt",
-    "objective": "rmse",
+    "objective": "mse",  # rmse
     "metric": {"rmse"},  # can be a list of metric 
     "first_metric_only" : True,  # use only the first metric for early stopping
     # -----
