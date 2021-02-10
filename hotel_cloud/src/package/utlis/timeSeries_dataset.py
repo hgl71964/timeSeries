@@ -1,10 +1,10 @@
 import warnings
 import datetime
 import numpy as np
-import pandas as pd 
+import pandas as pd
 from glob2 import glob
 from typing import List
-from collections import deque 
+from collections import deque
 from tslearn.clustering import TimeSeriesKMeans
 
 """
@@ -15,7 +15,7 @@ class timeSeries_data:
 
     def __init__(self, **kwargs):
         self.year = kwargs.get("year", 2019)
-    
+
     def check_staydate(self,
                         df: pd.DataFrame, 
                         stay_date: str, 
@@ -69,7 +69,7 @@ class timeSeries_data:
                                     datetime.datetime(data_range[1]+1, 1, 1, 0, 0)
         num_days = (end_data - start_date).days
         data_dict, idx = {}, 0
-        
+
         # deque with O(1) complexity to append
         all_booking_curve, clean_df = deque(), deque()
         for _ in range(num_days):
@@ -94,7 +94,7 @@ class timeSeries_data:
             s_df = self._interpolate(s_df, inter_feats, inter_methods)
 
             # make lag && temporal info
-            s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats) 
+            s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats)
             s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
 
             #  only select data from valid range
