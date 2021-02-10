@@ -103,6 +103,7 @@ class timeSeries_data:
             # rollings come from lag
             s_df = self.make_lag_for_df(s_df, target, ndays_ahead, lag_days, lag_feats)
             s_df = self.make_rolling_for_df(s_df, target, ndays_ahead, rolling_feats, rolling_windows)
+            s_df = s_df.drop(columns=[i for i in lag_feats if i != target])  # drop no lag features
             s_df = self._add_temporal_info(s_df, full_date)
 
             #  only select data from history
@@ -163,18 +164,15 @@ class timeSeries_data:
                             ndays_ahead, 
                             rolling_feats: List[str],
                             rolling_window: List[int]):
-
         if target in rolling_feats:
             rolling_feats.remove(target)
 
         for window in rolling_window:
-            for df_feat in list(df):                
-                
-                if df
-
-                if ("lag" in feat) and ??:
-                    pass
-
+            for df_feat in list(df):           
+                for rolling_feat in rolling_feats:
+                    if rolling_feat in df_feat and "lag" in df_feat:  # only make rolling from lag
+                        df[df_feat+"_mean"] = df[df_feat].rolling(window).mean().shift((-window) + 1)
+                        df[df_feat+"_std"] = df[df_feat].rolling(window).std().shift((-window) + 1)
         return df
 
     def make_lag_for_df(self,
@@ -219,9 +217,10 @@ class timeSeries_data:
                         .sum().reset_index().drop(columns=["lead_in"])
 
             s_df = self._add_lag_features(s_df, full_feats , valid_lag_days)
-            s_df = s_df.drop(columns=lag_feats)  # drop no lag features            
+
             # s_df = s_df.dropna()  # remove row has NA
-            s_df[df_timing] = date
+            if df_timing not in df:
+                s_df[df_timing] = date
             df_list[i] = s_df
         return pd.concat(df_list, axis=0, ignore_index=True)
 
