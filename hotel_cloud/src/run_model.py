@@ -74,7 +74,6 @@ TEST_SIZE = args.ts
 GROUP_NUM = args.gn
 N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 
-CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
 KFOLD = args.k                       # score via 3 fold cross-validation
 HISTORY = args.history
@@ -106,6 +105,9 @@ INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "median_pc_diff", #"total_roomcount"
             ]
 INTER_METHODS = ("linear", 1)
+
+CAT_LIST = ["month", "day_of_month", "day_of_week", "lead_in"]  # list to categorical data 
+
 
 
 xgb_params = {
@@ -209,8 +211,10 @@ df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4
 
 """ train && test"""
 if GROUP_NUM == -1:  # use all data
-    train_dates, test_dates = ts.train_test_dates(np.zeros_like(preds)-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
+    print(f"{bcolors.INFO_CYAN} using all data for training {bcolors.ENDC}")
+    train_dates, test_dates = ts.train_test_dates(np.zeros_like(list(data_dict.keys()))-1, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 else:
+    print(f"{bcolors.INFO_CYAN} using grouped data for training {bcolors.ENDC}")
     train_dates, test_dates = ts.train_test_dates(preds, data_dict, test_size=TEST_SIZE, group_num=GROUP_NUM)
 
 print(f"{bcolors.INFO_CYAN}trainset size: {len(train_dates)} \t \
