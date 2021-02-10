@@ -24,6 +24,12 @@ cli.add_argument("--nc",
                 default=5,
                 help="number of clusters")
 
+cli.add_argument("--nd",
+                dest="nd",
+                type=int,
+                default=10,
+                help="n days ahead forecasting")
+
 cli.add_argument("--target",
                 dest="target",
                 type=str,
@@ -56,10 +62,7 @@ cli.add_argument("--history",
 
 args = cli.parse_args()
 
-
-
 DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
-LAG_RANGE = [1, 7, 14]              # the bound for lagged features
 
 YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only
@@ -90,6 +93,19 @@ LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
             ]
+LAG_RANGE = [1, 7, 14]              # the bound for lagged features
+
+ROLLING_FEAT = ["rooms_all", ]  # "revenue_all", "adr_all"
+ROLLING_WINDOWS = [3, 7, 14]              # the bound for lagged features
+
+INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
+            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+            "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
+            "rateamount_mean", "rateamount",
+            "median_pc_diff", #"total_roomcount"
+            ]
+INTER_METHODS = ("linear", 1)
+
 
 xgb_params = {
         # General parameters
