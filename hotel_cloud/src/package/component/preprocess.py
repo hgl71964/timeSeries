@@ -70,7 +70,7 @@ def preprocessing(working_dir: str,  # path of the working dir
         # save clustering results
         np.save(os.path.join(working_dir, "data", "log", "preds.npy"), preds)
         print(f"{bcolors.WARNING}done saving {bcolors.ENDC}")
-    
+
     return (df,
             data_dict,
             preds,

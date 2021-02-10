@@ -54,11 +54,7 @@ cli.add_argument("-k",
                 default=5,
                 help="number of folds for cross-validation")
 
-cli.add_argument("--history",
-                dest="history",
-                type=int,
-                default=100,
-                help="number of history of time series")
+
 
 args = cli.parse_args()
 
@@ -69,7 +65,6 @@ STAY_DATE = "01-11"             # for check only
 
 NDAYS_AHED = args.nd
 TARGET = args.target            # target for forecasting
-HISTORY = args.history          # length of the time series we want to find
 DATA_RANGE = (2019, 2019)       # use data from (0 - 1)
 TEST_SIZE = args.ts
 GROUP_NUM = args.gn
@@ -94,7 +89,7 @@ LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
             ]
-LAG_RANGE = [1, 7, 14]              # the bound for lagged features
+LAG_DAYS = [1, 7, 14]              # the bound for lagged features
 
 ROLLING_FEAT = ["rooms_all", ]  # "revenue_all", "adr_all"
 ROLLING_WINDOWS = [3, 7, 14]              # the bound for lagged features
@@ -201,7 +196,9 @@ else:
 
 """ pre-processing """
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, LAG_FEAT, LAG_RANGE)
+                YEAR, DATA_RANGE, NDAYS_AHED, TARGET, N_CLUSTER, \
+                ALL_FEAT, LAG_FEAT, LAG_DAYS, ROLLING_FEAT, ROLLING_WINDOWS,\
+                INTER_FEAT, INTER_METHODS)
 
 
 
