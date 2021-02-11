@@ -208,7 +208,7 @@ else:
     xs, ys = [], []
     for name in ["xgb", "lgb"]:
         if name == "xgb":
-            domain = np.array([  # -> (2, d) this will change as search variale changes 
+            domain = np.array([  # -> (2, d) this will change as search variale changes
                 # [0,2],
                 [0, 0.7],
                 [1,10],
@@ -221,7 +221,7 @@ else:
                 xgb_train, xgb_predict, ts, forecast_metric, TARGET, **xgb_train_params)
 
         elif name == "lgb":
-            domain = np.array([  # -> (2, d) this will change as search variale changes 
+            domain = np.array([  # -> (2, d) this will change as search variale changes
             # [0, 3], 
             [1e-2, 0.7],  # lr cannot too small
             [20,50],
