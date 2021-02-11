@@ -134,7 +134,7 @@ xgb_train_params = {
 lgb_param = {
     "boosting": "gbdt",
     "objective": "mse",  # rmse
-    "metric": {"rmse"},  # can be a list of metric 
+    "metric": {"rmse"},  # can be a list of metric
     "first_metric_only" : True,  # use only the first metric for early stopping
     # -----
     "eta": 0.05,  

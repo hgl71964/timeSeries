@@ -90,7 +90,7 @@ class timeSeries_data:
             # find minimum valid len
             valid_len = self._minimum_valid_len(s_df)
 
-            if valid_len < history:
+            if valid_len < history + max(lag_days):  # this is the maximum long of history involved
                 continue  # this staydate does not have enough data to be a valid sample
 
             # add staydate

@@ -66,7 +66,7 @@ cli.add_argument("--history",
 cli.add_argument("--bm",
                 dest="bm",
                 type=str,
-                default="softdtw",
+                default="mse",
                 help="metric to use in bayes_opt")
 
 args = cli.parse_args()
@@ -142,7 +142,7 @@ xgb_train_params = {
 lgb_param = {
     "boosting": "gbdt",
     "objective": "rmse",
-    "metric": {"rmse"},  # can be a list of metric 
+    "metric": {"rmse"},  # can be a list of metric
     "first_metric_only" : True,  # use only the first metric for early stopping
     # -----
     "eta": 0.05,  
