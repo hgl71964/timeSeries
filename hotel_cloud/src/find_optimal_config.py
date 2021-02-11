@@ -192,10 +192,8 @@ df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4
 
 """
 bayes optimisation
-
     notice tree model is in-variant to scale so no normalisation
 """
-
 
 data_files = os.listdir(os.path.join(DIR, "data", "log"))
 if "optimal_config.npy" in data_files:
