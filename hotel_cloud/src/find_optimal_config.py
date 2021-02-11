@@ -94,8 +94,8 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "lead_in", 
             ]
 
-LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
+            "google_trend_1_reportdate", "google_trend_2_reportdate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
@@ -105,8 +105,8 @@ LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
 
 ROLLING_WINDOWS = [3, 7, 14]
 
-INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
+            "google_trend_1_reportdate", "google_trend_2_reportdate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
@@ -151,11 +151,11 @@ lgb_param = {
     "subsample": 0.8,    # aka bagging
     "subsample_freq": 5,  # aka bagging frequency
     "lambda_l2": 0,
-    "verbose": 0, 
+    "verbose": 0,
           }
 lgb_train_param = {
               "verbose_eval": False,
-              "early_stopping_rounds": 20, 
+              "early_stopping_rounds": 20,
               }
 
 # args for baye_opt
