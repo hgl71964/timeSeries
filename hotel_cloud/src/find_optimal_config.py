@@ -204,7 +204,7 @@ if "optimal_config.npy" in data_files:
 else:
     print("---------------------------------------------")
     print(f"{bcolors.HEADER}starts bayes_opt: {bcolors.ENDC}")
-    print(f"{bcolors.INFO_CYAN}data_dict len: {len(list(data_dict.keys()))} {bcolors.ENDC}")
+    print(f"{bcolors.INFO_CYAN} total available data: {len(list(data_dict.keys()))} {bcolors.ENDC}")
 
     xs, ys = [], []
     for name in ["xgb", "lgb"]:
