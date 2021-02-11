@@ -136,13 +136,13 @@ class cv_scores:
         param: dict ,  #  for xgboost or lightgbm
         cat_list: List[str],  # list of categorical data
         n_estimators: int,  # num_boost_round
-        nfold: int, 
+        nfold: int,
         training_func: callable,  # xgb_train or lgb_train
         predict_func: callable,  # xgb_predict or lgb_predict
         ts: object,  #  timeSeries_data object
         metric: object,  # metric object
-        target: str, 
-        **train_kwargs, 
+        target: str,
+        **train_kwargs,
         ):
         """
         hand-made cross-validation
@@ -187,7 +187,6 @@ class cv_scores:
 
             softdtw_collector[index], mse_collector[index] = [name, "softdtw", group_num, group_size, nfold, min(temp_softdtw), max(temp_softdtw), np.mean(temp_softdtw), np.std(temp_softdtw)], \
                                                             [name, "mse", group_num, group_size, nfold, min(temp_mse), max(temp_mse), np.mean(temp_mse), np.std(temp_mse)]
-
         return pd.DataFrame(softdtw_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean", "std"], index=[f"cv_{i}" for i in range(len(softdtw_collector))]), \
                 pd.DataFrame(mse_collector, columns=["name", "metric", "group_label", "group_size", "nfold", "min", "max", "mean", "std"], index=[f"cv_{i}" for i in range(len(mse_collector))])
 

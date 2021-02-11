@@ -44,6 +44,7 @@ def lgb_train(train_df: DataFrame,
     return train(param, dtrain, n_estimators, valid_sets=watchlist, \
                     early_stopping_rounds=early_stopping_rounds, \
                     verbose_eval=verbose_eval, \
+                    categorical_feature=cat_list, \
                     )
 
 def lgb_predict(df,
