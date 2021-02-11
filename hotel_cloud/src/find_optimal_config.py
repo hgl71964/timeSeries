@@ -204,6 +204,7 @@ if "optimal_config.npy" in data_files:
 else:
     print("---------------------------------------------")
     print(f"{bcolors.HEADER}starts bayes_opt: {bcolors.ENDC}")
+    print(f"{bcolors.INFO_CYAN}data_dict len: {len(list(data_dict.keys()))} {bcolors.ENDC}")
 
     xs, ys = [], []
     for name in ["xgb", "lgb"]:
@@ -223,7 +224,7 @@ else:
         elif name == "lgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes
             # [0, 3], 
-            [1e-2, 0.7],  # lr cannot too small
+            [1e-2, 0.7],  # lr cannot be too small
             [20,50],
             [0.5,1],
             [0.3, 1],

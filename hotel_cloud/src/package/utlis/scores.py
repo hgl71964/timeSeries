@@ -179,8 +179,14 @@ class cv_scores:
                 
                 preds = predict_func(ivd_test_df, cat_list, target, bst)
                 
-                soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])
-                mse_res = metric.mse(preds, ivd_test_df[target])
+                try:
+                    soft_dtw_res = metric.softdtw(preds, ivd_test_df[target])
+                    mse_res = metric.mse(preds, ivd_test_df[target])
+                except:
+                    mse_res = metric.mse(preds, ivd_test_df[target])
+                    print(mse_res)
+                    print(test_date)
+                    raise RuntimeError()
 
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
