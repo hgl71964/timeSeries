@@ -215,7 +215,7 @@ else:
                 [1,5],
                 [0.3, 1],
                 [1, 7],
-                ]).T  
+                ]).T
 
             cv = cv_scores("xgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, TARGET, **xgb_train_params)
@@ -229,7 +229,7 @@ else:
             [0.3, 1],
             [1, 7],
             [1, 5],
-            ]).T  
+            ]).T
 
             cv = cv_scores("lgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, TARGET, **lgb_train_param)
