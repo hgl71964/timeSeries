@@ -36,6 +36,26 @@ class helper:
         ivd_test_df =  ts.df_from_dates(df, [worst_date])
         preds = predict_func(ivd_test_df, cat_list, target, bst)
         return preds, ivd_test_df[target].values
+    
+    @staticmethod
+    def generate_plots(test_dates: List[str],
+                        df,
+                        ts: object,
+                        predict_func: callable,
+                        cat_list,
+                        target,
+                        bst,  # trained bst
+                        metric: object,
+                        ):
+        data = {}
+        for test_date in test_dates:
+            ivd_test_df =  ts.df_from_dates(df, [test_date])
+            preds = predict_func(ivd_test_df, cat_list, target, bst)
+            dtw = metric.softdtw(preds, ivd_test_df[target])
+            mse = metric.mse(preds, ivd_test_df[target])
+            data[test_date] = (preds, ivd_test_df[target].values, dtw, mse)
+
+        return data
 
     @staticmethod
     def feature_important(bst, name, cat_list):
@@ -105,7 +125,7 @@ class logger:
 
 
     @staticmethod
-    def show_all_df(dir_path: str,  # path to the directory  
+    def show_all_df(dir_path: str,  # path to the directory
                         ):
 
         files = os.listdir(dir_path)
@@ -121,7 +141,3 @@ class logger:
                 metric_df.append(pd.read_csv(full_path))
 
         return pd.concat(param_df, axis=0), pd.concat(metric_df, axis=0).reset_index(drop=True).drop(columns=["Unnamed: 0"])
-
-
-class plotter:
-    pass

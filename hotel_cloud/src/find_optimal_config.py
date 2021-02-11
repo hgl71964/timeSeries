@@ -131,7 +131,7 @@ xgb_params = {
         # "gamma": 0,
         # Learning task parameters
         "objective": "reg:squarederror",
-        "eval_metric": "rmse",  # list, then the last one will be used for early stopping 
+        "eval_metric": "rmse",  # list, then the last one will be used for early stopping
           }
 xgb_train_params = {
               "verbose_eval": False,
