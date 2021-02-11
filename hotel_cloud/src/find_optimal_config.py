@@ -205,7 +205,7 @@ else:
     print(f"{bcolors.INFO_CYAN} total available data: {len(list(data_dict.keys()))} {bcolors.ENDC}")
 
     xs, ys = [], []
-    for name in ["xgb", "lgb"]:
+    for name in ["lgb", "xgb"]:  
         if name == "xgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes
                 # [0,2],
@@ -232,6 +232,7 @@ else:
 
             cv = cv_scores("lgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, TARGET, **lgb_train_param)
+
 
         bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
 
