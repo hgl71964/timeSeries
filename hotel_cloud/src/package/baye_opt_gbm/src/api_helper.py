@@ -33,6 +33,9 @@ class api_utils:
 
                         softdtw, mse = cv.run_cv(df)
 
+                        print(f"{bcolors.OKGREEN} softdtw {softdtw}")
+                        print(f"mse {mse} {bcolors.ENDC}")
+
                         if metric_name == "softdtw":
                             score = softdtw["mean"].mean()
                         elif metric_name == "mse":
@@ -54,6 +57,11 @@ class api_utils:
     @staticmethod
     def init_reward(cv, df, metric_name):
         softdtw, mse = cv.run_cv(df)
+
+        print(f"{bcolors.OKGREEN} softdtw {softdtw}")
+        print(f"mse {mse} {bcolors.ENDC}")
+
+
         if metric_name == "softdtw":
             return -softdtw["mean"].mean()
         elif metric_name == "mse":
