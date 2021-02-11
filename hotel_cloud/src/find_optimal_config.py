@@ -211,7 +211,7 @@ else:
         if name == "xgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes
                 # [0,2],
-                [0, 0.7],
+                [1e-2, 0.7],
                 [1,10],
                 [1,5],
                 [0.3, 1],
