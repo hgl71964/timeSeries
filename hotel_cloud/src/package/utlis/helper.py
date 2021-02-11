@@ -10,14 +10,14 @@ class helper:
 
     @staticmethod
     def worst_day_res(test_dates: List[str],
-                        df,  
-                        ts: object,                        
+                        df,
+                        ts: object,
                         predict_func: callable,
-                        cat_list, 
-                        target, 
+                        cat_list,
+                        target,
                         bst,  # trained bst
-                        metric_name: str, 
-                        metric: object, 
+                        metric_name: str,
+                        metric: object,
                         ):
         res = []
         for test_date in test_dates:
@@ -36,7 +36,7 @@ class helper:
         ivd_test_df =  ts.df_from_dates(df, [worst_date])
         preds = predict_func(ivd_test_df, cat_list, target, bst)
         return preds, ivd_test_df[target].values
-    
+
     @staticmethod
     def generate_plots(test_dates: List[str],
                         df,
