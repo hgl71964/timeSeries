@@ -23,7 +23,7 @@ def BO_post_process(xs: List[tr.Tensor],
                     ):
 
     """
-    post-process BO results; pick optimal configuration 
+    post-process BO results; pick optimal configuration
     """    
 
     if ys[1].max() >= ys[0].max():
@@ -73,7 +73,7 @@ def bayes_loop(bayes_opt: object,
     x0 = cv.dict_to_numeric
     y0 = api_utils.init_reward(cv, df, metric_name)
 
-    print(f"{bcolors.INFO_CYAN}initial x, y: \n ({x0}, {-y0:.2f}) {bcolors.ENDC}")
+    print(f"{bcolors.INFO_CYAN}initial x, y: \n ({x0}, {y0:.2f}) {bcolors.ENDC}")
 
     #  format the initial pair
     x0, y0 = tr.tensor(x0, dtype=dtype).view(1, -1).to(device), \
