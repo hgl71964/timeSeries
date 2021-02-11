@@ -34,8 +34,8 @@ class api_utils:
                         softdtw, mse = cv.run_cv(df)
                         temp1, temp2 = -softdtw["mean"].mean(), -mse["mean"].mean()
 
-                        print(f"{bcolors.OKGREEN} softdtw: {temp1}")
-                        print(f"mse: {temp2} {bcolors.ENDC}")
+                        print(f"{bcolors.OKGREEN} softdtw: {temp1:.2f}")
+                        print(f"mse: {temp2:.2f} {bcolors.ENDC}")
 
                         if metric_name == "softdtw":
                             score = softdtw["mean"].mean()
@@ -61,8 +61,8 @@ class api_utils:
 
         temp1, temp2 = -softdtw["mean"].mean(), -mse["mean"].mean()
 
-        print(f"{bcolors.OKGREEN} softdtw {temp1}")
-        print(f"mse {temp2} {bcolors.ENDC}")
+        print(f"{bcolors.OKGREEN} softdtw {temp1:.2f}")
+        print(f"mse {temp2:.2f} {bcolors.ENDC}")
 
         if metric_name == "softdtw":
             return -softdtw["mean"].mean()
