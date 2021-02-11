@@ -116,7 +116,7 @@ xgb_params = {
         "booster": "gblinear",
         "verbosity": 0,  # 0 (silent), 1 (warning), 2 (info), and 3 (debug)
         # Booster parameters
-        "eta": e-1,  # aka learning rate
+        "eta": 1e-1,  # aka learning rate
         "max_depth": 6,
         "min_child_weight": 1,
         "subsample": 1, 

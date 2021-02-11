@@ -110,7 +110,7 @@ class timeSeries_data:
 
             # make lead_in as a feature
             s_df["lead_in"] = s_df.index
-            s_df["lead_in"] = s_df["lead_in"].transform(lambda x: x+1)
+            # s_df["lead_in"] = s_df["lead_in"].transform(lambda x: x+1)
             s_df = s_df.reset_index(drop=True)
 
             # collect
