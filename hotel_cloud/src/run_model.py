@@ -230,10 +230,10 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
 """ performance evaluation """
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
-data = helper.generate_plots(test_dates, df, ts, predict_func, CAT_LIST, \
-                                TARGET, bst, forecast_metric)
 
 if False:
+    data = helper.generate_plots(test_dates, df, ts, predict_func, CAT_LIST, \
+                                    TARGET, bst, forecast_metric)
     np.save(os.path.join(DIR, "data", "log", "plot_data.npy"), data)
 
 if False:
