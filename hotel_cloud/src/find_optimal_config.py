@@ -182,7 +182,7 @@ acq_params = {
 
 # ------------------------------------------------------------------------------------------
 # median_pc_diff = (rateamount_mean - competitor_median_rate) / competitor_median_rate
-# totalrevenue = room revenue + other revenue; 
+# totalrevenue = room revenue + other revenue;
 # Average Daily Rate (ADR) = revenue/rooms
 
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
