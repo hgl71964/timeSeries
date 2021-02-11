@@ -171,7 +171,7 @@ gp_name, gp_params = "MA2.5",{
                           "lr":1e-1,          # learning rate for ADAM
                          }
 acq_params = {
-    "acq_name" : "UCB",          # acqu func; includes: "EI", "UCB", "qEI", "qUCB", "qKG"
+    "acq_name" : "EI",          # acqu func; includes: "EI", "UCB", "qEI", "qUCB", "qKG"
     "N_start": 32,               # number of starts for multi-start SGA
     "raw_samples" :512,          # heuristic initialisation
     "N_MC_sample" : 256,         # number of samples for Monte Carlo simulation
@@ -221,7 +221,7 @@ else:
 
         elif name == "lgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes
-            # [0, 3], 
+            # [0, 3],
             [1e-2, 0.7],  # lr cannot be too small
             [20,50],
             [0.5,1],
