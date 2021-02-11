@@ -33,12 +33,11 @@ cli.add_argument("--nc",
                 default=5,
                 help="number of clusters")
 
-cli.add_argument("--lb",
-                dest="lb",
+cli.add_argument("--nd",
+                dest="nd",
                 type=int,
-                nargs="+", 
-                default=[1, 7, 14], 
-                help="2 args -> lag range for lag feats")
+                default=28,
+                help="n days ahead forecasting")
 
 cli.add_argument("--target",
                 dest="target",
@@ -61,7 +60,7 @@ cli.add_argument("-k",
 cli.add_argument("--history",
                 dest="history",
                 type=int,
-                default=100,
+                default=60,
                 help="number of history of time series")
 
 cli.add_argument("--bm",
@@ -77,6 +76,7 @@ DIR = folder.get_working_dir("hotel_cloud")      # define working dir folder
 YEAR = 2019                     # for check only
 STAY_DATE = "01-11"             # for check only
 
+NDAYS_AHED = args.nd
 TARGET = args.target        # target for forecasting
 HISTORY = args.history                   # length of the time series we want to find
 DATA_RANGE = (2019, 2019)       # use data from 2018 - 2019
@@ -84,15 +84,14 @@ N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
 KFOLD = args.k                       # score via 3 fold cross-validation
-LAG_RANGE = args.lb              # the bound for lagged features
 
-CAT_LIST = ["month", "day_of_month", "day_of_week"]  # list to categorical data needed to be added
 ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
             "google_trend_1_staydate", "google_trend_2_staydate", 
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
+            "lead_in", 
             ]
 
 LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
@@ -101,6 +100,22 @@ LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
             ]
+LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
+
+
+ROLLING_WINDOWS = [3, 7, 14]
+
+INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
+            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+            "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
+            "rateamount_mean", "rateamount",
+            "median_pc_diff", #"total_roomcount"
+            ]
+INTER_METHODS = ("linear", 1)
+
+# WARNING: change this need to register with XGboost training func
+CAT_LIST = ["month", "day_of_month", "day_of_week", "lead_in"]  # list to categorical data
+
 
 # all params https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
 xgb_params = {
@@ -171,8 +186,9 @@ acq_params = {
 # Average Daily Rate (ADR) = revenue/rooms
 
 df, data_dict, preds, ts = preprocessing(DIR, os.path.join(DIR, "data", "hotel-4_12jan2021.csv"),  \
-                YEAR, DATA_RANGE, HISTORY, TARGET, N_CLUSTER, ALL_FEAT, \
-                                LAG_FEAT, LAG_RANGE)
+                YEAR, DATA_RANGE, HISTORY, NDAYS_AHED, TARGET, N_CLUSTER, \
+                ALL_FEAT, LAG_FEAT, LAG_DAYS, ROLLING_WINDOWS,\
+                INTER_FEAT, INTER_METHODS)
 
 """
 bayes optimisation
@@ -201,7 +217,7 @@ else:
                 [1, 7],
                 ]).T  
 
-            cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
+            cv = cv_scores("xgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, TARGET, **xgb_train_params)
 
         elif name == "lgb":
@@ -215,7 +231,7 @@ else:
             [1, 5],
             ]).T  
 
-            cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
+            cv = cv_scores("lgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, TARGET, **lgb_train_param)
 
         bayes_opt = bayesian_optimiser(T, domain, Q, gp_name, gp_params, acq_params)
@@ -226,10 +242,10 @@ else:
         ys.append(y)
 
     # post-process the results
-    xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(preds)-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
+    xgb_cv = cv_scores("xgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, xgb_params, CAT_LIST, EPOCHS, KFOLD, \
                 xgb_train, xgb_predict, ts, forecast_metric, TARGET, **xgb_train_params)
 
-    lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(preds)-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
+    lgb_cv = cv_scores("lgb", data_dict, np.zeros_like(list(data_dict.keys()))-1, -1, lgb_param, CAT_LIST, EPOCHS, KFOLD, \
                 lgb_train, lgb_predict, ts, forecast_metric, TARGET, **lgb_train_param)
 
     optimal_config, xgb_df, lgb_df = BO_post_process(xs, ys, xgb_cv, lgb_cv)
