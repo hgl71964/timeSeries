@@ -186,7 +186,7 @@ class cv_scores:
                     mse_res = metric.mse(preds, ivd_test_df[target])
                     print(mse_res)
                     print(test_date)
-                    raise RuntimeError()
+                    raise RuntimeError("bad models!")
 
                 temp_softdtw.append(soft_dtw_res)
                 temp_mse.append(mse_res)
