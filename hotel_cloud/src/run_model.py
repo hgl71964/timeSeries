@@ -228,7 +228,7 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
 
 """ performance evaluation """
-bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+# bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 
 if False:
