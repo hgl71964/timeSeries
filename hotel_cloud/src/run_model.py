@@ -228,8 +228,27 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
 
 """ performance evaluation """
-# bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
+
+
+
+
+
+if False:
+
+    origin = helper.price_sensity(test_dates, df, ts, predict_func, CAT_LIST, \
+                                    TARGET, bst, 0)
+
+    lower = helper.price_sensity(test_dates, df, ts, predict_func, CAT_LIST, \
+                                    TARGET, bst, -0.1)
+
+    higher = helper.price_sensity(test_dates, df, ts, predict_func, CAT_LIST, \
+                                    TARGET, bst, 0.1)
+
+    np.save(os.path.join(DIR, "data", "log", "origin.npy"), origin)
+    np.save(os.path.join(DIR, "data", "log", "10up.npy"), higher)
+    np.save(os.path.join(DIR, "data", "log", "10down.npy"), lower)
 
 if False:
     data = helper.generate_plots(test_dates, df, ts, predict_func, CAT_LIST, \

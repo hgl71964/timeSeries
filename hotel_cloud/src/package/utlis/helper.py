@@ -1,9 +1,9 @@
+import os
 import numpy as np
-import pandas as pd 
+import pandas as pd
 from typing import List
 import datetime
 from glob2 import glob
-import os 
 
 
 class helper:
@@ -36,6 +36,24 @@ class helper:
         ivd_test_df =  ts.df_from_dates(df, [worst_date])
         preds = predict_func(ivd_test_df, cat_list, target, bst)
         return preds, ivd_test_df[target].values
+
+    @staticmethod
+    def price_sensity(test_dates: List[str],
+                    df,  # cleansed df
+                    ts: object,
+                    predict_func: callable,
+                    cat_list,
+                    target,
+                    bst,  # trained bst
+                    percentage: float, 
+                    ):
+        res = []
+        for test_date in test_dates:
+            ivd_test_df =  ts.adjust_prices(ts.df_from_dates(df, [test_date]), \
+                                        percentage)
+            preds = predict_func(ivd_test_df, cat_list, target, bst)
+            res.append(preds)
+        return res
 
     @staticmethod
     def generate_plots(test_dates: List[str],
@@ -118,11 +136,6 @@ class logger:
             
             print("save complete")
         return None
-
-    @staticmethod
-    def show_df(file_path: str):
-        return None
-
 
     @staticmethod
     def show_all_df(dir_path: str,  # path to the directory

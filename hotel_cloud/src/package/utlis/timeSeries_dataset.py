@@ -252,19 +252,6 @@ class timeSeries_data:
             df_list[i] = df[df["staydate"]==date].drop(columns=["staydate"])
         return pd.concat(df_list, axis=0, ignore_index=True)
 
-    def adjust_prices(self,
-                    df: pd.DataFrame,
-                    percentage: float,  # 0.1 -> raise by 10%; -0.1 -> reduce by 10%
-                    ):
-        # adjust prices 
-        df["rateamount"] = df.apply(lambda df: df["rateamount"]*(1 + percentage), axis=1)
-
-        # re-compute median_pc_diff
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero            
-            df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
-                             / df["competitor_median_rate"], axis=1)
-        return df
 
     def train_test_dates(self, 
                         labels: np.ndarray,  # outcome of clustering
@@ -289,3 +276,17 @@ class timeSeries_data:
         for i, key in enumerate(train_indices):
             train_dates[i] = data_dict[int(key)]
         return train_dates, test_dates
+
+    def adjust_prices(self,
+                    df: pd.DataFrame,
+                    percentage: float,  # 0.1 -> raise by 10%; -0.1 -> reduce by 10%
+                    ):
+        # adjust prices
+        df["rateamount"] = df.apply(lambda df: df["rateamount"]*(1 + percentage), axis=1)
+
+        # re-compute median_pc_diff
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero
+            df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
+                             / df["competitor_median_rate"], axis=1)
+        return df
