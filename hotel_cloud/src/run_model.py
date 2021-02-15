@@ -90,7 +90,7 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
 LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
-            "rateamount_mean", "rateamount",
+            "rateamount_mean", #"rateamount", -> this maybe set by ourselves
             "median_pc_diff", #"total_roomcount"
             ]
 LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
@@ -231,11 +231,16 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
 bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 
+# if True:
+#     pred, real = helper.worst_day_res(test_dates, df, ts, predict_func, CAT_LIST, \
+#                                 TARGET, bst, "softdtw", forecast_metric)
+#     print(pred)
+#     print(real)
+#     print(forecast_metric.mse(pred, real))
+#     print(helper.feature_important(bst, name, CAT_LIST))
 
 
-
-
-if False:
+if True:
 
     origin = helper.price_sensity(test_dates, df, ts, predict_func, CAT_LIST, \
                                     TARGET, bst, 0)
@@ -255,13 +260,7 @@ if False:
                                     TARGET, bst, forecast_metric)
     np.save(os.path.join(DIR, "data", "log", "plot_data.npy"), data)
 
-if False:
-    pred, real = helper.worst_day_res(test_dates, df, ts, predict_func, CAT_LIST, \
-                                TARGET, bst, "softdtw", forecast_metric)
-    print(pred)
-    print(real)
-    print(forecast_metric.mse(pred, real))
-    print(helper.feature_important(bst, name, CAT_LIST))
+
 
 # # cor features
 # corr_df = train_df.corr().abs()

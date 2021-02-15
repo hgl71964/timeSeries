@@ -284,9 +284,10 @@ class timeSeries_data:
         # adjust prices
         df["rateamount"] = df.apply(lambda df: df["rateamount"]*(1 + percentage), axis=1)
 
-        # re-compute median_pc_diff
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero
-            df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
-                             / df["competitor_median_rate"], axis=1)
+        # re-compute median_pc_diff if possible
+        if "median_pc_diff" in list(df):
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero
+                df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
+                                / df["competitor_median_rate"], axis=1)
         return df
