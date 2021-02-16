@@ -95,7 +95,6 @@ LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             ]
 LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
 
-
 ROLLING_WINDOWS = [3, 7, 14]              
 
 INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
@@ -137,13 +136,13 @@ lgb_param = {
     "metric": {"rmse"},  # can be a list of metric
     "first_metric_only" : True,  # use only the first metric for early stopping
     # -----
-    "eta": 0.05,  
+    "eta": 0.05,
     "num_leaves": 31,
     "feature_fraction": 0.9, # select a subset of feature to train
     "subsample": 0.8,    # aka bagging
     "subsample_freq": 5,  # aka bagging frequency
     "lambda_l2": 0,
-    "verbose": 0, 
+    "verbose": 0,
           }
 lgb_train_param = {
               "verbose_eval": False,

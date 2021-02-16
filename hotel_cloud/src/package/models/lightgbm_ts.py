@@ -41,6 +41,13 @@ def lgb_train(train_df: DataFrame,
     verbose_eval = kwargs.get("verbose_eval", False)
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
 
+    # optionally add monotonic constraint
+    mc = [0] * len(list(train_df[feats]))
+    for i, item in enumerate(list(train_df[feats])):
+        if item == "rateamount":
+            mc[i] = -1
+    # param.update({"monotone_constraints": mc})
+
     return train(param, dtrain, n_estimators, valid_sets=watchlist, \
                     early_stopping_rounds=early_stopping_rounds, \
                     verbose_eval=verbose_eval, \
