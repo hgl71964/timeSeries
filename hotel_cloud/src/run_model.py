@@ -147,6 +147,7 @@ lgb_param = {
 lgb_train_param = {
               "verbose_eval": False,
               "early_stopping_rounds": 20,
+              "monotone_constraints": True,  # this adds monotonic constraint
               }
 """end of Args"""
 
