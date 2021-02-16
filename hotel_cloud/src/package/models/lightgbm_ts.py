@@ -10,9 +10,9 @@ low level interface to XGboost
 model Booster; train via xgb.train
 """
 
-def lgb_train(train_df: DataFrame, 
-        test_df: DataFrame, 
-        target: str, 
+def lgb_train(train_df: DataFrame,
+        test_df: DataFrame,
+        target: str,
         param: dict,
         cat_list: List[str],  # categorical feature names
         n_estimators: int = 10,  # num_boost_round

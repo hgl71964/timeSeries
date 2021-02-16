@@ -4,7 +4,7 @@ this script runs bayes_opt to find optimal hyperparameter for (xg, light)gbm mod
 the results are store -> ${work_dir}/data/optimal_config.npy
 logs are store -> ${work_dir}/data/log/bo*
 """
-import os 
+import os
 import argparse
 import numpy as np
 import pandas as pd

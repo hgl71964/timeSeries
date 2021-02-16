@@ -228,7 +228,7 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
 
 """ performance evaluation """
-bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+# bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 
 # if True:
@@ -240,7 +240,7 @@ bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **traini
 #     print(helper.feature_important(bst, name, CAT_LIST))
 
 
-if True:
+if False:
 
     origin = helper.price_sensity(test_dates, df, ts, predict_func, CAT_LIST, \
                                     TARGET, bst, 0)
@@ -269,7 +269,7 @@ if False:
 # for i in range(5):
 #     print(upper.iloc[i])
 
-
 if False:
+
     predict_func(test_df, CAT_LIST, TARGET, bst).shape
 
