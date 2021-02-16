@@ -114,7 +114,7 @@ INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
 INTER_METHODS = ("linear", 1)
 
 # WARNING: change this need to register with XGboost training func
-CAT_LIST = ["month", "day_of_month", "day_of_week", "lead_in"]  # list to categorical data
+CAT_LIST = ["month", "day_of_month", "day_of_week"] # "lead_in"]  # list to categorical data
 
 
 # all params https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-linear-booster-booster-gblinear
