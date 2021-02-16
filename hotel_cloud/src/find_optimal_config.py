@@ -207,7 +207,7 @@ else:
     print(f"{bcolors.INFO_CYAN} total available data: {len(list(data_dict.keys()))} {bcolors.ENDC}")
 
     xs, ys = [], []
-    for name in ["lgb",]: #"xgb"]:
+    for name in ["lgb", "xgb"]: #""]:
         if name == "xgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes
                 # [0,2],

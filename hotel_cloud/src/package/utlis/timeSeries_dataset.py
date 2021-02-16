@@ -281,13 +281,16 @@ class timeSeries_data:
                     df: pd.DataFrame,
                     percentage: float,  # 0.1 -> raise by 10%; -0.1 -> reduce by 10%
                     ):
+        if percentage == 0:
+            return df
+        
         # adjust prices
         df["rateamount"] = df.apply(lambda df: df["rateamount"]*(1 + percentage), axis=1)
 
         # re-compute median_pc_diff if possible
-        if "median_pc_diff" in list(df):
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero
-                df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
-                                / df["competitor_median_rate"], axis=1)
+        # if "median_pc_diff" in list(df):
+        #     with warnings.catch_warnings():
+        #         warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero
+        #         df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
+        #                         / df["competitor_median_rate"], axis=1)
         return df
