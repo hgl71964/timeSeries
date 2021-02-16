@@ -25,7 +25,7 @@ def lgb_train(train_df: DataFrame,
     """
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
-    
+
     feats = [i for i in train_df.columns if i != target]
 
     dtrain = Dataset(train_df[feats], label=train_df[target], \
