@@ -84,7 +84,7 @@ ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
-            "lead_in", 
+            "lead_in",
             ]
 
 LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
@@ -97,8 +97,8 @@ LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
 
 ROLLING_WINDOWS = [3, 7, 14]
 
-INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
+            "google_trend_1_reportdate", "google_trend_2_reportdate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
@@ -121,7 +121,7 @@ xgb_params = {
         # "gamma": 0,
         # Learning task parameters
         "objective": "reg:squarederror",
-        "eval_metric": "rmse",  # list, then the last one will be used for early stopping 
+        "eval_metric": "rmse",  # list, then the last one will be used for early stopping
           }
 xgb_train_params = {
               "verbose_eval": False,

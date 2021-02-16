@@ -85,22 +85,22 @@ N_CLUSTER = args.nc      # num_clusters are determined by the elbow-point
 EPOCHS = 256                    # train iterations; early stopping to prevent overfitting
 KFOLD = args.k                       # score via 3 fold cross-validation
 
-ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-            "google_trend_1_reportdate", "google_trend_2_reportdate", 
-            "google_trend_1_staydate", "google_trend_2_staydate", 
+ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
+            "google_trend_1_reportdate", "google_trend_2_reportdate",
+            "google_trend_1_staydate", "google_trend_2_staydate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
-            "lead_in", 
+            "lead_in",
             ]
 
 LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
             "google_trend_1_reportdate", "google_trend_2_reportdate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
-            "rateamount_mean", "rateamount",
+            "rateamount_mean", # "rateamount",
             "median_pc_diff", #"total_roomcount"
             ]
-LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
+LAG_DAYS = [28, 29, 30, 31, 32]
 
 
 ROLLING_WINDOWS = [3, 7, 14]
@@ -145,7 +145,7 @@ lgb_param = {
     "metric": {"rmse"},  # can be a list of metric
     "first_metric_only" : True,  # use only the first metric for early stopping
     # -----
-    "eta": 0.05,  
+    "eta": 0.05,
     "num_leaves": 31,
     "feature_fraction": 0.9, # select a subset of feature to train
     "subsample": 0.8,    # aka bagging
@@ -154,8 +154,10 @@ lgb_param = {
     "verbose": 0,
           }
 lgb_train_param = {
-              "verbose_eval": False,
-              "early_stopping_rounds": 20,
+            "verbose_eval": False,
+            "early_stopping_rounds": 20,
+            "monotone_constraints": True,  # this adds monotonic constraint
+            "monotone_constraints_method": "advanced",  # "basic", "intermediate", "advanced"
               }
 
 # args for baye_opt
@@ -205,7 +207,7 @@ else:
     print(f"{bcolors.INFO_CYAN} total available data: {len(list(data_dict.keys()))} {bcolors.ENDC}")
 
     xs, ys = [], []
-    for name in ["lgb", "xgb"]:
+    for name in ["lgb",]: #"xgb"]:
         if name == "xgb":
             domain = np.array([  # -> (2, d) this will change as search variale changes
                 # [0,2],
