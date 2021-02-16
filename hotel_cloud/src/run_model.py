@@ -78,24 +78,24 @@ EPOCHS = 256                    # train iterations; early stopping to prevent ov
 KFOLD = args.k                       # score via 3 fold cross-validation
 HISTORY = args.history
 
-ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-            "google_trend_1_reportdate", "google_trend_2_reportdate", 
-            "google_trend_1_staydate", "google_trend_2_staydate", 
+ALL_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
+            "google_trend_1_reportdate", "google_trend_2_reportdate",
+            "google_trend_1_staydate", "google_trend_2_staydate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", "rateamount",
             "median_pc_diff", #"total_roomcount"
             "lead_in", 
             ]
 
-LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
-            "google_trend_1_reportdate", "google_trend_2_reportdate", 
+LAG_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",
+            "google_trend_1_reportdate", "google_trend_2_reportdate",
             "competitor_median_rate", "competitor_max_rate", "competitor_min_rate",
             "rateamount_mean", #"rateamount", -> this maybe set by ourselves
             "median_pc_diff", #"total_roomcount"
             ]
 LAG_DAYS = [28, 29, 30, 31, 32]              # the bound for lagged features
 
-ROLLING_WINDOWS = [3, 7, 14]              
+ROLLING_WINDOWS = [3, 7, 14]
 
 INTER_FEAT = ["rooms_all", #"is_holiday_staydate", #"revenue_all", "adr_all",  
             "google_trend_1_reportdate", "google_trend_2_reportdate", 
@@ -107,8 +107,6 @@ INTER_METHODS = ("linear", 1)
 
 # WARNING: change this need to register with XGboost training func
 CAT_LIST = ["month", "day_of_month", "day_of_week", "lead_in"]  # list to categorical data
-
-
 
 xgb_params = {
         # General parameters
@@ -228,7 +226,7 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
 
 """ performance evaluation """
-bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+# bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 
 # if True:
