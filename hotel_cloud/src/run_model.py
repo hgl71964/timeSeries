@@ -148,6 +148,7 @@ lgb_train_param = {
               "verbose_eval": False,
               "early_stopping_rounds": 20,
               "monotone_constraints": True,  # this adds monotonic constraint
+              "monotone_constraints_method": "advanced",  # "basic", "intermediate", "advanced"
               }
 """end of Args"""
 
@@ -227,7 +228,7 @@ print(cv_scores.CV(df, name, data_dict, np.zeros_like(list(data_dict.keys()))-1 
           training_func, predict_func, ts, forecast_metric, TARGET, **training_param))
 
 """ performance evaluation """
-# bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
+bst = training_func(train_df, test_df, TARGET, param, CAT_LIST, EPOCHS, **training_param)
 
 
 # if True:

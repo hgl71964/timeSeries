@@ -48,7 +48,8 @@ def lgb_train(train_df: DataFrame,
             if item == "rateamount":
                 mc[i] = -1
         param.update({"monotone_constraints": mc})
-    assert "monotone_constraints" in param
+        param.update({"monotone_constraints_method": \
+                    kwargs.get("monotone_constraints_method", "basic")})
 
     return train(param, dtrain, n_estimators, valid_sets=watchlist, \
                     early_stopping_rounds=early_stopping_rounds, \
