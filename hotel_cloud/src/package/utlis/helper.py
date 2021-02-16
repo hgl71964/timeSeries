@@ -45,7 +45,7 @@ class helper:
                     cat_list,
                     target,
                     bst,  # trained bst
-                    percentage: float, 
+                    percentage: float,
                     ):
         res = []
         for test_date in test_dates:
