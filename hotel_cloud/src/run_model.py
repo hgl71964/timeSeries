@@ -181,6 +181,7 @@ if "optimal_config.npy" in log_files:
     print(f"{bcolors.OKGREEN} optimal model && configuration: ")
     print(name)
     print(param)
+    print(training_param)
     print(f"{bcolors.ENDC}")
 
 else:
