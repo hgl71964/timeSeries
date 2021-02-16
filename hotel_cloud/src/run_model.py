@@ -151,7 +151,6 @@ lgb_train_param = {
               }
 """end of Args"""
 
-
 # ------------------------------------------------------------------------------------------
 log_files = os.listdir(os.path.join(DIR, "data", "log"))
 

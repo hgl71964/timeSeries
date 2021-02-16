@@ -41,7 +41,7 @@ def lgb_train(train_df: DataFrame,
     verbose_eval = kwargs.get("verbose_eval", False)
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
 
-    # optionally add monotonic constraint
+    # optionally add monotonic constraint, controlled by arg in kwarg
     if kwargs.get("monotone_constraints", False):
         mc = [0] * len(list(train_df[feats]))
         for i, item in enumerate(list(train_df[feats])):
