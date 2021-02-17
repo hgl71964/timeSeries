@@ -5,6 +5,7 @@ import pandas as pd
 from glob2 import glob
 from typing import List
 from collections import deque
+from copy import deepcopy
 from tslearn.clustering import TimeSeriesKMeans
 
 """
@@ -281,16 +282,17 @@ class timeSeries_data:
                     df: pd.DataFrame,
                     percentage: float,  # 0.1 -> raise by 10%; -0.1 -> reduce by 10%
                     ):
+        ad_df = deepcopy(df)
         if percentage == 0:
-            return df
+            return ad_df
         
         # adjust prices
-        df["rateamount"] = df.apply(lambda df: df["rateamount"]*(1 + percentage), axis=1)
+        ad_df["rateamount"] = ad_df.apply(lambda ad_df: ad_df["rateamount"]*(1 + percentage), axis=1)
 
         # re-compute median_pc_diff if possible
-        # if "median_pc_diff" in list(df):
+        # if "median_pc_diff" in list(ad_df):
         #     with warnings.catch_warnings():
         #         warnings.simplefilter("ignore", category=RuntimeError)  # supress divide by zero
-        #         df["median_pc_diff"] = df.apply(lambda df: (df["rateamount"] - df["competitor_median_rate"]) \
-        #                         / df["competitor_median_rate"], axis=1)
-        return df
+        #         ad_df["median_pc_diff"] = ad_df.apply(lambda ad_df: (ad_df["rateamount"] - ad_df["competitor_median_rate"]) \
+        #                         / ad_df["competitor_median_rate"], axis=1)
+        return ad_df

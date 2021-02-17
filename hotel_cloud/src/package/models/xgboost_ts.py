@@ -52,7 +52,7 @@ def xgb_train(train_df: DataFrame,
         mc = ["0"] * len(list(train_df[feats]))
         for i, item in enumerate(list(train_df[feats])):
             if item == "rateamount":
-                mc[i] = "-1"
+                mc[i] = "0"
 
         param.update({"monotone_constraints": "(" + ",".join(mc) + ")" })
 
