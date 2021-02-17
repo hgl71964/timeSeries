@@ -179,11 +179,7 @@ if "optimal_config.npy" in log_files:
         param = lgb_param
         training_param = lgb_train_param
 
-    print(f"{bcolors.OKGREEN} optimal model && configuration: ")
-    print(name)
-    print(param)
-    print(training_param)
-    print(f"{bcolors.ENDC}")
+    print(f"{bcolors.OKGREEN} loading optimal model && configuration: {bcolors.ENDC}")
 
 else:
     name = "xgb"
@@ -200,6 +196,11 @@ else:
 
     print(f"{bcolors.FAIL} cannot load optimal config, using default {name} \n {bcolors.ENDC}")
 
+print(f"{bcolors.INFO_CYAN}config: ")
+print(name)
+print(param)
+print(training_param)
+print(f"{bcolors.ENDC}")
 # finish reading
 # ------------------------------------------------------------------------------------------
 
@@ -253,9 +254,9 @@ if True:
     higher = helper.price_sensity(test_dates, df, ts, predict_func, CAT_LIST, \
                                     TARGET, bst, 0.5)
 
-    np.save(os.path.join(DIR, "data", "log", "origin.npy"), origin)
-    np.save(os.path.join(DIR, "data", "log", "50up.npy"), higher)
-    np.save(os.path.join(DIR, "data", "log", "50down.npy"), lower)
+    np.save(os.path.join(DIR, "data", "log", "xgb_origin.npy"), origin)
+    np.save(os.path.join(DIR, "data", "log", "xgb_50up.npy"), higher)
+    np.save(os.path.join(DIR, "data", "log", "xgb_50down.npy"), lower)
 
 if False:
     data = helper.generate_plots(test_dates, df, ts, predict_func, CAT_LIST, \
