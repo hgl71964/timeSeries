@@ -27,7 +27,7 @@ def xgb_train(train_df: DataFrame,
     """
     if not isinstance(train_df, DataFrame):
         raise TypeError("must provide pf")
-    
+
     # one-hot encoding
     train_df, test_df = _one_hot_encoding(train_df, cat_list),\
                         _one_hot_encoding(test_df, cat_list) 
@@ -38,7 +38,7 @@ def xgb_train(train_df: DataFrame,
     dtrain = DMatrix(train_df[feats], label=train_df[target])
     if test_df is not None:
         dtest = DMatrix(test_df[feats], label=test_df[target])
-        watchlist = [(dtrain, 'train'), (dtest, 'eval')]  # last entry for early stopping  
+        watchlist = [(dtrain, 'train'), (dtest, 'eval')]  # last entry for early stopping
     else:
         dtest = None
         watchlist = [(dtrain, 'train')]
