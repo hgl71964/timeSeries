@@ -47,6 +47,15 @@ def xgb_train(train_df: DataFrame,
     early_stopping_rounds = kwargs.get("early_stopping_rounds", None)
     verbose_eval = kwargs.get("verbose_eval", False)
 
+    # optionally add monotonic constraint, controlled by arg in kwarg
+    if kwargs.get("monotone_constraints", False):
+        mc = ["0"] * len(list(train_df[feats]))
+        for i, item in enumerate(list(train_df[feats])):
+            if item == "rateamount":
+                mc[i] = "-1"
+
+        param.update({"monotone_constraints": "(" + ",".join(mc) + ")" })
+
     return train(param, dtrain, n_estimators, watchlist, 
             obj=None, feval=None, # custmised obj and eval_metric
             early_stopping_rounds=early_stopping_rounds, 

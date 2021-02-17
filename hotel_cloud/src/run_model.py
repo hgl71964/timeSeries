@@ -126,6 +126,7 @@ xgb_params = {
 xgb_train_params = {
               "verbose_eval": False,
               "early_stopping_rounds": 20,
+              "monotone_constraints": True,
               }
 
 lgb_param = {
@@ -185,16 +186,18 @@ if "optimal_config.npy" in log_files:
     print(f"{bcolors.ENDC}")
 
 else:
+    name = "xgb"
+    training_func = xgb_train
+    predict_func = xgb_predict
+    param = xgb_params
+    training_param = xgb_train_params
+
     # name = "lgb"
     # training_func = lgb_train
     # predict_func = lgb_predict
     # param = lgb_param
     # training_param = lgb_train_param
-    name = "lgb"
-    training_func = lgb_train
-    predict_func = lgb_predict
-    param = lgb_param
-    training_param = lgb_train_param
+
     print(f"{bcolors.FAIL} cannot load optimal config, using default {name} \n {bcolors.ENDC}")
 
 # finish reading
