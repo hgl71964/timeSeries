@@ -43,11 +43,12 @@ def lgb_train(train_df: DataFrame,
 
     # optionally add monotonic constraint, controlled by arg in kwarg
     if kwargs.get("monotone_constraints", False):
-        mc = [0] * len(list(train_df[feats]))
+        mc = ["0"] * len(list(train_df[feats]))
         for i, item in enumerate(list(train_df[feats])):
             if item == "rateamount":
-                mc[i] = -1
-        param.update({"monotone_constraints": mc})
+                mc[i] = "-1"
+
+        param.update({"monotone_constraints": "(" + ",".join(mc) + ")" })
         param.update({"monotone_constraints_method": \
                     kwargs.get("monotone_constraints_method", "basic")})
 
