@@ -4,6 +4,3 @@ __pycache__
 
 .DS_Store
 
-# ignore all data except for the README
-hotel_cloud/data/*
-!hotel_cloud/data/README.md
